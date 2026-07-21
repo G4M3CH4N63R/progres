@@ -225,11 +225,11 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
   .cal-dow{font-size:10.5px;color:var(--muted);text-align:center;font-weight:700;padding:2px 0}
   .cal-d{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid transparent;gap:1px}
-  .cal-d.has{background:var(--accent);color:#fff}
-  .cal-d.today{border-color:var(--accent)}
-  .cal-d.sel{outline:2px solid var(--warn)}
+  .cal-d.has{background:var(--accent);color:#000;font-weight:700}
+  .cal-d.today{border-color:var(--accent);color:var(--accent);font-weight:800}
+  .cal-d.sel{outline:2px solid var(--accent);outline-offset:1px}
   .cal-d .bd{width:4px;height:4px;border-radius:50%;background:var(--s5)}
-  .cal-d.has .bd{background:#fff}
+  .cal-d.has .bd{background:rgba(0,0,0,.45)}
   .cal-detail{margin-top:10px;border-top:1px solid var(--line);padding-top:10px;font-size:13.5px}
   .pick-h{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 5px}
   .pick-i{display:block;width:100%;text-align:left;padding:11px 13px;border:1px solid var(--line);border-radius:11px;background:var(--surface);margin-bottom:6px;font:inherit;font-size:14.5px;font-weight:600;color:var(--ink);cursor:pointer}
@@ -354,6 +354,54 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .qty-chips{display:flex;gap:6px;flex-wrap:wrap}
   .qty-chips button{flex:1;min-width:44px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:9px 4px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;font-variant-numeric:tabular-nums}
   .qty-chips button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .cal-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);font-weight:600}
+  .cal-legend:empty{display:none}
+  .cal-legend span{display:inline-flex;align-items:center;gap:5px}
+  .cal-legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+  /* Míry seznam (Tělo) */
+  .measure-list{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2px 16px}
+  .measure-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+  .measure-row:first-child{border-top:none}
+  .measure-row .mn{font-size:15px;font-weight:500}
+  .measure-row .mr{display:flex;align-items:center;gap:10px}
+  .measure-row .md{font-size:12px;font-weight:600}
+  .measure-row .md.good{color:var(--good-ink)} .measure-row .md.flat{color:var(--muted)}
+  .measure-row input{width:74px;text-align:center;background:var(--surface);border:1px solid transparent;border-radius:10px;padding:8px 4px;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
+  .measure-row input:focus{border-color:var(--accent)}
+  /* Makro stepper karta (Jídlo) */
+  .macro-steps{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:4px 16px}
+  .macro-steps .mrow{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-top:1px solid var(--line)}
+  .macro-steps .mrow:first-child{border-top:none}
+  .macro-steps .mrow .lb{font-size:15px;font-weight:600}
+  .macro-steps .mrow.p .lb{color:var(--good-ink)} .macro-steps .mrow.c .lb{color:var(--warn-ink)} .macro-steps .mrow.f .lb{color:var(--purple)}
+  .macro-steps .ctrl{display:flex;align-items:center;gap:14px}
+  .macro-steps .rb{width:28px;height:28px;border-radius:50%;background:var(--surface);color:var(--accent);font-size:17px;font-weight:700;border:none;cursor:pointer;display:grid;place-items:center;line-height:1;padding:0}
+  .macro-steps .rb:active{transform:scale(.92)}
+  .macro-steps input.mv{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;width:62px;text-align:center;border:none!important;background:transparent!important;box-shadow:none!important;padding:2px 0;color:var(--ink);border-radius:0}
+  .macro-steps input.mv:focus{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+  /* Míry pruhy (Progres) */
+  .mpos-row{display:flex;align-items:center;gap:12px;margin-top:12px}
+  .mpos-row .mp-n{width:64px;font-size:13px;color:var(--muted);font-weight:600}
+  .mpos-row .mp-track{flex:1;height:8px;background:var(--grid);border-radius:4px;overflow:hidden}
+  .mpos-row .mp-track>i{display:block;height:100%;border-radius:4px}
+  .mpos-row .mp-v{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;width:78px;text-align:right}
+  .mpos-row .mp-v small{font-size:11.5px;font-weight:700}
+  .link-btn{background:none;border:none;color:var(--accent);font:inherit;font-size:15px;font-weight:500;cursor:pointer;padding:0;flex:none}
+  .pausebar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 16px}
+  .pausebar .pb-t{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;min-width:48px;color:var(--ink)}
+  .pausebar .pb-p{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:11px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+  .pausebar .pb-p:active{transform:scale(.96)}
+  .pausebar .pb-p.danger{color:var(--bad);border-color:transparent}
+  .strength-pick{position:relative;display:inline-flex;align-items:center;flex:none}
+  .strength-pick select{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+  .strength-pick .chev{color:var(--accent);font-size:13px;font-weight:700;pointer-events:none;white-space:nowrap}
+  #strengthHead .big{font-size:30px;font-weight:800;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+  #strengthHead .chg{font-size:13px;font-weight:700}
+  .detbox{margin-bottom:14px}
+  .detbox>summary{list-style:none;cursor:pointer;color:var(--muted);font-size:13px;font-weight:600;padding:6px 0;display:flex;align-items:center;gap:6px}
+  .detbox>summary::-webkit-details-marker{display:none}
+  .detbox>summary::after{content:"›";margin-left:auto;font-size:16px;transition:transform .2s}
+  .detbox[open]>summary::after{transform:rotate(90deg)}
 </style>
 </head>
 <body>
@@ -374,6 +422,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
           <button id="calNext" type="button">›</button>
         </div>
         <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-legend" id="calLegend"></div>
         <div id="calDetail"></div>
       </div>
       <div class="card">
@@ -393,23 +442,22 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
 
     <!-- ============ TRÉNINK ============ -->
     <section id="tab-trenink">
-      <div class="page-title">Trénink</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding-right:46px">
+        <div class="page-title" style="padding-right:0">Nový trénink</div>
+        <button class="link-btn" id="tplToggle" type="button">Šablony</button>
+      </div>
       <div class="page-sub" id="treninkSub"></div>
-
-      <div class="card">
-        <h2>Pauza mezi sériemi</h2>
-        <div class="timer">
-          <div class="t" id="tDisp">0:00</div>
-          <button class="btn secondary small" data-timer="60">1:00</button>
-          <button class="btn secondary small" data-timer="90">1:30</button>
-          <button class="btn secondary small" data-timer="120">2:00</button>
-          <button class="btn secondary small" data-timer="180">3:00</button>
-          <button class="btn danger small" id="tStop" style="display:none">Stop</button>
-        </div>
+      <div class="pausebar">
+        <span class="pb-t" id="tDisp">0:00</span>
+        <span class="muted" style="font-size:12px;margin-right:2px">pauza</span>
+        <button class="pb-p" data-timer="60" type="button">1:00</button>
+        <button class="pb-p" data-timer="90" type="button">1:30</button>
+        <button class="pb-p" data-timer="120" type="button">2:00</button>
+        <button class="pb-p" data-timer="180" type="button">3:00</button>
+        <button class="pb-p danger" id="tStop" type="button" style="display:none">Stop</button>
       </div>
 
       <div class="card">
-        <h2>Nový trénink</h2>
         <div id="tplRow" style="display:none;margin-bottom:12px">
           <span class="flabel">Šablony</span>
           <div style="display:flex;gap:8px">
@@ -419,13 +467,16 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
           </div>
         </div>
         <form id="formSession">
-          <div class="row-3">
-            <label class="field"><span>Datum</span><input type="date" name="date" required></label>
-            <label class="field"><span>Typ</span>
-              <select name="type"><option>Síla</option><option>Objem</option><option>Vytrvalost</option><option>Kardio</option></select>
-            </label>
-            <label class="field"><span>Délka (min)</span><input type="number" name="dur" min="0" step="5" placeholder="auto"></label>
-          </div>
+          <details class="detbox">
+            <summary>Datum · typ · délka</summary>
+            <div class="row-3" style="margin-top:10px">
+              <label class="field"><span>Datum</span><input type="date" name="date" required></label>
+              <label class="field"><span>Typ</span>
+                <select name="type"><option>Síla</option><option>Objem</option><option>Vytrvalost</option><option>Kardio</option></select>
+              </label>
+              <label class="field"><span>Délka (min)</span><input type="number" name="dur" min="0" step="5" placeholder="auto"></label>
+            </div>
+          </details>
           <div style="margin-bottom:11px">
             <span class="flabel">Partie <span class="muted" style="font-weight:500">(klidně vyber víc)</span></span>
             <div class="chips" id="muscleChips">
@@ -469,7 +520,12 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="page-sub" id="teloSub"></div>
       <div class="card hero" id="weighHero"></div>
       <div class="card">
-        <h2>Nový záznam <span class="hint">míry + váha + pocit</span></h2>
+        <h2>Míry · cm <span class="hint">dnešní měření</span></h2>
+        <div class="measure-list" id="measureList"></div>
+        <button class="btn" id="saveMeasuresBtn" type="button" style="margin-top:12px">Uložit měření</button>
+      </div>
+      <div class="card">
+        <h2>Detailní / zpětný záznam <span class="hint">váha + míry + pocit k datu</span></h2>
         <form id="formBody">
           <div class="row">
             <label class="field"><span>Datum</span><input type="date" name="date" required></label>
@@ -535,6 +591,41 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="card hero" id="calHero" style="display:none"></div>
 
       <div class="card">
+        <h2>Přidat jídlo</h2>
+        <button class="btn secondary" id="foodPickBtn" type="button" style="margin-bottom:12px">Vybrat z databáze / historie</button>
+        <div id="recentFoods" class="recent-row"></div>
+        <form id="formFood">
+          <label class="field"><span>Jídlo</span><input type="text" name="name" placeholder="např. Kuřecí prsa 150 g s rýží" required></label>
+          <div class="macro-steps">
+            <div class="mrow"><span class="lb">Kalorie</span><div class="ctrl"><button class="rb" type="button" data-d="-10">−</button><input class="mv" name="kcal" type="number" min="0" inputmode="numeric" placeholder="0" required><button class="rb" type="button" data-d="10">＋</button></div></div>
+            <div class="mrow p"><span class="lb">Bílkoviny</span><div class="ctrl"><button class="rb" type="button" data-d="-1">−</button><input class="mv" name="protein" type="number" min="0" step="0.1" inputmode="decimal" placeholder="0"><button class="rb" type="button" data-d="1">＋</button></div></div>
+            <div class="mrow c"><span class="lb">Sacharidy</span><div class="ctrl"><button class="rb" type="button" data-d="-1">−</button><input class="mv" name="carbs" type="number" min="0" step="0.1" inputmode="decimal" placeholder="0"><button class="rb" type="button" data-d="1">＋</button></div></div>
+            <div class="mrow f"><span class="lb">Tuky</span><div class="ctrl"><button class="rb" type="button" data-d="-1">−</button><input class="mv" name="fat" type="number" min="0" step="0.1" inputmode="decimal" placeholder="0"><button class="rb" type="button" data-d="1">＋</button></div></div>
+          </div>
+          <div class="setrow" style="align-items:center">
+            <span class="lb" style="font-size:15px;font-weight:600">Porce <span class="muted" style="font-weight:500;font-size:12.5px">jde i méně než 1</span></span>
+            <div class="qty-chips" id="qtyChips" style="flex:none">
+              <button type="button" data-q="0.25">¼</button>
+              <button type="button" data-q="0.3333">⅓</button>
+              <button type="button" data-q="0.5">½</button>
+              <button type="button" data-q="1" class="on">1</button>
+              <button type="button" data-q="1.5">1½</button>
+              <button type="button" data-q="2">2</button>
+            </div>
+          </div>
+          <input type="hidden" name="qty" value="1">
+          <button class="btn" type="submit" id="addFoodBtn" style="margin-top:12px">Přidat jídlo</button>
+          <button class="btn secondary" type="button" id="toBatchBtn" style="margin-top:9px">Do dávky ↓</button>
+        </form>
+        <div id="calorieSummary" style="margin-top:14px"></div>
+      </div>
+
+      <div class="card">
+        <h2>Dnešní deník <span class="hint" id="foodDate"></span></h2>
+        <div id="foodList"></div>
+      </div>
+
+      <div class="card">
         <h2>Kroky dnes <span class="hint" id="stepsGoalHint"></span></h2>
         <div style="display:flex;gap:8px;align-items:flex-end">
           <label class="field" style="flex:1;margin:0"><span>Počet kroků</span><input type="number" id="stepsInput" min="0" step="100" placeholder="např. 8500"></label>
@@ -546,40 +637,6 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="card">
         <h2>Přidat jídlo fotkou <span class="hint">AI odhad — experimentální</span></h2>
         <div id="aiBox"></div>
-      </div>
-
-      <div class="card">
-        <h2>Deník jídla — dnes <span class="hint" id="foodDate"></span></h2>
-        <button class="btn secondary" id="foodPickBtn" type="button" style="margin-bottom:12px">Vybrat z databáze / historie</button>
-        <div id="recentFoods" class="recent-row"></div>
-        <form id="formFood">
-          <label class="field"><span>Jídlo</span><input type="text" name="name" placeholder="např. Kuřecí prsa 150 g s rýží" required></label>
-          <div class="row">
-            <label class="field"><span>kcal</span><div class="stepper"><button type="button" data-d="-10">−</button><input type="number" name="kcal" min="0" inputmode="numeric" required><button type="button" data-d="10">＋</button></div></label>
-            <label class="field"><span>Bílkoviny (g)</span><div class="stepper"><button type="button" data-d="-1">−</button><input type="number" name="protein" min="0" step="0.1" inputmode="decimal"><button type="button" data-d="1">＋</button></div></label>
-          </div>
-          <div class="row">
-            <label class="field"><span>Sacharidy (g)</span><div class="stepper"><button type="button" data-d="-1">−</button><input type="number" name="carbs" min="0" step="0.1" inputmode="decimal"><button type="button" data-d="1">＋</button></div></label>
-            <label class="field"><span>Tuky (g)</span><div class="stepper"><button type="button" data-d="-1">−</button><input type="number" name="fat" min="0" step="0.1" inputmode="decimal"><button type="button" data-d="1">＋</button></div></label>
-          </div>
-          <label class="field"><span>Množství — porce / kusů <span class="muted" style="font-weight:500">(vynásobí hodnoty výše, jde i méně než 1)</span></span>
-            <div class="qty-chips" id="qtyChips">
-              <button type="button" data-q="0.25">¼</button>
-              <button type="button" data-q="0.3333">⅓</button>
-              <button type="button" data-q="0.5">½</button>
-              <button type="button" data-q="1" class="on">1</button>
-              <button type="button" data-q="1.5">1½</button>
-              <button type="button" data-q="2">2</button>
-            </div>
-            <div class="stepper" style="max-width:180px;margin-top:8px"><button type="button" data-d="-0.25">−</button><input type="number" name="qty" min="0" step="0.25" value="1" inputmode="decimal"><button type="button" data-d="0.25">＋</button></div>
-          </label>
-          <div class="btn-row">
-            <button class="btn" type="submit" style="flex:2">＋ Přidat jídlo</button>
-            <button class="btn secondary" type="button" id="toBatchBtn" style="flex:1">Do dávky ↓</button>
-          </div>
-        </form>
-        <div id="calorieSummary" style="margin-top:14px"></div>
-        <div id="foodList"></div>
       </div>
 
       <div class="card">
@@ -615,10 +672,13 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
 
       <div class="group-label">Síla & výkon</div>
       <div class="card">
-        <h2>Síla v čase <span class="hint">nejtěžší série + odhad 1RM</span></h2>
-        <label class="field"><span>Cvik</span><select id="exSelect"></select></label>
-        <div class="chart-wrap"><canvas id="chStrength"></canvas></div>
-        <div class="cmp3" id="strengthCmp"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <h2 style="margin:0" id="strengthTitle">Síla</h2>
+          <div class="strength-pick"><select id="exSelect"></select><span class="chev">změnit ▾</span></div>
+        </div>
+        <div id="strengthHead" style="margin:8px 0 2px"></div>
+        <div class="chart-wrap sm"><canvas id="chStrength"></canvas></div>
+        <div class="cmp3" id="strengthCmp" style="margin-top:12px"></div>
       </div>
 
       <div class="card">
@@ -639,19 +699,8 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
 
       <div class="group-label">Míry & pocity</div>
       <div class="card">
-        <h2>Míry těla v čase</h2>
-        <label class="field"><span>Míra</span>
-          <select id="measureSelect">
-            <option value="weight">Váha (kg)</option>
-            <option value="waist" selected>Pas (cm)</option>
-            <option value="biceps">Biceps (cm)</option>
-            <option value="chest">Hrudník (cm)</option>
-            <option value="hips">Boky (cm)</option>
-            <option value="thigh">Stehno (cm)</option>
-            <option value="calf">Lýtko (cm)</option>
-          </select>
-        </label>
-        <div class="chart-wrap sm"><canvas id="chMeasure"></canvas></div>
+        <h2>Míry těla · 90 dní</h2>
+        <div id="measurePos"></div>
       </div>
 
       <div class="card">
@@ -972,6 +1021,8 @@ const CZMF=["leden","únor","březen","duben","květen","červen","červenec","s
 const CZMG=["ledna","února","března","dubna","května","června","července","srpna","září","října","listopadu","prosince"];
 const CZDOW=["neděle","pondělí","úterý","středa","čtvrtek","pátek","sobota"];
 function czLongDate(dt){const d=dt||new Date();return CZDOW[d.getDay()]+" "+d.getDate()+". "+CZMG[d.getMonth()]}
+const MUSCLE_COLOR={"Nohy":"#0a84ff","Záda":"#30d158","Hrudník":"#ff9f0a","Triceps":"#bf5af2","Biceps":"#64d2ff","Ramena":"#ff375f","Břicho":"#ffcc00","Celé tělo":"#8e8e93","Kardio":"#5ac8fa","Jiné":"#8e8e93"};
+function muscleColor(m){return MUSCLE_COLOR[m]||"#8e8e93"}
 function movingAvg(vals,n){return vals.map((v,i)=>{const a=vals.slice(Math.max(0,i-n+1),i+1).filter(x=>x!=null);
   return a.length?+(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):null})}
 
@@ -1179,8 +1230,6 @@ function renderDashboard(){
     {lbl:`Tréninky · 7 dní`,val:`${wkDays}<small> ${wkDays===1?"den":wkDays>=2&&wkDays<=4?"dny":"dní"}</small>`,extra:wkVol?`<div class="delta flat">${nbsp(wkVol)} kg objem</div>`:`<div class="delta flat">zatím nic</div>`},
     {lbl:"Kalorie dnes",val:`${nbsp(kcalT)}`,extra:tgt?`<div class="mini-bar"><i style="width:${kcalPct}%"></i></div><div class="delta flat" style="margin-top:6px">z cíle ${nbsp(tgt)} kcal</div>`:`<div class="delta flat">nastav cíl v Jídlo</div>`},
     {lbl:"Bílkoviny dnes",val:`${Math.round(protT)}<small> g</small>`,extra:state.profile.targetProtein?`<div class="mini-bar"><i class="g" style="width:${protPct}%"></i></div><div class="delta flat" style="margin-top:6px">cíl ${state.profile.targetProtein} g</div>`:`<div class="delta flat">nastav cíl bílkovin</div>`},
-    {lbl:"Kroky dnes",val:stepsT?nbsp(stepsT):"–",extra:state.profile.stepGoal?`<div class="delta ${stepsT>=state.profile.stepGoal?"up":"flat"}">cíl ${nbsp(state.profile.stepGoal)}</div>`:""},
-    {lbl:"Fotky progresu",val:`${photos.length}`,extra:photos.length?`<div class="delta flat">poslední ${fmtDate(photos[photos.length-1].date)}</div>`:`<div class="delta flat">přidej v sekci Tělo</div>`},
   ];
   $("#statTiles").innerHTML=tiles.map(t=>`<div class="tile"><div class="lbl">${t.lbl}</div><div class="val">${t.val}</div>${t.extra||""}</div>`).join("");
   $("#weightHint").textContent=body.length?`${body.length} záznamů`:"";
@@ -1208,11 +1257,20 @@ function renderCalendar(){
   const dim=new Date(calYM.y,calYM.m+1,0).getDate();
   let html=["Po","Út","St","Čt","Pá","So","Ne"].map(d=>`<div class="cal-dow">${d}</div>`).join("");
   for(let i=0;i<off;i++)html+=`<div></div>`;
+  const monthMuscles=new Set();
   for(let d=1;d<=dim;d++){
     const iso=calYM.y+"-"+String(calYM.m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
-    const cls=["cal-d",bySess[iso]?"has":"",iso===todayISO()?"today":"",iso===calSel?"sel":""].filter(Boolean).join(" ");
-    html+=`<div class="${cls}" data-cal="${iso}" title="${bySess[iso]?bySess[iso].map(s=>s.muscles.join("+")).join(", "):""}">${d}${byBody.has(iso)?'<span class="bd"></span>':""}</div>`}
+    const ss=bySess[iso];
+    const cls=["cal-d",ss?"has":"",iso===todayISO()?"today":"",iso===calSel?"sel":""].filter(Boolean).join(" ");
+    let style="";
+    if(ss){const prim=(ss[0].muscles&&ss[0].muscles[0])||"Jiné";style=`background:${muscleColor(prim)};color:#000`;
+      ss.forEach(s=>s.muscles.forEach(m=>monthMuscles.add(m)));}
+    html+=`<div class="${cls}" data-cal="${iso}" style="${style}" title="${ss?ss.map(s=>s.muscles.join("+")).join(", "):""}">${d}${byBody.has(iso)?'<span class="bd"></span>':""}</div>`}
   $("#calGrid").innerHTML=html;
+  const leg=$("#calLegend");
+  if(leg){const order=["Nohy","Záda","Hrudník","Triceps","Biceps","Ramena","Břicho","Celé tělo","Kardio","Jiné"];
+    const ms=order.filter(m=>monthMuscles.has(m));
+    leg.innerHTML=ms.length?ms.map(m=>`<span><i style="background:${muscleColor(m)}"></i>${esc(m)}</span>`).join(""):"";}
   $$("#calGrid [data-cal]").forEach(el=>el.onclick=()=>{
     calSel=calSel===el.dataset.cal?null:el.dataset.cal;renderCalendar()});
   const det=$("#calDetail");
@@ -1349,7 +1407,7 @@ function updateExSum(r){const unit=r.dataset.unit;const el=r.querySelector(".sum
   else if(unit==="reps"){el.textContent=lbl+" · "+sets.reduce((a,st)=>a+st.r,0)+" opak.";}
   else{el.textContent=lbl+" · "+fmtSec(sets.reduce((a,st)=>a+st.sec,0));}}
 /* Globální stepper +/− pro všechna číselná pole ve .stepper */
-document.addEventListener("click",e=>{const b=e.target.closest(".stepper button[data-d]");if(!b)return;
+document.addEventListener("click",e=>{const b=e.target.closest(".stepper button[data-d], .ctrl button[data-d]");if(!b)return;
   const inp=b.parentElement.querySelector("input");if(!inp)return;const step=+b.dataset.d;
   const min=inp.min!==""?+inp.min:0;
   inp.value=Math.max(min,Math.round(((+inp.value||0)+step)*1000)/1000);
@@ -1447,9 +1505,12 @@ function renderSessions(){
     fillSessionForm(s);window.scrollTo({top:0,behavior:"smooth"});toast("Předvyplněno podle "+fmtDate(s.date))});
 }
 function renderTplRow(){const row=$("#tplRow"),sel=$("#tplSelect");
-  if(!state.templates.length){row.style.display="none";return}
-  row.style.display="";
-  sel.innerHTML=state.templates.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join("")}
+  sel.innerHTML=state.templates.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join("");
+  const tt=$("#tplToggle");if(tt)tt.style.display=state.templates.length?"":"none";
+  if(!state.templates.length)row.style.display="none"}
+$("#tplToggle").addEventListener("click",()=>{const row=$("#tplRow");
+  if(!state.templates.length){toast("Zatím žádné šablony — ulož trénink jako šablonu");return}
+  row.style.display=row.style.display==="none"?"":"none"});
 $("#tplUse").addEventListener("click",()=>{
   const t=state.templates.find(x=>x.id===$("#tplSelect").value);if(!t)return;
   fillSessionForm(t);toast("Šablona načtena: "+t.name)});
@@ -1512,8 +1573,27 @@ function renderWeighHero(){
     if(ex)ex.weight=w;else state.body.push({id:uid(),date:t,weight:w,biceps:null,chest:null,waist:null,hips:null,thigh:null,calf:null,feeling:3,notes:""});
     weighDraft=null;save();renderBody();toast("Váha uložena: "+String(w).replace(".",",")+" kg")};
 }
+const MEASURES=[["waist","Pas","down"],["biceps","Biceps","up"],["chest","Hrudník","up"],["hips","Boky","down"],["thigh","Stehno","up"],["calf","Lýtko","up"]];
+function todayBody(){let r=state.body.find(b=>b.date===todayISO());
+  if(!r){r={id:uid(),date:todayISO(),weight:null,biceps:null,chest:null,waist:null,hips:null,thigh:null,calf:null,feeling:3,notes:""};state.body.push(r)}
+  return r}
+function renderMeasureList(){const el=$("#measureList");if(!el)return;
+  const sorted=[...state.body].sort((a,b)=>a.date.localeCompare(b.date));
+  el.innerHTML=MEASURES.map(([k,label,dir])=>{
+    const vals=sorted.filter(b=>b[k]!=null);
+    const cur=vals.length?vals[vals.length-1][k]:null;
+    const prev=vals.length>1?vals[vals.length-2][k]:null;
+    let dHtml="";
+    if(cur!=null&&prev!=null){const d=+(cur-prev).toFixed(1);const good=dir==="down"?d<0:d>0;
+      dHtml=`<span class="md ${d===0?"flat":good?"good":"flat"}">${d>0?"+":""}${fmtNum(d)}</span>`}
+    return `<div class="measure-row"><span class="mn">${label}</span><div class="mr">${dHtml}<input type="number" step="0.1" min="0" data-mk="${k}" value="${cur!=null?cur:""}" inputmode="decimal" placeholder="–"></div></div>`;
+  }).join("")}
+$("#saveMeasuresBtn").addEventListener("click",()=>{const r=todayBody();
+  $$("#measureList input[data-mk]").forEach(inp=>{r[inp.dataset.mk]=inp.value!==""?+inp.value:null});
+  save();renderBody();toast("Měření uloženo")});
 function renderBody(){
   renderWeighHero();
+  renderMeasureList();
   const rows0=[...state.body].sort((a,b)=>b.date.localeCompare(a.date));
   const ts=$("#teloSub");if(ts)ts.textContent=czLongDate()+(rows0[0]?" · poslední měření "+fmtDate(rows0[0].date):"");
   const list=$("#bodyList");
@@ -1784,7 +1864,11 @@ function renderAiBox(){
 /* Nastavení množství (porce/kusy) ve formuláři + zvýraznění zlomkových chipů */
 function setQty(v){const inp=$("#formFood [name=qty]");if(!inp)return;
   inp.value=(Math.round(v*10000)/10000);
-  $$("#qtyChips button").forEach(b=>b.classList.toggle("on",Math.abs((+b.dataset.q)-v)<0.01))}
+  $$("#qtyChips button").forEach(b=>b.classList.toggle("on",Math.abs((+b.dataset.q)-v)<0.01));
+  updateAddBtn()}
+function updateAddBtn(){const btn=$("#addFoodBtn");if(!btn)return;const f=$("#formFood");
+  const kcal=+f.kcal.value||0;const q=Math.max(0.01,+f.qty.value||1);const tot=Math.round(kcal*q);
+  btn.textContent=tot>0?("Přidat · "+nbsp(tot)+" kcal"):"Přidat jídlo"}
 function prefillFood(name,kcal,p,c,f,count){const F=$("#formFood");
   const n=(count&&count>1)?count:1;
   F.name.value=name||"";F.kcal.value=Math.round((kcal||0)/n);
@@ -2002,15 +2086,9 @@ function renderCalories(){
       +(tgt?`<div class="bar" style="margin:15px 0 0"><i class="${kcal>tgt?"over":""}" style="width:${Math.min(100,kcal/tgt*100)}%"></i></div><div class="small muted" style="margin-top:7px">${kcal>tgt?"Přes cíl o "+nbsp(kcal-tgt)+" kcal":"Zbývá "+nbsp(tgt-kcal)+" kcal do cíle"}${extras.length?` <span class="muted">(cíl ${nbsp(p.targetKcal)} + ${extras.join(" + ")})</span>`:""}</div>`
         :`<div class="small muted" style="margin-top:12px">Nastav si denní cíl v kalkulačce níže a v prstenci uvidíš plnění.</div>`);
   }
-  // Kompaktní souhrn u formuláře
-  let sum=`<div class="small"><b>${nbsp(kcal)}</b> kcal`+(tgt?` z ${nbsp(tgt)}${extras.length?` <span class="muted">(cíl ${nbsp(p.targetKcal)} + ${extras.join(" + ")})</span>`:""}`:"")+`</div>`;
-  if(tgt){sum+=`<div class="bar"><i class="${kcal>tgt?"over":""}" style="width:${Math.min(100,kcal/tgt*100)}%"></i></div><div class="small muted">${kcal>tgt?"Přes cíl o "+nbsp(kcal-tgt)+" kcal":"Zbývá "+nbsp(tgt-kcal)+" kcal"}</div>`}
-  else{sum+=`<div class="small muted" style="margin-top:6px">Tip: nastav si výše denní cíl a uvidíš tu ukazatel.</div>`}
-  sum+=`<div class="macro">
-    <div class="m"><div class="n">${Math.round(prot)} g</div><div class="l">Bílkoviny${tp?` / ${tp} g`:""}</div></div>
-    <div class="m"><div class="n">${Math.round(carb)} g</div><div class="l">Sacharidy</div></div>
-    <div class="m"><div class="n">${Math.round(fat)} g</div><div class="l">Tuky</div></div></div>`;
-  $("#calorieSummary").innerHTML=sum;
+  // Kompaktní souhrn u formuláře (jen zbývající kalorie; makra a prstenec jsou v hero nahoře)
+  const sumEl=$("#calorieSummary");
+  if(sumEl)sumEl.innerHTML=tgt?`<div class="small muted">${kcal>tgt?"Přes cíl o "+nbsp(kcal-tgt)+" kcal":"Zbývá "+nbsp(tgt-kcal)+" kcal do cíle"}</div>`:"";
   const list=$("#foodList");
   if(!today.length){list.innerHTML=`<div class="empty" style="padding:18px"><div class="big">${EMPTY_SVG}</div>Dnes zatím nic. Přidej první jídlo.</div>`;return}
   list.innerHTML=today.map(x=>{
@@ -2032,8 +2110,7 @@ $("#formFood").addEventListener("submit",e=>{
   renderCalories();toast("Jídlo přidáno")});
 /* zlomkové chipy množství + tlačítko Do dávky */
 $$("#qtyChips button").forEach(b=>b.addEventListener("click",()=>setQty(+b.dataset.q)));
-$("#formFood [name=qty]").addEventListener("input",()=>{const v=+$("#formFood [name=qty]").value||0;
-  $$("#qtyChips button").forEach(b=>b.classList.toggle("on",Math.abs((+b.dataset.q)-v)<0.01))});
+$("#formFood [name=kcal]").addEventListener("input",updateAddBtn);
 $("#toBatchBtn").addEventListener("click",()=>{const f=$("#formFood");
   const q=Math.max(0.01,+f.qty.value||1);
   if(!f.name.value.trim()||f.kcal.value===""){toast("Vyplň aspoň název a kcal");return}
@@ -2074,16 +2151,25 @@ function chartStrength(){
   const sel=$("#exSelect");const opts=exOptions();
   const prev=sel.value;
   sel.innerHTML=opts.map(o=>`<option${o===prev?" selected":""}>${esc(o)}</option>`).join("");
-  if(!opts.length){$("#strengthCmp").innerHTML="";return emptyCanvas("chStrength","Zatím žádné cviky s hodnotou.<br>Zapisuj kg / opakování / čas.")}
+  const hd=$("#strengthHead"),ti=$("#strengthTitle");
+  if(!opts.length){$("#strengthCmp").innerHTML="";if(hd)hd.innerHTML="";if(ti)ti.textContent="Síla";return emptyCanvas("chStrength","Zatím žádné cviky s hodnotou.<br>Zapisuj kg / opakování / čas.")}
   const name=sel.value||opts[0];
   const dm=dailyMax(name);const u=dm.unit;const all=dm.rows;const ul=exMetricLabel(u);
+  if(ti)ti.textContent="Síla — "+name;
   const cut=periodCut();const pts=all.filter(p=>p.date>=cut);
-  if(!pts.length){$("#strengthCmp").innerHTML="";return emptyCanvas("chStrength","V tomto období nejsou záznamy cviku.")}
+  if(!pts.length){$("#strengthCmp").innerHTML="";if(hd)hd.innerHTML="";return emptyCanvas("chStrength","V tomto období nejsou záznamy cviku.")}
   showCanvas("chStrength");destroy("chStrength");const c=C();
+  const lastPt=all[all.length-1];const curV=lastPt?lastPt.m:0;
+  const refM=(()=>{const lim=isoNdaysAgo(30);let r=null;for(const p of all){if(p.date<=lim)r=p;else break}return r})();
+  let chgHtml="";
+  if(refM&&refM.m){const d=+(curV-refM.m).toFixed(1);chgHtml=`<span class="chg" style="color:${d>=0?'var(--good-ink)':'var(--warn-ink)'}">${d>0?'+':''}${fmtNum(d)} ${ul} za měsíc</span>`}
+  if(hd)hd.innerHTML=`<span class="big">${fmtNum(curV)} ${ul}</span> ${chgHtml}`;
   const o=baseOpts();o.plugins.legend={display:u==="kg",position:"bottom",labels:{color:c.ink2,boxWidth:10,boxHeight:10,usePointStyle:true,font:{size:12}}};
   o.plugins.tooltip.callbacks={label:x=>x.dataset.label+": "+x.raw+" "+ul};
-  const ds=[{label:u==="kg"?"Nejtěžší série":u==="time"?"Nejdelší výdrž":"Nejvíc opakování",data:pts.map(p=>p.m),borderColor:c.s1,backgroundColor:"transparent",borderWidth:2,tension:.25,pointRadius:3,pointBackgroundColor:c.s1}];
-  if(u==="kg")ds.push({label:"Odhad 1RM",data:pts.map(p=>p.e),borderColor:c.s6,backgroundColor:"transparent",borderWidth:2,borderDash:[6,4],tension:.25,pointRadius:0});
+  const gradFill=(context)=>{const ch=context.chart,ca=ch.chartArea;if(!ca)return c.accent+"22";
+    const g=ch.ctx.createLinearGradient(0,ca.top,0,ca.bottom);g.addColorStop(0,c.accent+"55");g.addColorStop(1,c.accent+"00");return g};
+  const ds=[{label:u==="kg"?"Nejtěžší série":u==="time"?"Nejdelší výdrž":"Nejvíc opakování",data:pts.map(p=>p.m),borderColor:c.accent,backgroundColor:gradFill,fill:true,borderWidth:2.5,tension:.3,pointRadius:pts.length>16?0:3,pointBackgroundColor:c.accent}];
+  if(u==="kg")ds.push({label:"Odhad 1RM",data:pts.map(p=>p.e),borderColor:c.muted,backgroundColor:"transparent",fill:false,borderWidth:1.5,borderDash:[6,4],tension:.3,pointRadius:0});
   charts.chStrength=new Chart($("#chStrength"),{type:"line",data:{labels:pts.map(p=>fmtDate(p.date)),datasets:ds},options:o});
   const last=all[all.length-1];
   const refBefore=n=>{const lim=isoNdaysAgo(n);let r=null;
@@ -2178,14 +2264,24 @@ function renderHeatmap(){
   $("#heatInfo").textContent=`Odtrénováno ${trained} z ${total} dní (${Math.round(trained/Math.max(1,total)*100)} %). Tmavší = víc cviků.`;
   el.scrollLeft=el.scrollWidth;
 }
-function chartMeasure(){
-  const key=$("#measureSelect").value;const cut=periodCut();
-  const rows=state.body.filter(r=>r[key]!=null&&r.date>=cut).sort((a,b)=>a.date.localeCompare(b.date));
-  if(!rows.length)return emptyCanvas("chMeasure","Žádná data pro tuto míru v období.");
-  showCanvas("chMeasure");destroy("chMeasure");const c=C();
-  charts.chMeasure=new Chart($("#chMeasure"),{type:"line",
-    data:{labels:rows.map(r=>fmtDate(r.date)),datasets:[{data:rows.map(r=>r[key]),borderColor:c.s1,backgroundColor:"transparent",borderWidth:2,tension:.3,pointRadius:rows.length>25?0:3,pointBackgroundColor:c.s1}]},
-    options:baseOpts()});
+function renderMeasurePos(){const el=$("#measurePos");if(!el)return;
+  const cut=isoNdaysAgo(90);
+  const rows=MEASURES.map(([k,label,dir])=>{
+    const vals=state.body.filter(b=>b[k]!=null).sort((a,b)=>a.date.localeCompare(b.date));
+    if(!vals.length)return null;
+    const cur=vals[vals.length-1][k];
+    const start=(vals.filter(b=>b.date>=cut)[0]||vals[0])[k];
+    const d=+(cur-start).toFixed(1);const good=dir==="down"?d<0:d>0;
+    return {label,cur,d,good,mag:Math.abs(d)};
+  }).filter(Boolean);
+  if(!rows.length){el.innerHTML=`<div class="empty" style="padding:10px">Zatím málo měření. Zapisuj míry v sekci <b>Tělo</b>.</div>`;return}
+  const maxMag=Math.max(...rows.map(r=>r.mag),0.1);
+  el.innerHTML=rows.map(r=>{
+    const pct=r.mag>0?Math.max(10,Math.round(r.mag/maxMag*100)):4;
+    const col=r.d===0?"var(--muted)":r.good?"var(--good)":"var(--warn)";
+    const dcol=r.d===0?"var(--muted)":r.good?"var(--good-ink)":"var(--warn-ink)";
+    return `<div class="mpos-row"><span class="mp-n">${r.label}</span><div class="mp-track"><i style="width:${pct}%;background:${col}"></i></div><span class="mp-v">${fmtNum(r.cur)} <small style="color:${dcol}">${r.d>0?"+":""}${fmtNum(r.d)}</small></span></div>`;
+  }).join("")+`<div class="small muted" style="margin-top:12px">pruh = velikost změny za 90 dní (delší = větší posun)</div>`;
 }
 function chartFeel(){
   const cut=periodCut();
@@ -2236,7 +2332,7 @@ function renderBodyTable(){
 function renderData(){
   renderProgressRings();
   chartWeightBig();chartStrength();renderPrTable();chartVolume();renderHeatmap();
-  chartMeasure();chartFeel();chartCalBig();chartSteps();renderBodyTable();
+  renderMeasurePos();chartFeel();chartCalBig();chartSteps();renderBodyTable();
   const s=state;
   const totalVol=s.sessions.reduce((a,x)=>a+sessionVolKg(x),0);
   const exTotal=s.sessions.reduce((a,x)=>a+x.exercises.length,0);
@@ -2252,7 +2348,6 @@ function renderData(){
 }
 $("#periodInput").addEventListener("change",renderData);
 $("#exSelect").addEventListener("change",chartStrength);
-$("#measureSelect").addEventListener("change",chartMeasure);
 
 /* ================== EXPORT / IMPORT / DEMO ================== */
 function download(name,text,mime){const blob=new Blob([text],{type:mime});
