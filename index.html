@@ -1357,15 +1357,20 @@ async function aiAnalyzeFood(imgs,desc){
   return aiJson(await aiCall(content,500));
 }
 async function barcodeLookup(code){
-  let r;try{r=await fetch("https://world.openfoodfacts.org/api/v2/product/"+encodeURIComponent(code)+"?fields=product_name,product_name_cs,brands,nutriments")}
+  let r;try{r=await fetch("https://world.openfoodfacts.org/api/v2/product/"+encodeURIComponent(code)+"?fields=product_name,product_name_cs,brands,nutriments,quantity,product_quantity")}
   catch(e){throw new Error("Nepodařilo se spojit s Open Food Facts (funguje jen na webu).")}
   if(!r.ok)throw new Error("Produkt nenalezen ("+r.status+").");
   const j=await r.json();if(j.status!==1&&!j.product)throw new Error("Produkt v databázi není.");
   const p=j.product||{},nu=p.nutriments||{};
   let kcal=nu["energy-kcal_100g"];if(kcal==null&&nu["energy_100g"]!=null)kcal=Math.round(nu["energy_100g"]/4.184);
   if(kcal==null)throw new Error("Produkt nemá energetické údaje.");
+  let grams=null;
+  if(p.product_quantity&&+p.product_quantity>0)grams=Math.round(+p.product_quantity);
+  else if(p.quantity){const m=String(p.quantity).match(/([\d.,]+)\s*g/i);if(m)grams=Math.round(parseFloat(m[1].replace(",",".")))}
+  if(grams&&(grams<1||grams>3000))grams=null;
   return {n:(p.product_name_cs||p.product_name||"Produkt")+(p.brands?" ("+p.brands.split(",")[0]+")":""),
-    per100:{kcal:Math.round(kcal),p:Math.round((+nu.proteins_100g||0)*10)/10,c:Math.round((+nu.carbohydrates_100g||0)*10)/10,f:Math.round((+nu.fat_100g||0)*10)/10}};
+    per100:{kcal:Math.round(kcal),p:Math.round((+nu.proteins_100g||0)*10)/10,c:Math.round((+nu.carbohydrates_100g||0)*10)/10,f:Math.round((+nu.fat_100g||0)*10)/10},
+    grams,src:"Open Food Facts"};
 }
 /* ---- Skener čárového kódu (ZXing / html5-qrcode) ---- */
 let scanner=null,scanBusy=false;
@@ -1485,22 +1490,33 @@ function renderFoodPickList(){
   $$("#foodPickList [data-custom]").forEach(b=>b.onclick=()=>{const f=custom[+b.dataset.custom];openPortion({n:f.n,per100:{kcal:f.kcal,p:f.p,c:f.c,f:f.f}})});
   $$("#foodPickList [data-db]").forEach(b=>b.onclick=()=>{const f=db[+b.dataset.db];openPortion({n:f[0],per100:{kcal:f[1],p:f[2],c:f[3],f:f[4]}})});
 }
-function openPortion(food){curPortion={food,grams:100};$("#foodPickBg").classList.add("show");renderPortion();
-  $("#portionPanel").scrollIntoView({block:"nearest"})}
+function openPortion(food){
+  curPortion={food:{n:food.n,per100:{kcal:+food.per100.kcal||0,p:+food.per100.p||0,c:+food.per100.c||0,f:+food.per100.f||0}},grams:food.grams||100,src:food.src||""};
+  $("#foodPickBg").classList.add("show");renderPortion();$("#portionPanel").scrollIntoView({block:"nearest"})}
 function renderPortion(){const pp=$("#portionPanel");
   if(!curPortion){pp.innerHTML="";return}
-  const{food,grams}=curPortion;const f=food.per100;const k=x=>Math.round((+x||0)*grams/100);
-  pp.innerHTML=`<div class="portion"><div style="font-weight:700;margin-bottom:8px">${esc(food.n)}</div>
-    <label class="mini-f"><span>Gramáž (g)</span><div class="stepper"><button type="button" data-pg="-10">−</button><input type="number" id="portionG" min="0" step="10" value="${grams}" inputmode="numeric"><button type="button" data-pg="10">＋</button></div></label>
-    <div class="macro" style="margin-top:8px">
-      <div class="m"><div class="n">${k(f.kcal)}</div><div class="l">kcal</div></div>
-      <div class="m"><div class="n">${k(f.p)} g</div><div class="l">Bílk.</div></div>
-      <div class="m"><div class="n">${k(f.c)} g</div><div class="l">Sach.</div></div></div>
-    <button class="btn" id="portionAdd" type="button" style="margin-top:10px">＋ Přidat ${k(f.kcal)} kcal do deníku</button></div>`;
-  $("#portionG").addEventListener("input",()=>{curPortion.grams=+$("#portionG").value||0;renderPortion()});
-  pp.querySelectorAll("[data-pg]").forEach(b=>b.onclick=()=>{curPortion.grams=Math.max(0,(+$("#portionG").value||0)+(+b.dataset.pg));renderPortion()});
-  $("#portionAdd").onclick=()=>{const g=curPortion.grams;
-    addFood({name:food.n+" "+g+" g",kcal:k(f.kcal),protein:k(f.p),carbs:k(f.c),fat:k(f.f)});
+  const f=curPortion.food.per100;
+  pp.innerHTML=`<div class="portion"><div style="font-weight:700;margin-bottom:8px">${esc(curPortion.food.n)}</div>
+    <label class="mini-f"><span>Gramáž (g)${curPortion.src?' · balení předvyplněno':''}</span><div class="stepper"><button type="button" data-pg="-10">−</button><input type="number" id="portionG" min="0" step="10" value="${curPortion.grams}" inputmode="numeric"><button type="button" data-pg="10">＋</button></div></label>
+    <div class="small muted" style="margin:9px 0 4px">Hodnoty na 100 g${curPortion.src?" ("+esc(curPortion.src)+" — uprav, pokud nesedí s obalem)":" (uprav dle potřeby)"}:</div>
+    <div class="row-4">
+      <label class="field"><span>kcal</span><input type="number" class="p100" data-k="kcal" min="0" value="${f.kcal}"></label>
+      <label class="field"><span>Bílk.</span><input type="number" class="p100" data-k="p" min="0" step="0.1" value="${f.p}"></label>
+      <label class="field"><span>Sach.</span><input type="number" class="p100" data-k="c" min="0" step="0.1" value="${f.c}"></label>
+      <label class="field"><span>Tuky</span><input type="number" class="p100" data-k="f" min="0" step="0.1" value="${f.f}"></label>
+    </div>
+    <div class="macro" id="portionTotals" style="margin-top:8px"></div>
+    <button class="btn" id="portionAdd" type="button" style="margin-top:10px"></button></div>`;
+  const recompute=()=>{const g=+$("#portionG").value||0;const k=x=>Math.round((+f[x]||0)*g/100);
+    $("#portionTotals").innerHTML=`<div class="m"><div class="n">${k("kcal")}</div><div class="l">kcal</div></div><div class="m"><div class="n">${k("p")} g</div><div class="l">Bílk.</div></div><div class="m"><div class="n">${k("c")} g</div><div class="l">Sach.</div></div>`;
+    $("#portionAdd").textContent="＋ Přidat "+k("kcal")+" kcal do deníku";};
+  $("#portionG").addEventListener("input",()=>{curPortion.grams=+$("#portionG").value||0;recompute()});
+  pp.querySelectorAll("[data-pg]").forEach(b=>b.onclick=()=>{const g=Math.max(0,(+$("#portionG").value||0)+(+b.dataset.pg));curPortion.grams=g;$("#portionG").value=g;recompute()});
+  pp.querySelectorAll(".p100").forEach(inp=>inp.addEventListener("input",()=>{f[inp.dataset.k]=+inp.value||0;recompute()}));
+  recompute();
+  $("#portionAdd").onclick=()=>{const g=curPortion.grams;const k=x=>Math.round((+f[x]||0)*g/100);
+    if(!g){toast("Zadej gramáž");return}
+    addFood({name:curPortion.food.n+" "+g+" g",kcal:k("kcal"),protein:k("p"),carbs:k("c"),fat:k("f")});
     closeFoodPick();toast("Přidáno do deníku 🍽️")};
 }
 function renderRecentChips(){const el=$("#recentFoods");if(!el)return;
