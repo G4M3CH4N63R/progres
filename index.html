@@ -538,12 +538,15 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div id="recentFoods" class="recent-row"></div>
         <form id="formFood">
           <label class="field"><span>Jídlo</span><input type="text" name="name" placeholder="např. Kuřecí prsa 150 g s rýží" required></label>
-          <div class="row-4">
-            <label class="field"><span>kcal</span><input type="number" name="kcal" min="0" required></label>
-            <label class="field"><span>Bílk. (g)</span><input type="number" name="protein" min="0" step="0.1"></label>
-            <label class="field"><span>Sach. (g)</span><input type="number" name="carbs" min="0" step="0.1"></label>
-            <label class="field"><span>Tuky (g)</span><input type="number" name="fat" min="0" step="0.1"></label>
+          <div class="row">
+            <label class="field"><span>kcal</span><div class="stepper"><button type="button" data-d="-10">−</button><input type="number" name="kcal" min="0" inputmode="numeric" required><button type="button" data-d="10">＋</button></div></label>
+            <label class="field"><span>Bílkoviny (g)</span><div class="stepper"><button type="button" data-d="-1">−</button><input type="number" name="protein" min="0" step="0.1" inputmode="decimal"><button type="button" data-d="1">＋</button></div></label>
           </div>
+          <div class="row">
+            <label class="field"><span>Sacharidy (g)</span><div class="stepper"><button type="button" data-d="-1">−</button><input type="number" name="carbs" min="0" step="0.1" inputmode="decimal"><button type="button" data-d="1">＋</button></div></label>
+            <label class="field"><span>Tuky (g)</span><div class="stepper"><button type="button" data-d="-1">−</button><input type="number" name="fat" min="0" step="0.1" inputmode="decimal"><button type="button" data-d="1">＋</button></div></label>
+          </div>
+          <label class="field"><span>Počet porcí / kusů <span class="muted" style="font-weight:500">(vynásobí hodnoty výše)</span></span><div class="stepper" style="max-width:180px"><button type="button" data-d="-1">−</button><input type="number" name="qty" min="1" step="1" value="1" inputmode="numeric"><button type="button" data-d="1">＋</button></div></label>
           <button class="btn" type="submit">＋ Přidat jídlo</button>
         </form>
         <div id="calorieSummary" style="margin-top:14px"></div>
@@ -1096,9 +1099,12 @@ function setRowUnit(r,unit,init){
   else if(unit==="reps")F.innerHTML=st("Série","f-s",v.s,1)+st("Opakování","f-r",v.r,1);
   else F.innerHTML=st("Váha (kg)","f-w",v.w,2.5,"kg")+st("Série","f-s",v.s,1)+st("Opak.","f-r",v.r,1);
 }
-$("#exRows").addEventListener("click",e=>{const b=e.target.closest(".stepper button[data-d]");if(!b)return;
-  const inp=b.parentElement.querySelector("input");const step=+b.dataset.d;
-  const v=Math.max(0,Math.round(((+inp.value||0)+step)*100)/100);inp.value=v});
+/* Globální stepper +/− pro všechna číselná pole ve .stepper */
+document.addEventListener("click",e=>{const b=e.target.closest(".stepper button[data-d]");if(!b)return;
+  const inp=b.parentElement.querySelector("input");if(!inp)return;const step=+b.dataset.d;
+  const min=inp.min!==""?+inp.min:0;
+  inp.value=Math.max(min,Math.round(((+inp.value||0)+step)*1000)/1000);
+  inp.dispatchEvent(new Event("input",{bubbles:true}));inp.dispatchEvent(new Event("change",{bubbles:true}))});
 
 /* ---- Picker cviků ---- */
 const MUSCLE_ORDER=["Hrudník","Záda","Nohy","Ramena","Biceps","Triceps","Břicho","Kardio","Celé tělo"];
@@ -1491,32 +1497,37 @@ function renderFoodPickList(){
   $$("#foodPickList [data-db]").forEach(b=>b.onclick=()=>{const f=db[+b.dataset.db];openPortion({n:f[0],per100:{kcal:f[1],p:f[2],c:f[3],f:f[4]}})});
 }
 function openPortion(food){
-  curPortion={food:{n:food.n,per100:{kcal:+food.per100.kcal||0,p:+food.per100.p||0,c:+food.per100.c||0,f:+food.per100.f||0}},grams:food.grams||100,src:food.src||""};
+  curPortion={food:{n:food.n,per100:{kcal:+food.per100.kcal||0,p:+food.per100.p||0,c:+food.per100.c||0,f:+food.per100.f||0}},grams:food.grams||100,count:1,src:food.src||""};
   $("#foodPickBg").classList.add("show");renderPortion();$("#portionPanel").scrollIntoView({block:"nearest"})}
 function renderPortion(){const pp=$("#portionPanel");
   if(!curPortion){pp.innerHTML="";return}
   const f=curPortion.food.per100;
   pp.innerHTML=`<div class="portion"><div style="font-weight:700;margin-bottom:8px">${esc(curPortion.food.n)}</div>
-    <label class="mini-f"><span>Gramáž (g)${curPortion.src?' · balení předvyplněno':''}</span><div class="stepper"><button type="button" data-pg="-10">−</button><input type="number" id="portionG" min="0" step="10" value="${curPortion.grams}" inputmode="numeric"><button type="button" data-pg="10">＋</button></div></label>
+    <div class="row">
+      <label class="mini-f"><span>Velikost porce (g)${curPortion.src?' · z balení':''}</span><div class="stepper"><button type="button" data-d="-10">−</button><input type="number" id="portionG" min="0" step="10" value="${curPortion.grams}" inputmode="numeric"><button type="button" data-d="10">＋</button></div></label>
+      <label class="mini-f"><span>Počet (ks/porcí)</span><div class="stepper"><button type="button" data-d="-1">−</button><input type="number" id="portionCount" min="1" step="1" value="${curPortion.count}" inputmode="numeric"><button type="button" data-d="1">＋</button></div></label>
+    </div>
     <div class="small muted" style="margin:9px 0 4px">Hodnoty na 100 g${curPortion.src?" ("+esc(curPortion.src)+" — uprav, pokud nesedí s obalem)":" (uprav dle potřeby)"}:</div>
     <div class="row-4">
-      <label class="field"><span>kcal</span><input type="number" class="p100" data-k="kcal" min="0" value="${f.kcal}"></label>
-      <label class="field"><span>Bílk.</span><input type="number" class="p100" data-k="p" min="0" step="0.1" value="${f.p}"></label>
-      <label class="field"><span>Sach.</span><input type="number" class="p100" data-k="c" min="0" step="0.1" value="${f.c}"></label>
-      <label class="field"><span>Tuky</span><input type="number" class="p100" data-k="f" min="0" step="0.1" value="${f.f}"></label>
+      <label class="field"><span>kcal</span><input type="number" class="p100" data-k="kcal" min="0" inputmode="numeric" value="${f.kcal}"></label>
+      <label class="field"><span>Bílk.</span><input type="number" class="p100" data-k="p" min="0" step="0.1" inputmode="decimal" value="${f.p}"></label>
+      <label class="field"><span>Sach.</span><input type="number" class="p100" data-k="c" min="0" step="0.1" inputmode="decimal" value="${f.c}"></label>
+      <label class="field"><span>Tuky</span><input type="number" class="p100" data-k="f" min="0" step="0.1" inputmode="decimal" value="${f.f}"></label>
     </div>
     <div class="macro" id="portionTotals" style="margin-top:8px"></div>
     <button class="btn" id="portionAdd" type="button" style="margin-top:10px"></button></div>`;
-  const recompute=()=>{const g=+$("#portionG").value||0;const k=x=>Math.round((+f[x]||0)*g/100);
-    $("#portionTotals").innerHTML=`<div class="m"><div class="n">${k("kcal")}</div><div class="l">kcal</div></div><div class="m"><div class="n">${k("p")} g</div><div class="l">Bílk.</div></div><div class="m"><div class="n">${k("c")} g</div><div class="l">Sach.</div></div>`;
-    $("#portionAdd").textContent="＋ Přidat "+k("kcal")+" kcal do deníku";};
+  const tot=x=>{const g=+$("#portionG").value||0,c=+$("#portionCount").value||1;return Math.round((+f[x]||0)*g/100*c)};
+  const recompute=()=>{
+    $("#portionTotals").innerHTML=`<div class="m"><div class="n">${tot("kcal")}</div><div class="l">kcal</div></div><div class="m"><div class="n">${tot("p")} g</div><div class="l">Bílk.</div></div><div class="m"><div class="n">${tot("c")} g</div><div class="l">Sach.</div></div>`;
+    $("#portionAdd").textContent="＋ Přidat "+tot("kcal")+" kcal do deníku";};
   $("#portionG").addEventListener("input",()=>{curPortion.grams=+$("#portionG").value||0;recompute()});
-  pp.querySelectorAll("[data-pg]").forEach(b=>b.onclick=()=>{const g=Math.max(0,(+$("#portionG").value||0)+(+b.dataset.pg));curPortion.grams=g;$("#portionG").value=g;recompute()});
+  $("#portionCount").addEventListener("input",()=>{curPortion.count=+$("#portionCount").value||1;recompute()});
   pp.querySelectorAll(".p100").forEach(inp=>inp.addEventListener("input",()=>{f[inp.dataset.k]=+inp.value||0;recompute()}));
   recompute();
-  $("#portionAdd").onclick=()=>{const g=curPortion.grams;const k=x=>Math.round((+f[x]||0)*g/100);
+  $("#portionAdd").onclick=()=>{const g=+$("#portionG").value||0,c=+$("#portionCount").value||1;
     if(!g){toast("Zadej gramáž");return}
-    addFood({name:curPortion.food.n+" "+g+" g",kcal:k("kcal"),protein:k("p"),carbs:k("c"),fat:k("f")});
+    const nm=curPortion.food.n+" "+g+" g"+(c>1?" × "+c:"");
+    addFood({name:nm,kcal:tot("kcal"),protein:tot("p"),carbs:tot("c"),fat:tot("f")});
     closeFoodPick();toast("Přidáno do deníku 🍽️")};
 }
 function renderRecentChips(){const el=$("#recentFoods");if(!el)return;
@@ -1646,10 +1657,11 @@ function renderCalories(){
     addFood({name:x.name,kcal:x.kcal,protein:x.protein,carbs:x.carbs,fat:x.fat});toast("Zkopírováno 🍽️")});
 }
 $("#formFood").addEventListener("submit",e=>{
-  e.preventDefault();const f=e.target;
-  state.foods.push({id:uid(),date:todayISO(),name:f.name.value.trim(),kcal:+f.kcal.value||0,
-    protein:f.protein.value?+f.protein.value:null,carbs:f.carbs.value?+f.carbs.value:null,fat:f.fat.value?+f.fat.value:null});
-  save();f.name.value="";f.kcal.value="";f.protein.value="";f.carbs.value="";f.fat.value="";
+  e.preventDefault();const f=e.target;const q=Math.max(1,+f.qty.value||1);
+  const nm=f.name.value.trim()+(q>1?" × "+q:"");
+  state.foods.push({id:uid(),date:todayISO(),name:nm,kcal:Math.round((+f.kcal.value||0)*q),
+    protein:f.protein.value?+(+f.protein.value*q).toFixed(1):null,carbs:f.carbs.value?+(+f.carbs.value*q).toFixed(1):null,fat:f.fat.value?+(+f.fat.value*q).toFixed(1):null});
+  save();f.name.value="";f.kcal.value="";f.protein.value="";f.carbs.value="";f.fat.value="";f.qty.value="1";
   renderCalories();toast("Jídlo přidáno 🍽️")});
 
 /* ================== DATA & GRAFY ================== */
