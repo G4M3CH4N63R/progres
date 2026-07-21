@@ -1520,7 +1520,7 @@ function renderPortion(){const pp=$("#portionPanel");
   const tot=x=>{const g=+$("#portionG").value||0,c=+$("#portionCount").value||1;return Math.round((+f[x]||0)*g/100*c)};
   const recompute=()=>{
     $("#portionTotals").innerHTML=`<div class="m"><div class="n">${tot("kcal")}</div><div class="l">kcal</div></div><div class="m"><div class="n">${tot("p")} g</div><div class="l">Bílk.</div></div><div class="m"><div class="n">${tot("c")} g</div><div class="l">Sach.</div></div>`;
-    $("#portionAdd").textContent="＋ Přidat "+tot("kcal")+" kcal do deníku";};
+    $("#portionAdd").textContent="Předvyplnit "+tot("kcal")+" kcal ⤵";};
   $("#portionG").addEventListener("input",()=>{curPortion.grams=+$("#portionG").value||0;recompute()});
   $("#portionCount").addEventListener("input",()=>{curPortion.count=+$("#portionCount").value||1;recompute()});
   pp.querySelectorAll(".p100").forEach(inp=>inp.addEventListener("input",()=>{f[inp.dataset.k]=+inp.value||0;recompute()}));
@@ -1528,8 +1528,8 @@ function renderPortion(){const pp=$("#portionPanel");
   $("#portionAdd").onclick=()=>{const g=+$("#portionG").value||0,c=+$("#portionCount").value||1;
     if(!g){toast("Zadej gramáž");return}
     const nm=curPortion.food.n+" "+g+" g"+(c>1?" × "+c:"");
-    addFood({name:nm,kcal:tot("kcal"),protein:tot("p"),carbs:tot("c"),fat:tot("f")});
-    closeFoodPick();toast("Přidáno do deníku 🍽️")};
+    const vk=tot("kcal"),vp=tot("p"),vc=tot("c"),vf=tot("f");
+    closeFoodPick();prefillFood(nm,vk,vp,vc,vf);toast("Předvyplněno — uprav a přidej ⤵")};
 }
 function renderRecentChips(){const el=$("#recentFoods");if(!el)return;
   const rec=recentFoodEntries().slice(0,6);

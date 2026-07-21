@@ -1,5 +1,5 @@
 /* Progres service worker — při každé nové verzi appky zvyš číslo verze! */
-const C = "progres-v9.0";
+const C = "progres-v10.0";
 const CORE = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", e => {
