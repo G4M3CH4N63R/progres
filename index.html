@@ -1362,8 +1362,29 @@ async function aiCall(content,maxTokens){
   if(!r.ok){let d="";try{d=(await r.json()).error?.message||""}catch(e){}throw new Error("API chyba "+r.status+(d?": "+d:""))}
   const j=await r.json();return (j.content||[]).map(c=>c.text||"").join("").trim();
 }
-function aiJson(txt){txt=txt.replace(/^```json?/i,"").replace(/```$/,"").trim();
-  const m=txt.match(/\{[\s\S]*\}/);if(!m)throw new Error("AI nevrátila čitelná data.");return JSON.parse(m[0])}
+function aiJson(txt){
+  txt=String(txt).replace(/^```json?/i,"").replace(/```\s*$/,"").trim();
+  try{return JSON.parse(txt)}catch(e){}
+  const start=txt.search(/[\{\[]/);
+  let js=start>=0?txt.slice(start):txt;
+  try{return JSON.parse(js)}catch(e){}
+  /* oprava useknutého JSON — od první závorky do konce, dopočítání chybějících závorek */
+  let inStr=false,esc=false;const open=[];
+  for(let i=0;i<js.length;i++){const ch=js[i];
+    if(esc){esc=false;continue}
+    if(ch==="\\"){esc=true;continue}
+    if(ch==='"'){inStr=!inStr;continue}
+    if(inStr)continue;
+    if(ch==="{"||ch==="[")open.push(ch);
+    else if(ch==="}"||ch==="]")open.pop();
+  }
+  let fix=js;if(inStr)fix+='"';
+  fix=fix.replace(/[,\s]*$/,"");
+  fix=fix.replace(/:\s*$/,":null");
+  for(let i=open.length-1;i>=0;i--)fix+=(open[i]==="{"?"}":"]");
+  fix=fix.replace(/,(\s*[}\]])/g,"$1");
+  try{return JSON.parse(fix)}catch(e){throw new Error("AI vrátila neúplná data — zkus to prosím znovu.")}
+}
 async function aiAnalyzeFood(imgs,desc){
   const content=imgs.map(b64=>({type:"image",source:{type:"base64",media_type:"image/jpeg",data:b64}}));
   content.push({type:"text",text:"Jsi nutriční asistent. Z fotek (může být jídlo na talíři i etiketa/obal se složením) a popisu odhadni jídlo a jeho nutriční hodnoty pro zobrazenou porci."+(desc?" Popis od uživatele: "+desc+".":"")+" Pokud je na obalu tabulka na 100 g, přepočítej ji na odhadovanou gramáž porce. Odpověz POUZE platným JSON: {\"nazev\":\"krátký český název s gramáží\",\"kcal\":číslo,\"bilkoviny_g\":číslo,\"sacharidy_g\":číslo,\"tuky_g\":číslo,\"poznamka\":\"nejistoty, max 1 věta\"}"});
@@ -1594,8 +1615,8 @@ async function generatePlan(focus,usePhoto){
     +(focus?` Poznámka: ${focus}.`:"");
   const content=[];
   if(usePhoto&&photos.length)content.push({type:"image",source:{type:"base64",media_type:"image/jpeg",data:photos[photos.length-1].img.split(",")[1]}});
-  content.push({type:"text",text:`Jsi zkušený osobní trenér. Navrhni týdenní tréninkový plán na míru. ${ctx}\nVrať POUZE platný JSON bez dalšího textu ve tvaru:\n{"shrnuti":"2-3 věty proč je plán takto sestavený","dny":[{"nazev":"Den 1 – Hrudník + Triceps","partie":["Hrudník","Triceps"],"cviky":[{"nazev":"Bench press","partie":"Hrudník","jednotka":"kg","serie":4,"opakovani":8,"sekundy":0,"poznamka":""}]}],"tipy":["krátký tip","..."]}\nPočet dnů = ${p.daysPerWeek}. jednotka je "kg" (s činkou), "reps" (vlastní váha na počet opakování) nebo "time" (výdrž — vyplň pole sekundy). Partie z: Hrudník, Záda, Nohy, Ramena, Biceps, Triceps, Břicho, Kardio. Názvy cviků česky, drž se běžných cviků.`});
-  return aiJson(await aiCall(content,1600));
+  content.push({type:"text",text:`Jsi zkušený osobní trenér. Navrhni týdenní tréninkový plán na míru. ${ctx}\nVrať POUZE platný JSON bez dalšího textu ve tvaru:\n{"shrnuti":"2-3 věty proč je plán takto sestavený","dny":[{"nazev":"Den 1 – Hrudník + Triceps","partie":["Hrudník","Triceps"],"cviky":[{"nazev":"Bench press","partie":"Hrudník","jednotka":"kg","serie":4,"opakovani":8,"sekundy":0,"poznamka":""}]}],"tipy":["krátký tip","..."]}\nPočet dnů = ${p.daysPerWeek}. jednotka je "kg" (s činkou), "reps" (vlastní váha na počet opakování) nebo "time" (výdrž — vyplň pole sekundy). Partie z: Hrudník, Záda, Nohy, Ramena, Biceps, Triceps, Břicho, Kardio. Názvy cviků česky, drž se běžných cviků. Maximálně 5 cviků na den, poznámka stručná (max 6 slov) nebo prázdná. Odpověz kompaktně, jen samotný JSON.`});
+  return aiJson(await aiCall(content,4000));
 }
 function renderPlan(){const out=$("#planOut");if(!out)return;const plan=state.profile.plan;
   if(!plan||!Array.isArray(plan.dny)){out.innerHTML="";return}
