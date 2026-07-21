@@ -1493,7 +1493,7 @@ function renderFoodPickList(){
   html+=`<div class="pick-h">Databáze (na 100 g)</div>`+db.map((f,i)=>`<button type="button" class="pick-i" data-db="${i}">${esc(f[0])}<span class="muted" style="float:right;font-weight:500">${f[1]}/100 g</span></button>`).join("");
   $("#foodPickList").innerHTML=html;
   $$("#foodPickList [data-recent]").forEach(b=>b.onclick=()=>{const f=rec[+b.dataset.recent];
-    addFood({name:f.name,kcal:f.kcal,protein:f.protein,carbs:f.carbs,fat:f.fat});closeFoodPick();toast("Zkopírováno do dneška 🍽️")});
+    closeFoodPick();prefillFood(f.name.replace(/\s*×\s*\d+$/,""),f.kcal,f.protein,f.carbs,f.fat);toast("Předvyplněno — uprav a přidej ⤵")});
   $$("#foodPickList [data-custom]").forEach(b=>b.onclick=()=>{const f=custom[+b.dataset.custom];openPortion({n:f.n,per100:{kcal:f.kcal,p:f.p,c:f.c,f:f.f}})});
   $$("#foodPickList [data-db]").forEach(b=>b.onclick=()=>{const f=db[+b.dataset.db];openPortion({n:f[0],per100:{kcal:f[1],p:f[2],c:f[3],f:f[4]}})});
 }
@@ -1535,7 +1535,7 @@ function renderRecentChips(){const el=$("#recentFoods");if(!el)return;
   const rec=recentFoodEntries().slice(0,6);
   el.innerHTML=rec.map((f,i)=>`<button class="foodchip" type="button" data-rec="${i}">${esc(f.name.length>22?f.name.slice(0,22)+"…":f.name)} · ${f.kcal}</button>`).join("");
   $$("#recentFoods [data-rec]").forEach(b=>b.onclick=()=>{const f=rec[+b.dataset.rec];
-    addFood({name:f.name,kcal:f.kcal,protein:f.protein,carbs:f.carbs,fat:f.fat});toast("Přidáno 🍽️")});
+    prefillFood(f.name.replace(/\s*×\s*\d+$/,""),f.kcal,f.protein,f.carbs,f.fat);toast("Předvyplněno — uprav a přidej ⤵")});
 }
 
 /* ---- AI plánování tréninku ---- */
