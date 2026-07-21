@@ -1469,6 +1469,7 @@ function renderAiBox(){
 function prefillFood(name,kcal,p,c,f){const F=$("#formFood");
   F.name.value=name||"";F.kcal.value=Math.round(kcal||0);
   F.protein.value=p!=null?Math.round(p):"";F.carbs.value=c!=null?Math.round(c):"";F.fat.value=f!=null?Math.round(f):"";
+  if(F.qty)F.qty.value="1";
   F.name.scrollIntoView({behavior:"smooth",block:"center"})}
 function addFood(o){state.foods.push({id:uid(),date:todayISO(),name:o.name,kcal:+o.kcal||0,
   protein:o.protein!=null?+o.protein:null,carbs:o.carbs!=null?+o.carbs:null,fat:o.fat!=null?+o.fat:null});
@@ -1654,7 +1655,8 @@ function renderCalories(){
     state.foods=state.foods.filter(x=>x.id!==b.dataset.delFood);save();renderCalories();toast("Smazáno")});
   $$("[data-copy-food]",list).forEach(b=>b.onclick=()=>{
     const x=state.foods.find(f=>f.id===b.dataset.copyFood);if(!x)return;
-    addFood({name:x.name,kcal:x.kcal,protein:x.protein,carbs:x.carbs,fat:x.fat});toast("Zkopírováno 🍽️")});
+    prefillFood(x.name.replace(/\s*×\s*\d+$/,""),x.kcal,x.protein,x.carbs,x.fat);
+    toast("Předvyplněno — uprav a přidej ⤵")});
 }
 $("#formFood").addEventListener("submit",e=>{
   e.preventDefault();const f=e.target;const q=Math.max(1,+f.qty.value||1);
