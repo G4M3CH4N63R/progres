@@ -1958,7 +1958,15 @@ async function loadDemo(){
 
 /* ================== START ================== */
 if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){
-  navigator.serviceWorker.register("sw.js").catch(()=>{})}
+  const _hadCtrl=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+  let _refreshing=false;
+  navigator.serviceWorker.addEventListener("controllerchange",()=>{
+    if(_refreshing||!_hadCtrl)return;_refreshing=true;location.reload()});
+  const _checkUpd=()=>{navigator.serviceWorker.getRegistration().then(r=>{if(r)r.update()}).catch(()=>{})};
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")_checkUpd()});
+  window.addEventListener("focus",_checkUpd);
+}
 if(window.Chart){Chart.defaults.font.family="-apple-system,system-ui,'Segoe UI',Roboto,sans-serif";Chart.defaults.font.size=11}
 initSeg();
 initCustomExForm();
