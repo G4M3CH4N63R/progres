@@ -68,7 +68,10 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
     -webkit-font-smoothing:antialiased;
     padding-bottom:calc(74px + var(--safe-bottom));
   }
-  .app{max-width:560px;margin:0 auto;min-height:100vh}
+  .app{max-width:560px;margin:0 auto;min-height:100vh;position:relative}
+  .gear-btn{position:fixed;top:calc(var(--safe-top) + 14px);right:calc(50% - 280px + 16px);z-index:25;width:38px;height:38px;border-radius:50%;border:none;background:var(--card);box-shadow:var(--shadow);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+  @media(max-width:576px){.gear-btn{right:16px}}
+  .gear-btn:active{transform:scale(.94)}
   header{
     position:sticky; top:0; z-index:20;
     background:color-mix(in srgb,var(--plane) 78%,transparent);
@@ -84,11 +87,11 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   header .sub{font-size:12px;color:var(--muted);margin-top:1px}
   .icon-btn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;font-size:17px}
   .icon-btn:active{transform:scale(.94)}
-  main{padding:18px 16px 30px}
+  main{padding:calc(var(--safe-top) + 16px) 16px 30px}
   section{display:none;animation:fade .25s ease}
   section.active{display:block}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  .page-title{font-size:32px;font-weight:700;letter-spacing:-.5px;margin:2px 0 4px}
+  .page-title{font-size:32px;font-weight:700;letter-spacing:-.5px;margin:2px 0 4px;padding-right:46px}
   .page-sub{font-size:13px;color:var(--muted);font-weight:500;margin:0 0 18px}
   .page-title + .card, .page-sub + .card, .page-title + .tiles, .page-sub + .tiles, .page-title + .ring-cards{margin-top:2px}
   .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
@@ -319,20 +322,40 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .macro-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:11px;color:var(--muted);font-weight:600}
   .macro-legend span{display:inline-flex;align-items:center;gap:5px}
   .macro-legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+  /* série cviků (per-set) */
+  .exrow2 .exr-hint{font-size:12px;color:var(--muted);margin:1px 0 8px;min-height:0}
+  .exrow2 .exr-hint b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+  .set-head{display:grid;gap:8px;align-items:center;padding:2px 0 4px;font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.4px}
+  .set-head span{text-align:center}
+  .set-row{display:grid;gap:8px;align-items:center;padding:4px 0}
+  .set-row .idx{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:center}
+  .set-cell{background:var(--card);border-radius:10px;border:1px solid var(--line);overflow:hidden}
+  [data-theme="dark"] .set-cell{background:var(--surface);border-color:transparent}
+  .set-cell input{width:100%;border:none!important;background:transparent;text-align:center;padding:10px 2px;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;box-shadow:none!important;border-radius:10px}
+  .set-cell input:focus{outline:2px solid var(--accent);outline-offset:-2px}
+  .set-done{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--hairline);background:transparent;cursor:pointer;display:grid;place-items:center;padding:0;margin:0 auto;color:#fff;font-size:14px;font-weight:800;line-height:1}
+  .set-done.on{background:var(--good);border-color:var(--good)}
+  .set-rm{border:none;background:transparent;color:var(--muted);font-size:16px;cursor:pointer;padding:0;line-height:1}
+  .exr-foot{display:flex;justify-content:space-between;align-items:center;padding:9px 0 1px;margin-top:4px;border-top:1px solid var(--line)}
+  .exr-foot .add-set{color:var(--accent);font-weight:600;cursor:pointer;background:none;border:none;padding:0;font:inherit;font-size:14.5px}
+  .exr-foot .sum{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+  /* Nastavení */
+  .set-list{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px}
+  .set-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-top:1px solid var(--line);cursor:pointer;color:var(--ink)}
+  .set-item:first-child{border-top:none}
+  .set-item .si-l{display:flex;align-items:center;gap:13px;min-width:0}
+  .set-item .si-ico{width:30px;height:30px;flex:none;border-radius:8px;display:grid;place-items:center;color:#fff}
+  .set-item .si-t{font-size:15px;font-weight:600}
+  .set-item .si-s{font-size:12.5px;color:var(--muted);margin-top:1px}
+  .set-item .si-chev{color:var(--muted);font-size:18px;flex:none}
+  .settings-sec{display:none}
+  .settings-sec.active{display:block;animation:fade .25s ease}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--accent);font:inherit;font-size:16px;font-weight:500;cursor:pointer;padding:0;margin-bottom:6px}
 </style>
 </head>
 <body>
 <div class="app">
-  <header>
-    <div class="brand">
-      <div class="logo">P</div>
-      <div>
-        <h1>Progres</h1>
-        <div class="sub">trénink · tělo · jídlo</div>
-      </div>
-    </div>
-    <button class="icon-btn" id="themeBtn" title="Světlý / tmavý režim" aria-label="Přepnout režim"></button>
-  </header>
+  <button class="gear-btn" id="settingsBtn" title="Nastavení" aria-label="Nastavení"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
 
   <main>
     <!-- ============ PŘEHLED ============ -->
@@ -416,7 +439,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
             </div>
           </div>
           <div style="margin-bottom:11px">
-            <span class="flabel">Cviky <span class="muted" style="font-weight:500">(název · kg · série · opakování)</span></span>
+            <span class="flabel">Cviky <span class="muted" style="font-weight:500">(u každého vyplň série níže)</span></span>
             <div id="exRows"></div>
             <button class="btn secondary small" type="button" id="addExBtn">＋ Přidat cvik</button>
           </div>
@@ -507,72 +530,14 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="page-title">Jídlo</div>
       <div class="page-sub" id="foodDaySub"></div>
       <div class="card hero" id="calHero" style="display:none"></div>
-      <div class="card">
-        <h2>Kalkulačka kalorií <span class="hint">Mifflin–St Jeor</span></h2>
-        <form id="formCalc">
-          <label class="field"><span>Pohlaví</span>
-            <div class="seg" data-seg="sex">
-              <button type="button" data-val="m" class="on">Muž</button>
-              <button type="button" data-val="f">Žena</button>
-            </div>
-            <input type="hidden" name="sex" value="m">
-          </label>
-          <div class="row-3">
-            <label class="field"><span>Věk</span><input type="number" name="age" min="10" max="100" value="30"></label>
-            <label class="field"><span>Výška (cm)</span><input type="number" name="height" min="120" max="230" value="180"></label>
-            <label class="field"><span>Váha (kg)</span><input type="number" name="weight" min="30" max="250" step="0.1" value="80"></label>
-          </div>
-          <label class="field"><span>Aktivita</span>
-            <select name="activity">
-              <option value="1.2">Sedavý (málo pohybu)</option>
-              <option value="1.375">Lehká (1–3× týdně)</option>
-              <option value="1.55" selected>Střední (3–5× týdně)</option>
-              <option value="1.725">Vysoká (6–7× týdně)</option>
-              <option value="1.9">Velmi vysoká (fyz. práce / 2× denně)</option>
-            </select>
-          </label>
-          <div class="row">
-            <label class="field"><span>Cíl</span>
-              <div class="seg" data-seg="goal">
-                <button type="button" data-val="cut">Zhubnout</button>
-                <button type="button" data-val="maintain" class="on">Udržet</button>
-                <button type="button" data-val="bulk">Nabrat</button>
-              </div>
-              <input type="hidden" name="goal" value="maintain">
-            </label>
-            <label class="field"><span>Cílová váha (kg)</span><input type="number" name="targetWeight" step="0.1" min="0" placeholder="volitelné"></label>
-          </div>
-        </form>
-        <div class="result">
-          <div class="r"><div class="n" id="rBmr">–</div><div class="l">BMR</div></div>
-          <div class="r"><div class="n" id="rTdee">–</div><div class="l">Udržení</div></div>
-          <div class="r hi"><div class="n" id="rTarget">–</div><div class="l">Tvůj cíl (kcal)</div></div>
-        </div>
-        <div class="small muted" style="margin-top:10px" id="calcNote"></div>
-        <button class="btn secondary" id="saveGoal" style="margin-top:12px">Uložit jako můj denní cíl</button>
-      </div>
 
       <div class="card">
-        <h2>Kroky</h2>
-        <div class="row">
-          <label class="field"><span>Kroky dnes</span><input type="number" id="stepsInput" min="0" step="100" placeholder="např. 8500"></label>
-          <label class="field"><span>Denní cíl kroků</span><input type="number" id="stepGoalInput" min="0" step="500" placeholder="10000"></label>
+        <h2>Kroky dnes <span class="hint" id="stepsGoalHint"></span></h2>
+        <div style="display:flex;gap:8px;align-items:flex-end">
+          <label class="field" style="flex:1;margin:0"><span>Počet kroků</span><input type="number" id="stepsInput" min="0" step="100" placeholder="např. 8500"></label>
+          <button class="btn secondary small" id="saveStepsBtn" type="button" style="width:auto;padding:12px 16px">Uložit</button>
         </div>
-        <button class="btn secondary" id="saveSteps">Uložit kroky</button>
         <div class="small" id="stepsInfo" style="margin-top:10px"></div>
-        <div class="setrow">
-          <div class="lb">Připočítat výdej z kroků k cíli
-            <span class="sub2">Kroky navíc k dennímu cíli kalorií.</span>
-          </div>
-          <button class="tgl" id="stepsToggle" type="button" aria-label="Připočítat kroky"><i></i></button>
-        </div>
-        <div class="setrow">
-          <div class="lb">Připočítat výdej z tréninků k cíli
-            <span class="sub2">Odhad podle typu, délky a tvé váhy (MET). Info u každého tréninku.</span>
-          </div>
-          <button class="tgl" id="workoutToggle" type="button" aria-label="Připočítat tréninky"><i></i></button>
-        </div>
-        <div class="small muted" id="stepsWarn"></div>
       </div>
 
       <div class="card">
@@ -690,7 +655,96 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       </div>
 
       <div class="card">
-        <h2>Záloha & export</h2>
+        <h2>Souhrn</h2>
+        <div id="dataSummary" class="small"></div>
+      </div>
+    </section>
+
+    <!-- ============ NASTAVENÍ ============ -->
+    <section id="tab-nastaveni">
+      <div class="page-title">Nastavení</div>
+      <div class="page-sub">cíle, profil a data</div>
+
+      <div class="card">
+        <h2>Vzhled</h2>
+        <div class="setrow">
+          <div class="lb">Tmavý režim<span class="sub2">Přepni světlé a tmavé téma appky.</span></div>
+          <button class="tgl" id="themeToggle" type="button" aria-label="Tmavý režim"><i></i></button>
+        </div>
+        <button class="icon-btn" id="themeBtn" style="display:none" aria-hidden="true"></button>
+      </div>
+
+      <div class="card">
+        <h2>Cíl kalorií &amp; profil <span class="hint">Mifflin–St Jeor</span></h2>
+        <form id="formCalc">
+          <label class="field"><span>Pohlaví</span>
+            <div class="seg" data-seg="sex">
+              <button type="button" data-val="m" class="on">Muž</button>
+              <button type="button" data-val="f">Žena</button>
+            </div>
+            <input type="hidden" name="sex" value="m">
+          </label>
+          <div class="row-3">
+            <label class="field"><span>Věk</span><input type="number" name="age" min="10" max="100" value="30"></label>
+            <label class="field"><span>Výška (cm)</span><input type="number" name="height" min="120" max="230" value="180"></label>
+            <label class="field"><span>Váha (kg)</span><input type="number" name="weight" min="30" max="250" step="0.1" value="80"></label>
+          </div>
+          <label class="field"><span>Aktivita</span>
+            <select name="activity">
+              <option value="1.2">Sedavý (málo pohybu)</option>
+              <option value="1.375">Lehká (1–3× týdně)</option>
+              <option value="1.55" selected>Střední (3–5× týdně)</option>
+              <option value="1.725">Vysoká (6–7× týdně)</option>
+              <option value="1.9">Velmi vysoká (fyz. práce / 2× denně)</option>
+            </select>
+          </label>
+          <div class="row">
+            <label class="field"><span>Cíl</span>
+              <div class="seg" data-seg="goal">
+                <button type="button" data-val="cut">Zhubnout</button>
+                <button type="button" data-val="maintain" class="on">Udržet</button>
+                <button type="button" data-val="bulk">Nabrat</button>
+              </div>
+              <input type="hidden" name="goal" value="maintain">
+            </label>
+            <label class="field"><span>Cílová váha (kg)</span><input type="number" name="targetWeight" step="0.1" min="0" placeholder="volitelné"></label>
+          </div>
+        </form>
+        <div class="result">
+          <div class="r"><div class="n" id="rBmr">–</div><div class="l">BMR</div></div>
+          <div class="r"><div class="n" id="rTdee">–</div><div class="l">Udržení</div></div>
+          <div class="r hi"><div class="n" id="rTarget">–</div><div class="l">Tvůj cíl (kcal)</div></div>
+        </div>
+        <div class="small muted" style="margin-top:10px" id="calcNote"></div>
+        <button class="btn" id="saveGoal" style="margin-top:12px">Uložit jako můj denní cíl</button>
+      </div>
+
+      <div class="card">
+        <h2>Krokový cíl</h2>
+        <label class="field"><span>Denní cíl kroků</span><input type="number" id="stepGoalInput" min="0" step="500" placeholder="10000"></label>
+        <button class="btn secondary" id="saveStepGoalBtn" type="button">Uložit cíl kroků</button>
+        <div class="setrow" style="margin-top:6px">
+          <div class="lb">Připočítat výdej z kroků k cíli
+            <span class="sub2">Kroky navíc k dennímu cíli kalorií.</span>
+          </div>
+          <button class="tgl" id="stepsToggle" type="button" aria-label="Připočítat kroky"><i></i></button>
+        </div>
+        <div class="setrow">
+          <div class="lb">Připočítat výdej z tréninků k cíli
+            <span class="sub2">Odhad podle typu, délky a tvé váhy (MET).</span>
+          </div>
+          <button class="tgl" id="workoutToggle" type="button" aria-label="Připočítat tréninky"><i></i></button>
+        </div>
+        <div class="small muted" id="stepsWarn"></div>
+      </div>
+
+      <div class="card">
+        <h2>AI klíč <span class="hint">pro foto jídla a plán tréninku</span></h2>
+        <div id="apiKeyBox"></div>
+      </div>
+
+      <div class="card">
+        <h2>Záloha &amp; export</h2>
         <p class="small muted" style="margin-top:0">Data (včetně fotek) jsou jen v tomto zařízení. Občas si stáhni zálohu — stejný soubor půjde načíst i do budoucí nativní appky.</p>
         <div class="btn-row" style="margin-bottom:10px">
           <button class="btn secondary small" id="exportBtn">Záloha (JSON)</button>
@@ -710,11 +764,6 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
           <button class="btn secondary small" id="demoBtn">Načíst ukázková data</button>
           <button class="btn danger small" id="wipeBtn">Smazat vše</button>
         </div>
-      </div>
-
-      <div class="card">
-        <h2>Souhrn</h2>
-        <div id="dataSummary" class="small"></div>
       </div>
     </section>
   </main>
@@ -886,7 +935,7 @@ function stepKcal(steps){const w=+state.profile.weight||75;return Math.round(ste
 const METS={"Síla":5.0,"Objem":4.5,"Vytrvalost":5.5,"Kardio":8.0};
 function estDur(s){if(s.dur)return s.dur;
   if(s.type==="Kardio")return 30;
-  const sets=s.exercises.reduce((a,e)=>a+(+e.s||0),0);
+  const sets=s.exercises.reduce((a,e)=>a+exSets(e).length,0);
   return Math.max(20,sets*3)}
 function workoutKcal(s){const w=+state.profile.weight||75;
   return Math.round((METS[s.type]||5)*w*estDur(s)/60)}
@@ -922,15 +971,41 @@ function exDef(name){const n=(name||"").toLowerCase();
   const hit=allExercises().find(x=>x[0].toLowerCase()===n);
   return hit?{muscle:hit[1],unit:hit[2]}:null}
 function exUnit(e){return (e&&e.unit)||(exDef(e.n)&&exDef(e.n).unit)||"kg"}
-function exMetric(e){const u=exUnit(e);return u==="reps"?(+e.r||0):u==="time"?(+e.sec||0):(+e.w||0)}
+function fmtNum(n){return String(n==null?"":n).replace(".",",")}
+/* Normalizace na pole sérií [{w,r,sec,done}] — funguje i pro starý model {w,s,r,sec} */
+function exSets(e){
+  if(Array.isArray(e.sets)&&e.sets.length)return e.sets;
+  const s=+e.s||0, w=+e.w||0, r=+e.r||0, sec=+e.sec||0;
+  const n=s>0?s:((w||r||sec)?1:0);
+  const arr=[];for(let i=0;i<n;i++)arr.push({w,r,sec,done:true});
+  return arr}
+function setHasVal(u,st){return u==="reps"?((+st.r||0)>0):u==="time"?((+st.sec||0)>0):((+st.w||0)>0||(+st.r||0)>0)}
+function setMetric(u,st){return u==="reps"?(+st.r||0):u==="time"?(+st.sec||0):(+st.w||0)}
+function exMetric(e){const u=exUnit(e);return exSets(e).reduce((m,st)=>Math.max(m,setMetric(u,st)),0)}
 function exMetricLabel(u){return u==="reps"?"opak.":u==="time"?"s":"kg"}
-function exVolume(e){const u=exUnit(e);
-  return u==="reps"?(+e.s||0)*(+e.r||0):u==="time"?(+e.s||0)*(+e.sec||0):(+e.w||0)*(+e.s||0)*(+e.r||0)}
-function exValStr(e){const u=exUnit(e);
-  if(u==="time")return e.s&&e.sec?e.s+"× "+fmtSec(e.sec):e.sec?fmtSec(e.sec):"";
-  if(u==="reps")return e.s&&e.r?e.s+"×"+e.r:e.r?e.r+" op.":"";
-  return [e.w?e.w+" kg":"",e.s&&e.r?e.s+"×"+e.r:""].filter(Boolean).join(" · ")}
+function exBestE1RM(e){if(exUnit(e)!=="kg")return 0;return exSets(e).reduce((m,st)=>Math.max(m,e1rm(+st.w||0,+st.r||0)),0)}
+function exVolume(e){const u=exUnit(e);return exSets(e).reduce((v,st)=>{
+  if(u==="reps")return v+(+st.r||0);
+  if(u==="time")return v+(+st.sec||0);
+  return v+(+st.w||0)*(+st.r||0)},0)}
+function exVolumeKg(e){return exUnit(e)==="kg"?exVolume(e):0}
+function sessionVolKg(s){return (s.exercises||[]).reduce((a,e)=>a+exVolumeKg(e),0)}
+function exDoneSets(e){const u=exUnit(e);return exSets(e).filter(st=>setHasVal(u,st)).length}
+function exValStr(e){const u=exUnit(e);const sets=exSets(e).filter(st=>setHasVal(u,st));
+  if(!sets.length)return "";
+  if(u==="time"){const uni=sets.every(st=>st.sec===sets[0].sec);return uni?(sets.length+"× "+fmtSec(sets[0].sec)):sets.map(st=>fmtSec(st.sec)).join(", ");}
+  if(u==="reps"){const uni=sets.every(st=>st.r===sets[0].r);return uni?(sets.length+"×"+sets[0].r):(sets.map(st=>st.r).join("/")+" op.");}
+  const uniform=sets.every(st=>st.w===sets[0].w&&st.r===sets[0].r);
+  if(uniform)return (sets.length>1?sets.length+"× ":"")+fmtNum(sets[0].w)+" kg × "+sets[0].r;
+  const sameW=sets.every(st=>st.w===sets[0].w);
+  if(sameW)return fmtNum(sets[0].w)+" kg · "+sets.map(st=>st.r).join("/");
+  return sets.map(st=>fmtNum(st.w)+"×"+st.r).join(", ")+" kg";}
 function fmtSec(s){s=+s||0;return s>=60?(Math.floor(s/60)+":"+String(s%60).padStart(2,"0")+" min"):(s+" s")}
+/* poslední záznam cviku (pro nápovědu „minule…") */
+function lastExerciseVal(name,beforeId){const nl=(name||"").toLowerCase();if(!nl)return"";
+  const ss=[...state.sessions].filter(s=>s.id!==beforeId).sort((a,b)=>b.date.localeCompare(a.date));
+  for(const s of ss){const e=s.exercises.find(x=>x.n.toLowerCase()===nl&&exDoneSets(x));if(e)return exValStr(e)}
+  return""}
 function fillExDb(){const dl=$("#exdb");const hist=new Set();
   state.sessions.forEach(s=>s.exercises.forEach(e=>hist.add(e.n)));
   const all=allExercises();const known=new Set(all.map(x=>x[0]));
@@ -969,11 +1044,35 @@ function renderTab(name){
   else if(name==="kalorie")renderCalories();
   else if(name==="data")renderData()}
 function darkOn(){return document.documentElement.getAttribute("data-theme")==="dark"}
-function applyTheme(t){document.documentElement.setAttribute("data-theme",t);$("#themeBtn").innerHTML=t==="dark"?ICON_SUN:ICON_MOON;
+function applyTheme(t){document.documentElement.setAttribute("data-theme",t);
+  const tb=$("#themeBtn");if(tb)tb.innerHTML=t==="dark"?ICON_SUN:ICON_MOON;
+  const tg=$("#themeToggle");if(tg)tg.classList.toggle("on",t==="dark");
   const mt=document.querySelector('meta[name=theme-color]');if(mt)mt.setAttribute("content",t==="dark"?"#000000":"#f2f2f7");
   lsSet(TKEY,t)}
 (function(){const saved=lsGet(TKEY);const pref=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";applyTheme(saved||pref)})();
-$("#themeBtn").addEventListener("click",()=>{applyTheme(darkOn()?"light":"dark");renderTab(currentTab())});
+function toggleTheme(){applyTheme(darkOn()?"light":"dark");
+  if(settingsOpen())renderSettings();else renderTab(currentTab())}
+/* ---- Nastavení (gear) ---- */
+let _prevTab="prehled";
+function settingsOpen(){return $("#tab-nastaveni").classList.contains("active")}
+function openSettings(){if(settingsOpen())return;_prevTab=currentTab();
+  $$("section").forEach(s=>s.classList.remove("active"));
+  $("#tab-nastaveni").classList.add("active");
+  $$("nav button").forEach(b=>b.classList.remove("on"));
+  window.scrollTo(0,0);renderSettings()}
+function closeSettings(){switchTab(_prevTab||"prehled")}
+function renderSettings(){const p=state.profile;
+  const tg=$("#themeToggle");if(tg)tg.classList.toggle("on",darkOn());
+  const f=$("#formCalc");
+  if(f){f.age.value=p.age;f.height.value=p.height;f.weight.value=p.weight;f.activity.value=p.activity;
+    f.targetWeight.value=p.targetWeight??"";setSeg("sex",p.sex);setSeg("goal",p.goal);calc();}
+  $("#stepGoalInput").value=p.stepGoal||"";
+  $("#stepsToggle").classList.toggle("on",!!p.addStepsToGoal);
+  $("#workoutToggle").classList.toggle("on",!!p.addWorkoutToGoal);
+  $("#stepsWarn").textContent=((p.addStepsToGoal||p.addWorkoutToGoal)&&p.activity>=1.55)?"⚠️ Aktivita střední a vyšší už výdej započítává — s přepínači se počítá dvakrát. Zvaž nižší aktivitu s přepínači, nebo vyšší bez nich.":"";
+  renderApiKeyBox();}
+$("#settingsBtn").addEventListener("click",()=>{settingsOpen()?closeSettings():openSettings()});
+$("#themeToggle").addEventListener("click",toggleTheme);
 function C(){const s=getComputedStyle(document.documentElement);const g=n=>s.getPropertyValue(n).trim();
   return {ink:g("--ink"),ink2:g("--ink2"),muted:g("--muted"),grid:g("--grid"),
     s1:g("--s1"),s2:g("--s2"),s3:g("--s3"),s4:g("--s4"),s5:g("--s5"),s6:g("--s6"),
@@ -1046,7 +1145,7 @@ function renderDashboard(){
   const wkAgo=isoNdaysAgo(7);
   const wkSess=state.sessions.filter(s=>s.date>=wkAgo);
   const wkDays=new Set(wkSess.map(s=>s.date)).size;
-  const wkVol=Math.round(wkSess.reduce((a,s)=>a+s.exercises.reduce((x,e)=>x+e.w*e.s*e.r,0),0));
+  const wkVol=Math.round(wkSess.reduce((a,s)=>a+sessionVolKg(s),0));
   const todayF=state.foods.filter(f=>f.date===todayISO());
   const kcalT=todayF.reduce((s,f)=>s+(+f.kcal||0),0), protT=todayF.reduce((s,f)=>s+(+f.protein||0),0);
   const tgt=effTarget();
@@ -1157,36 +1256,76 @@ $$("#muscleChips button").forEach(b=>b.addEventListener("click",()=>{b.classList
 
 function addExRow(d={}){
   const unit=d.unit||(d.n?exUnit(d):"kg");
-  const r=document.createElement("div");r.className="exrow2";
+  const r=document.createElement("div");r.className="exrow2";r.dataset.unit=unit;
   r.innerHTML=`
     <div class="exr-top">
       <div class="exname"><input class="exn" list="exdb" placeholder="Cvik" value="${esc(d.n||"")}" autocomplete="off"><button type="button" class="pick" title="Procházet cviky">▾</button></div>
       <div class="uniti"><button type="button" data-u="kg">kg</button><button type="button" data-u="reps">opak.</button><button type="button" data-u="time">čas</button></div>
-      <button type="button" class="rm" title="Odebrat">×</button>
+      <button type="button" class="rm" title="Odebrat cvik">×</button>
     </div>
-    <div class="exr-fields"></div>`;
+    <div class="exr-hint"></div>
+    <div class="set-head"></div>
+    <div class="sets"></div>
+    <div class="exr-foot"><button type="button" class="add-set">＋ Přidat sérii</button><span class="sum"></span></div>`;
   r.querySelector(".rm").onclick=()=>r.remove();
   r.querySelector(".pick").onclick=()=>openPicker(r);
   r.querySelector(".exn").addEventListener("change",e=>{
     const def=exDef(e.target.value.trim());
-    if(def){selectMuscle(def.muscle);if(!r._tu)setRowUnit(r,def.unit)}});
+    if(def){selectMuscle(def.muscle);if(!r._tu)setRowUnit(r,def.unit)}
+    updateExHint(r)});
+  r.querySelector(".exn").addEventListener("input",()=>updateExHint(r));
   r.querySelectorAll(".uniti button").forEach(b=>b.onclick=()=>{r._tu=true;setRowUnit(r,b.dataset.u)});
+  r.querySelector(".add-set").onclick=()=>{const s=readSetRows(r);const last=s[s.length-1]||{};
+    addSetRow(r,{w:last.w,r:last.r,sec:last.sec,done:false});updateExSum(r)};
   $("#exRows").appendChild(r);
-  setRowUnit(r,unit,{w:d.w,s:d.s,r:d.r,sec:d.sec});
+  const initSets=Array.isArray(d.sets)&&d.sets.length?d.sets:exSets(d);
+  setRowUnit(r,unit,initSets.length?initSets:[{}]);
+  updateExHint(r);
   return r}
-function rowVals(r){const g=c=>{const el=r.querySelector(c);return el?el.value:""};
-  return {n:r.querySelector(".exn").value.trim(),w:g(".f-w"),s:g(".f-s"),r:g(".f-r"),sec:g(".f-sec")}}
-function setRowUnit(r,unit,init){
-  const v=init||rowVals(r);
+function setGrid(unit){return unit==="kg"?"22px 1fr 1fr 30px 18px":"22px 1fr 30px 18px"}
+function setHeadHTML(unit){const cols=unit==="kg"?["#","KG","OPAK.","",""]:unit==="reps"?["#","OPAKOVÁNÍ","",""]:["#","SEKUNDY","",""];
+  return cols.map((c,i)=>`<span style="${i===0?'text-align:center':'text-align:center'}">${c}</span>`).join("")}
+function addSetRow(r,st){st=st||{};const unit=r.dataset.unit;const box=r.querySelector(".sets");
+  const val=x=>(x==null||x===""||x===0)?"":x;
+  const idx=box.children.length+1;
+  const row=document.createElement("div");row.className="set-row";row.style.gridTemplateColumns=setGrid(unit);
+  let cells=`<span class="idx">${idx}</span>`;
+  if(unit==="time")cells+=`<div class="set-cell"><input type="number" class="f-sec" inputmode="numeric" min="0" step="5" value="${val(st.sec)}" placeholder="s"></div>`;
+  else if(unit==="reps")cells+=`<div class="set-cell"><input type="number" class="f-r" inputmode="numeric" min="0" step="1" value="${val(st.r)}" placeholder="opak."></div>`;
+  else cells+=`<div class="set-cell"><input type="number" class="f-w" inputmode="decimal" min="0" step="2.5" value="${val(st.w)}" placeholder="kg"></div><div class="set-cell"><input type="number" class="f-r" inputmode="numeric" min="0" step="1" value="${val(st.r)}" placeholder="opak."></div>`;
+  cells+=`<button type="button" class="set-done${st.done?" on":""}" title="Hotovo">${st.done?"✓":""}</button>`;
+  cells+=`<button type="button" class="set-rm" title="Odebrat sérii">×</button>`;
+  row.innerHTML=cells;
+  row.querySelector(".set-done").onclick=function(){const on=this.classList.toggle("on");this.textContent=on?"✓":"";updateExSum(r)};
+  row.querySelector(".set-rm").onclick=()=>{row.remove();reindexSets(r);updateExSum(r)};
+  row.querySelectorAll("input").forEach(inp=>inp.addEventListener("input",()=>{
+    const dn=row.querySelector(".set-done");if(!dn.classList.contains("on")&&inp.value!==""){dn.classList.add("on");dn.textContent="✓"}
+    updateExSum(r)}));
+  box.appendChild(row)}
+function reindexSets(r){[...r.querySelectorAll(".sets .set-row")].forEach((row,i)=>row.querySelector(".idx").textContent=i+1)}
+function readSetRows(r){return [...r.querySelectorAll(".sets .set-row")].map(row=>{
+  const g=c=>{const el=row.querySelector(c);return el&&el.value!==""?(+el.value||0):0};
+  return {w:g(".f-w"),r:g(".f-r"),sec:g(".f-sec"),done:row.querySelector(".set-done").classList.contains("on")}})}
+function setRowUnit(r,unit,sets){
+  if(!sets)sets=readSetRows(r);
   r.dataset.unit=unit;
   r.querySelectorAll(".uniti button").forEach(b=>b.classList.toggle("on",b.dataset.u===unit));
-  const val=x=>x===undefined||x===null?"":x;
-  const st=(lbl,cls,x,step,ph)=>`<label class="mini-f"><span>${lbl}</span><div class="stepper"><button type="button" data-d="${-step}">−</button><input type="number" class="${cls}" step="${step}" min="0" inputmode="decimal" value="${val(x)}" placeholder="${ph||""}"><button type="button" data-d="${step}">＋</button></div></label>`;
-  const F=r.querySelector(".exr-fields");
-  if(unit==="time")F.innerHTML=st("Série","f-s",v.s,1)+st("Sekundy","f-sec",v.sec,5,"s");
-  else if(unit==="reps")F.innerHTML=st("Série","f-s",v.s,1)+st("Opakování","f-r",v.r,1);
-  else F.innerHTML=st("Váha (kg)","f-w",v.w,2.5,"kg")+st("Série","f-s",v.s,1)+st("Opak.","f-r",v.r,1);
-}
+  r.querySelector(".set-head").style.gridTemplateColumns=setGrid(unit);
+  r.querySelector(".set-head").innerHTML=setHeadHTML(unit);
+  const box=r.querySelector(".sets");box.innerHTML="";
+  (sets.length?sets:[{}]).forEach(st=>addSetRow(r,st));
+  updateExSum(r)}
+function updateExHint(r){const el=r.querySelector(".exr-hint");if(!el)return;
+  const last=lastExerciseVal(r.querySelector(".exn").value.trim());
+  el.innerHTML=last?`minule <b>${esc(last)}</b>`:""}
+function plurSerie(n){return n===1?"série":(n>=2&&n<=4)?"série":"sérií"}
+function updateExSum(r){const unit=r.dataset.unit;const el=r.querySelector(".sum");if(!el)return;
+  const sets=readSetRows(r).filter(st=>setHasVal(unit,st));
+  if(!sets.length){el.textContent="";return}
+  const n=sets.length,lbl=n+" "+plurSerie(n);
+  if(unit==="kg"){const vol=sets.reduce((a,st)=>a+st.w*st.r,0);el.textContent=lbl+" · "+nbsp(Math.round(vol))+" kg";}
+  else if(unit==="reps"){el.textContent=lbl+" · "+sets.reduce((a,st)=>a+st.r,0)+" opak.";}
+  else{el.textContent=lbl+" · "+fmtSec(sets.reduce((a,st)=>a+st.sec,0));}}
 /* Globální stepper +/− pro všechna číselná pole ve .stepper */
 document.addEventListener("click",e=>{const b=e.target.closest(".stepper button[data-d]");if(!b)return;
   const inp=b.parentElement.querySelector("input");if(!inp)return;const step=+b.dataset.d;
@@ -1241,8 +1380,10 @@ $("#pickModeInput").addEventListener("change",renderPickerList);
 $("#pickerClose").addEventListener("click",closePicker);
 $("#pickerBg").addEventListener("click",e=>{if(e.target===$("#pickerBg"))closePicker()});
 $("#addExBtn").addEventListener("click",()=>addExRow());
-function readExRows(){return $$("#exRows .exrow2").map(r=>{const v=rowVals(r);const u=r.dataset.unit;
-  return{n:v.n,unit:u,w:+v.w||0,s:+v.s||0,r:+v.r||0,sec:+v.sec||0}}).filter(x=>x.n)}
+function readExRows(){return $$("#exRows .exrow2").map(r=>{
+  const n=r.querySelector(".exn").value.trim();const unit=r.dataset.unit;
+  const sets=readSetRows(r).filter(st=>setHasVal(unit,st)).map(st=>({w:st.w,r:st.r,sec:st.sec,done:!!st.done}));
+  return {n,unit,sets}}).filter(x=>x.n&&x.sets.length)}
 function fillSessionForm(sess){const f=$("#formSession");
   f.date.value=todayISO();f.type.value=sess.type||"Síla";
   f.dur.value=sess.dur||"";
@@ -1255,7 +1396,7 @@ function bestBefore(name,beforeId){let bm=0,be=0;const nl=name.toLowerCase();
   for(const s of state.sessions){if(s.id===beforeId)continue;
     for(const e of s.exercises){if(e.n.toLowerCase()!==nl)continue;
       const m=exMetric(e);if(m>bm)bm=m;
-      if(exUnit(e)==="kg"){const v=e1rm(e.w,e.r);if(v>be)be=v}}}
+      if(exUnit(e)==="kg"){const v=exBestE1RM(e);if(v>be)be=v}}}
   return{bm,be}}
 function renderSessions(){
   fillExDb();renderPlanBox();
@@ -1266,7 +1407,7 @@ function renderSessions(){
   renderTplRow();
   if(!ss.length){list.innerHTML=`<div class="empty"><div class="big">${EMPTY_SVG}</div>Zatím žádný trénink.<br>Přidej první výše.</div>`;return}
   list.innerHTML=ss.map(s=>{
-    const vol=Math.round(s.exercises.reduce((a,e)=>a+(exUnit(e)==="kg"?(+e.w||0)*(+e.s||0)*(+e.r||0):0),0));
+    const vol=Math.round(sessionVolKg(s));
     return `<div class="sess">
       <div class="hd"><div class="dt">${fmtDateFull(s.date)}</div>
         <div class="acts">
@@ -1311,7 +1452,7 @@ $("#formSession").addEventListener("submit",e=>{
   const id=uid();let prMsg=null;
   ex.forEach(x=>{const u=exUnit(x);const m=exMetric(x);if(m<=0)return;
     const b=bestBefore(x.n,id);let isPr=(b.bm>0&&m>b.bm);
-    if(u==="kg"&&b.be>0&&e1rm(x.w,x.r)>b.be+0.01)isPr=true;
+    if(u==="kg"&&b.be>0&&exBestE1RM(x)>b.be+0.01)isPr=true;
     if(isPr){x.pr=true;if(!prMsg)prMsg=`🏆 Nový rekord: ${x.n} ${exValStr(x)}!`}});
   state.sessions.push({id,date:f.date.value,muscles:mus,type:f.type.value,dur:f.dur.value?+f.dur.value:null,notes:f.notes.value.trim(),exercises:ex});
   save();
@@ -1442,17 +1583,20 @@ $("#saveGoal").addEventListener("click",()=>{
   const r=calc();const f=$("#formCalc");
   Object.assign(state.profile,{sex:f.sex.value,age:+f.age.value,height:+f.height.value,weight:+f.weight.value,activity:+f.activity.value,goal:f.goal.value,
     targetWeight:f.targetWeight.value?+f.targetWeight.value:null,targetKcal:r.target,targetProtein:r.protein});
-  save();renderCalories();toast("Cíl uložen: "+r.target+" kcal / "+r.protein+" g bílkovin")});
+  save();renderSettings();toast("Cíl uložen: "+r.target+" kcal / "+r.protein+" g bílkovin")});
 
-$("#saveSteps").addEventListener("click",()=>{
-  const v=$("#stepsInput").value;const g=$("#stepGoalInput").value;
-  if(g)state.profile.stepGoal=+g;
-  if(v!==""){state.steps[todayISO()]=+v}
-  save();renderCalories();toast("Kroky uloženy 🚶")});
+$("#saveStepsBtn").addEventListener("click",()=>{
+  const v=$("#stepsInput").value;
+  if(v!=="")state.steps[todayISO()]=Math.max(0,+v||0);
+  save();renderCalories();toast("Kroky uloženy")});
+$("#saveStepGoalBtn").addEventListener("click",()=>{
+  const g=$("#stepGoalInput").value;
+  if(g!=="")state.profile.stepGoal=Math.max(0,+g||0);
+  save();renderSettings();toast("Cíl kroků uložen")});
 $("#stepsToggle").addEventListener("click",()=>{
-  state.profile.addStepsToGoal=!state.profile.addStepsToGoal;save();renderCalories()});
+  state.profile.addStepsToGoal=!state.profile.addStepsToGoal;save();renderSettings()});
 $("#workoutToggle").addEventListener("click",()=>{
-  state.profile.addWorkoutToGoal=!state.profile.addWorkoutToGoal;save();renderCalories()});
+  state.profile.addWorkoutToGoal=!state.profile.addWorkoutToGoal;save();renderSettings()});
 
 /* ---- Databáze jídel (na 100 g): [název, kcal, bílk, sach, tuky] ---- */
 const FOODDB=[
@@ -1546,10 +1690,10 @@ async function stopScan(){
   $("#scanBg").classList.remove("show");
   if(scanner){try{await scanner.stop()}catch(e){}try{scanner.clear()}catch(e){}scanner=null}
 }
-function renderAiBox(){
-  const box=$("#aiBox");const key=state.profile.apiKey;
+function renderApiKeyBox(){
+  const box=$("#apiKeyBox");if(!box)return;const key=state.profile.apiKey;
   if(!key){box.innerHTML=`
-    <p class="small muted" style="margin-top:0">Vyfotíš jídlo a AI odhadne kalorie i makra. Funkce potřebuje tvůj vlastní <b>Anthropic API klíč</b> (console.anthropic.com, platí se za použití — pár haléřů za fotku). Klíč se uloží jen v tomto zařízení.</p>
+    <p class="small muted" style="margin-top:0">Pro foto jídla a AI plán tréninku vlož svůj <b>Anthropic API klíč</b> (console.anthropic.com — platí se za použití, pár haléřů za dotaz). Uloží se jen v tomto zařízení.</p>
     <div style="display:flex;gap:8px">
       <input type="password" id="apiKeyInput" placeholder="sk-ant-…" style="flex:1" autocomplete="off">
       <button class="btn small" id="apiKeySave" type="button">Uložit</button>
@@ -1562,11 +1706,18 @@ function renderAiBox(){
         if(r.status===401){toast("Klíč vypadá neplatně (401)");$("#apiKeySave").disabled=false;$("#apiKeySave").textContent="Uložit";return}
         if(r.ok){const j=await r.json();const m=(j.data||[]).find(x=>/sonnet/i.test(x.id));if(m)model=m.id}}
       catch(e){}
-      state.profile.apiKey=k;state.profile.aiModel=model;save();renderAiBox();renderPlanBox();
-      toast("Klíč uložen ✅");};
+      state.profile.apiKey=k;state.profile.aiModel=model;save();renderApiKeyBox();renderAiBox();renderPlanBox();
+      toast("Klíč uložen");};
     return}
+  box.innerHTML=`<p class="small" style="margin-top:0">AI aktivní <span class="muted">(${esc(state.profile.aiModel||"auto")})</span></p>
+    <button class="btn secondary small" id="apiKeyRemove" type="button">Odebrat klíč</button>`;
+  $("#apiKeyRemove").onclick=()=>{state.profile.apiKey="";save();renderApiKeyBox();renderAiBox();renderPlanBox()};
+}
+function renderAiBox(){
+  const box=$("#aiBox");if(!box)return;const key=state.profile.apiKey;
+  if(!key){box.innerHTML=`<p class="small muted" style="margin:0">Přidání jídla fotkou a čtení čárového kódu potřebuje AI klíč. Vlož ho v <a href="#" id="aiToSettings" style="color:var(--accent);font-weight:600">Nastavení</a>.</p>`;
+    const l=$("#aiToSettings");if(l)l.onclick=e=>{e.preventDefault();openSettings()};return}
   box.innerHTML=`
-    <p class="small muted" style="margin-top:0">✅ AI aktivní <span class="muted">(${esc(state.profile.aiModel||"auto")})</span> · <a href="#" id="apiKeyRemove" style="color:var(--bad)">odebrat klíč</a></p>
     <span class="flabel">Fotky <span class="muted" style="font-weight:500">(1× jídlo, případně 2× etiketa/složení)</span></span>
     <div class="thumbs" id="aiThumbs"></div>
     <input type="file" id="aiFile" accept="image/*" hidden>
@@ -1578,7 +1729,6 @@ function renderAiBox(){
     <button class="btn" id="scanBtn" type="button" style="margin-bottom:8px">Naskenovat kód fotoaparátem</button>
     <div style="display:flex;gap:8px"><input id="barcodeInput" inputmode="numeric" placeholder="…nebo zadej kód ručně" style="flex:1"><button class="btn small secondary" id="barcodeGo" type="button">Najít</button></div>
     <div class="ai-status" id="barcodeStatus"></div>`;
-  $("#apiKeyRemove").onclick=e=>{e.preventDefault();state.profile.apiKey="";save();renderAiBox();renderPlanBox()};
   let imgs=[]; // dataURL b64 strings
   function renderThumbs(){
     $("#aiThumbs").innerHTML=imgs.map((b,i)=>`<div class="thumb"><img src="data:image/jpeg;base64,${b}"><button class="x" data-rmimg="${i}" type="button">×</button></div>`).join("")
@@ -1683,7 +1833,7 @@ function renderRecentChips(){const el=$("#recentFoods");if(!el)return;
 /* ---- AI plánování tréninku ---- */
 function renderPlanBox(){
   const box=$("#planBox");if(!box)return;const p=state.profile;
-  if(!p.apiKey){box.innerHTML=`<p class="small muted" style="margin-top:0">AI plán potřebuje API klíč — přidej ho v sekci <b>Kalorie → Přidat jídlo fotkou</b>. Pak z tvého cíle, měr a fotek navrhnu týdenní rozpis a uložím ho jako šablony.</p>`;renderPlan();return}
+  if(!p.apiKey){box.innerHTML=`<p class="small muted" style="margin-top:0">AI plán potřebuje API klíč — přidej ho v <a href="#" id="planToSettings" style="color:var(--accent);font-weight:600">Nastavení</a>. Pak z tvého cíle, měr a fotek navrhnu týdenní rozpis a uložím ho jako šablony.</p>`;const l=$("#planToSettings");if(l)l.onclick=e=>{e.preventDefault();openSettings()};renderPlan();return}
   box.innerHTML=`
     <div class="row">
       <label class="field"><span>Dní v týdnu</span>
@@ -1752,21 +1902,15 @@ function savePlanDay(d){if(!d)return;
   save();fillExDb()}
 
 function renderCalories(){
-  const f=$("#formCalc");const p=state.profile;
-  f.age.value=p.age;f.height.value=p.height;f.weight.value=p.weight;f.activity.value=p.activity;
-  f.targetWeight.value=p.targetWeight??"";
-  setSeg("sex",p.sex);setSeg("goal",p.goal);
-  calc();
-  // kroky
+  const p=state.profile;
+  const twk=todayWorkoutKcal();
+  // kroky (rychlý zápis na obrazovce Jídlo; cíl a přepínače jsou v Nastavení)
   const st=+state.steps[todayISO()]||0;
   $("#stepsInput").value=st||"";
-  $("#stepGoalInput").value=p.stepGoal||"";
-  const sk=stepKcal(st);const twk=todayWorkoutKcal();
-  $("#stepsInfo").innerHTML=(st?`Dnes <b>${st.toLocaleString("cs")}</b> kroků ≈ <b>${sk} kcal</b>${p.stepGoal?` · cíl ${p.stepGoal.toLocaleString("cs")} (${Math.min(100,Math.round(st/p.stepGoal*100))} %)`:""}.`:`<span class="muted">Zapiš dnešní kroky (najdeš je v appce Zdraví na iPhonu). Automaticky je načte až nativní verze.</span>`)
+  const sk=stepKcal(st);
+  const gh=$("#stepsGoalHint");if(gh)gh.textContent=p.stepGoal?("cíl "+nbsp(p.stepGoal)):"";
+  $("#stepsInfo").innerHTML=(st?`Dnes <b>${nbsp(st)}</b> kroků ≈ <b>${sk} kcal</b>${p.stepGoal?` · ${Math.min(100,Math.round(st/p.stepGoal*100))} % cíle`:""}.`:`<span class="muted">Zapiš dnešní kroky (najdeš je v appce Zdraví na iPhonu).</span>`)
     +(twk?`<br>Dnešní tréninky ≈ <b>${twk} kcal</b> výdej.`:"");
-  $("#stepsToggle").classList.toggle("on",!!p.addStepsToGoal);
-  $("#workoutToggle").classList.toggle("on",!!p.addWorkoutToGoal);
-  $("#stepsWarn").textContent=((p.addStepsToGoal||p.addWorkoutToGoal)&&p.activity>=1.55)?"⚠️ Máš v kalkulačce aktivitu „střední“ a vyšší — aktivita se pak počítá dvakrát. Doporučení: buď nižší aktivita + přepínače, nebo vyšší aktivita bez nich.":"";
   renderAiBox();
   renderRecentChips();
   // deník
@@ -1852,7 +1996,7 @@ function dailyMax(name){const u=exUnitByName(name);const nl=name.toLowerCase();
   state.sessions.forEach(s=>s.exercises.forEach(e=>{
     if(e.n.toLowerCase()!==nl)return;const m=exMetric(e);if(m<=0)return;
     const cur=map[s.date]||{m:0,e:0};
-    map[s.date]={m:Math.max(cur.m,m),e:Math.max(cur.e,u==="kg"?e1rm(e.w,e.r):0)}}));
+    map[s.date]={m:Math.max(cur.m,m),e:Math.max(cur.e,u==="kg"?exBestE1RM(e):0)}}));
   return {unit:u,rows:Object.keys(map).sort().map(d=>({date:d,m:map[d].m,e:+map[d].e.toFixed(1)}))}}
 function chartStrength(){
   const sel=$("#exSelect");const opts=exOptions();
@@ -1883,7 +2027,7 @@ function renderPrTable(){
     const u=exUnit(e);const c=cnt[k]||{m:0,md:"",e:0,u,count:0};
     c.count++;
     if(m>c.m){c.m=m;c.md=s.date}
-    if(u==="kg"){const v=e1rm(e.w,e.r);if(v>c.e)c.e=v}
+    if(u==="kg"){const v=exBestE1RM(e);if(v>c.e)c.e=v}
     cnt[k]=c}));
   const keys=Object.keys(cnt);
   if(!keys.length){$("#prTable").innerHTML=`<div class="empty" style="padding:14px">Zatím žádné rekordy.<br>Zapisuj kg / opakování / čas.</div>`;return}
@@ -1927,7 +2071,7 @@ function chartVolume(){
   const byWeek={};
   state.sessions.forEach(s=>{if(s.date<cut&&cut!=="0000-00-00")return;
     const wk=mondayOf(s.date);
-    s.exercises.forEach(e=>{const v=e.w*e.s*e.r;if(!v)return;
+    s.exercises.forEach(e=>{const v=exVolumeKg(e);if(!v)return;
       const m=exMuscle(e.n,s);
       (byWeek[wk]=byWeek[wk]||{})[m]=(byWeek[wk][m]||0)+v})});
   const weeks=Object.keys(byWeek).sort().slice(-26);
@@ -2022,7 +2166,7 @@ function renderData(){
   chartWeightBig();chartStrength();renderPrTable();chartVolume();renderHeatmap();
   chartMeasure();chartFeel();chartCalBig();chartSteps();renderBodyTable();
   const s=state;
-  const totalVol=s.sessions.reduce((a,x)=>a+x.exercises.reduce((y,e)=>y+e.w*e.s*e.r,0),0);
+  const totalVol=s.sessions.reduce((a,x)=>a+sessionVolKg(x),0);
   const exTotal=s.sessions.reduce((a,x)=>a+x.exercises.length,0);
   const cal30=(()=>{const cut=isoNdaysAgo(30);const m={};s.foods.forEach(f=>{if(f.date>=cut)m[f.date]=(m[f.date]||0)+(+f.kcal||0)});
     const v=Object.values(m);return v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length):0})();
@@ -2064,8 +2208,8 @@ $("#icsBtn").addEventListener("click",()=>{
   const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Progres//Treninky//CS","CALSCALE:GREGORIAN","X-WR-CALNAME:Progres — tréninky"];
   [...state.sessions].sort((a,b)=>a.date.localeCompare(b.date)).forEach(s=>{
     const d=s.date.replace(/-/g,"");const nd=isoAddDays(s.date,1).replace(/-/g,"");
-    const vol=Math.round(s.exercises.reduce((a,e)=>a+(exUnit(e)==="kg"?(+e.w||0)*(+e.s||0)*(+e.r||0):0),0));
-    const desc=s.exercises.map(e=>"• "+e.n+(exValStr(e)?" "+exValStr(e):"")+(e.pr?" 🏆":"")).join("\n")
+    const vol=Math.round(sessionVolKg(s));
+    const desc=s.exercises.map(e=>"• "+e.n+(exValStr(e)?" "+exValStr(e):"")+(e.pr?" PR":"")).join("\n")
       +"\n"+estDur(s)+" min · ≈ "+workoutKcal(s)+" kcal"+(vol?" · objem "+vol.toLocaleString("cs")+" kg":"")+(s.notes?"\nPoznámka: "+s.notes:"");
     L.push("BEGIN:VEVENT","UID:"+s.id+"@progres.app","DTSTAMP:"+d+"T000000Z",
       "DTSTART;VALUE=DATE:"+d,"DTEND;VALUE=DATE:"+nd,
@@ -2079,8 +2223,9 @@ function csv(rows){return "﻿"+rows.map(r=>r.map(c=>{c=c==null?"":String(c);
   return /[;"\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c}).join(CSVJ)).join("\r\n")}
 $$(".csv-chips button").forEach(b=>b.addEventListener("click",()=>{
   const k=b.dataset.csv;let rows,name;
-  if(k==="sessions"){name="treninky";rows=[["Datum","Partie","Typ","Cvik","Jednotka","Kg","Série","Opakování","Sekundy","Objem","PR","Poznámka"]];
-    [...state.sessions].sort((a,b)=>a.date.localeCompare(b.date)).forEach(s=>s.exercises.forEach(e=>rows.push([s.date,s.muscles.join(", "),s.type,e.n,exUnit(e),e.w||"",e.s||"",e.r||"",e.sec||"",Math.round(exVolume(e))||"",e.pr?"ano":"",s.notes||""])))}
+  if(k==="sessions"){name="treninky";rows=[["Datum","Partie","Typ","Cvik","Jednotka","Série #","Kg","Opakování","Sekundy","PR","Poznámka"]];
+    [...state.sessions].sort((a,b)=>a.date.localeCompare(b.date)).forEach(s=>s.exercises.forEach(e=>{
+      const u=exUnit(e);exSets(e).forEach((st,i)=>rows.push([s.date,s.muscles.join(", "),s.type,e.n,u,i+1,st.w||"",st.r||"",st.sec||"",e.pr?"ano":"",s.notes||""]))}))}
   else if(k==="body"){name="telo";rows=[["Datum","Váha","Biceps","Hrudník","Pas","Boky","Stehno","Lýtko","Pocit (1-5)","Poznámka"]];
     [...state.body].sort((a,b)=>a.date.localeCompare(b.date)).forEach(r=>rows.push([r.date,r.weight,r.biceps,r.chest,r.waist,r.hips,r.thigh,r.calf,r.feeling,r.notes||""]))}
   else if(k==="foods"){name="jidla";rows=[["Datum","Jídlo","Kcal","Bílkoviny g","Sacharidy g","Tuky g"]];
