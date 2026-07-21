@@ -351,6 +351,9 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .settings-sec{display:none}
   .settings-sec.active{display:block;animation:fade .25s ease}
   .back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--accent);font:inherit;font-size:16px;font-weight:500;cursor:pointer;padding:0;margin-bottom:6px}
+  .qty-chips{display:flex;gap:6px;flex-wrap:wrap}
+  .qty-chips button{flex:1;min-width:44px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:9px 4px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;font-variant-numeric:tabular-nums}
+  .qty-chips button.on{background:var(--accent);border-color:var(--accent);color:#fff}
 </style>
 </head>
 <body>
@@ -559,11 +562,30 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
             <label class="field"><span>Sacharidy (g)</span><div class="stepper"><button type="button" data-d="-1">−</button><input type="number" name="carbs" min="0" step="0.1" inputmode="decimal"><button type="button" data-d="1">＋</button></div></label>
             <label class="field"><span>Tuky (g)</span><div class="stepper"><button type="button" data-d="-1">−</button><input type="number" name="fat" min="0" step="0.1" inputmode="decimal"><button type="button" data-d="1">＋</button></div></label>
           </div>
-          <label class="field"><span>Počet porcí / kusů <span class="muted" style="font-weight:500">(vynásobí hodnoty výše)</span></span><div class="stepper" style="max-width:180px"><button type="button" data-d="-1">−</button><input type="number" name="qty" min="1" step="1" value="1" inputmode="numeric"><button type="button" data-d="1">＋</button></div></label>
-          <button class="btn" type="submit">＋ Přidat jídlo</button>
+          <label class="field"><span>Množství — porce / kusů <span class="muted" style="font-weight:500">(vynásobí hodnoty výše, jde i méně než 1)</span></span>
+            <div class="qty-chips" id="qtyChips">
+              <button type="button" data-q="0.25">¼</button>
+              <button type="button" data-q="0.3333">⅓</button>
+              <button type="button" data-q="0.5">½</button>
+              <button type="button" data-q="1" class="on">1</button>
+              <button type="button" data-q="1.5">1½</button>
+              <button type="button" data-q="2">2</button>
+            </div>
+            <div class="stepper" style="max-width:180px;margin-top:8px"><button type="button" data-d="-0.25">−</button><input type="number" name="qty" min="0" step="0.25" value="1" inputmode="decimal"><button type="button" data-d="0.25">＋</button></div>
+          </label>
+          <div class="btn-row">
+            <button class="btn" type="submit" style="flex:2">＋ Přidat jídlo</button>
+            <button class="btn secondary" type="button" id="toBatchBtn" style="flex:1">Do dávky ↓</button>
+          </div>
         </form>
         <div id="calorieSummary" style="margin-top:14px"></div>
         <div id="foodList"></div>
+      </div>
+
+      <div class="card">
+        <h2>Dávka / recept <span class="hint">uvařils víc porcí?</span></h2>
+        <p class="small muted" style="margin-top:0">Poskládej jídlo z ingrediencí přes tlačítko <b>„Do dávky"</b> u formuláře nahoře (funguje přes fotku, kód, databázi i ruční zadání). Pak řekni, na kolik porcí dávku rozdělíš, a appka přidá tvoji porci do deníku.</p>
+        <div id="batchBox"></div>
       </div>
     </section>
 
@@ -1645,7 +1667,7 @@ function aiJson(txt){
 }
 async function aiAnalyzeFood(imgs,desc){
   const content=imgs.map(b64=>({type:"image",source:{type:"base64",media_type:"image/jpeg",data:b64}}));
-  content.push({type:"text",text:"Jsi nutriční asistent. Z fotek (může být jídlo na talíři i etiketa/obal se složením) a popisu odhadni jídlo a jeho nutriční hodnoty pro zobrazenou porci."+(desc?" Popis od uživatele: "+desc+".":"")+" Pokud je na obalu tabulka na 100 g, přepočítej ji na odhadovanou gramáž porce. Odpověz POUZE platným JSON: {\"nazev\":\"krátký český název s gramáží\",\"kcal\":číslo,\"bilkoviny_g\":číslo,\"sacharidy_g\":číslo,\"tuky_g\":číslo,\"poznamka\":\"nejistoty, max 1 věta\"}"});
+  content.push({type:"text",text:"Jsi nutriční asistent. Z fotek (může být jídlo na talíři i etiketa/obal se složením) a popisu odhadni jídlo a jeho nutriční hodnoty pro CELÉ zobrazené množství."+(desc?" Popis od uživatele: "+desc+".":"")+" Pokud je na obalu tabulka na 100 g, přepočítej ji na odhadovanou gramáž. Pokud jde o počitatelné kusy (vejce, plátky, housky…), vyplň \"pocet\" počtem kusů na fotce a název dej pro JEDEN kus bez čísla (např. \"Vejce\"); hodnoty kcal/makra ať jsou za VŠECHNY kusy dohromady. Jinak pocet=1. Odpověz POUZE platným JSON: {\"nazev\":\"krátký český název\",\"pocet\":číslo,\"kcal\":číslo,\"bilkoviny_g\":číslo,\"sacharidy_g\":číslo,\"tuky_g\":číslo,\"poznamka\":\"nejistoty, max 1 věta\"}"});
   return aiJson(await aiCall(content,500));
 }
 async function barcodeLookup(code){
@@ -1745,8 +1767,9 @@ function renderAiBox(){
     if(!imgs.length)return;const btn=$("#aiGo"),st=$("#aiStatus");
     btn.disabled=true;btn.innerHTML='<span class="spin"></span> Analyzuji…';st.textContent="";
     try{const res=await aiAnalyzeFood(imgs,$("#aiDesc").value.trim());
-      prefillFood(res.nazev||"Jídlo z fotky",res.kcal,res.bilkoviny_g,res.sacharidy_g,res.tuky_g);
-      st.innerHTML=`Odhad: <b>${esc(res.nazev||"?")}</b> ≈ ${Math.round(res.kcal||0)} kcal · B ${Math.round(res.bilkoviny_g||0)} · S ${Math.round(res.sacharidy_g||0)} · T ${Math.round(res.tuky_g||0)}${res.poznamka?`<br><span class="muted">${esc(res.poznamka)}</span>`:""}<br><span class="muted">Zkontroluj dole a ulož „Přidat jídlo“.</span>`;
+      const pocet=Math.max(1,Math.round(+res.pocet||1));
+      prefillFood(res.nazev||"Jídlo z fotky",res.kcal,res.bilkoviny_g,res.sacharidy_g,res.tuky_g,pocet);
+      st.innerHTML=`Odhad: <b>${esc(res.nazev||"?")}</b>${pocet>1?` × ${pocet} ks`:""} ≈ ${Math.round(res.kcal||0)} kcal · B ${Math.round(res.bilkoviny_g||0)} · S ${Math.round(res.sacharidy_g||0)} · T ${Math.round(res.tuky_g||0)}${res.poznamka?`<br><span class="muted">${esc(res.poznamka)}</span>`:""}<br><span class="muted">${pocet>1?"Počet ("+pocet+") uprav dole podle toho, kolik sníš. ":""}Zkontroluj a ulož „Přidat jídlo“.</span>`;
       imgs=[];renderThumbs();$("#aiDesc").value="";toast("Odhad vyplněn ⤵");}
     catch(err){st.innerHTML=`<span style="color:var(--bad)">Nepovedlo se: ${esc(err.message)}</span>`}
     btn.disabled=false;btn.textContent="Analyzovat";};
@@ -1758,14 +1781,52 @@ function renderAiBox(){
     catch(err){st.innerHTML=`<span style="color:var(--bad)">${esc(err.message)}</span>`}
     btn.disabled=false;btn.textContent="Najít";};
 }
-function prefillFood(name,kcal,p,c,f){const F=$("#formFood");
-  F.name.value=name||"";F.kcal.value=Math.round(kcal||0);
-  F.protein.value=p!=null?Math.round(p):"";F.carbs.value=c!=null?Math.round(c):"";F.fat.value=f!=null?Math.round(f):"";
-  if(F.qty)F.qty.value="1";
+/* Nastavení množství (porce/kusy) ve formuláři + zvýraznění zlomkových chipů */
+function setQty(v){const inp=$("#formFood [name=qty]");if(!inp)return;
+  inp.value=(Math.round(v*10000)/10000);
+  $$("#qtyChips button").forEach(b=>b.classList.toggle("on",Math.abs((+b.dataset.q)-v)<0.01))}
+function prefillFood(name,kcal,p,c,f,count){const F=$("#formFood");
+  const n=(count&&count>1)?count:1;
+  F.name.value=name||"";F.kcal.value=Math.round((kcal||0)/n);
+  F.protein.value=p!=null?Math.round(p/n):"";F.carbs.value=c!=null?Math.round(c/n):"";F.fat.value=f!=null?Math.round(f/n):"";
+  setQty(n);
   F.name.scrollIntoView({behavior:"smooth",block:"center"})}
 function addFood(o){state.foods.push({id:uid(),date:todayISO(),name:o.name,kcal:+o.kcal||0,
   protein:o.protein!=null?+o.protein:null,carbs:o.carbs!=null?+o.carbs:null,fat:o.fat!=null?+o.fat:null});
   save();renderCalories()}
+
+/* ---- Dávka / recept (poskládej z ingrediencí → rozděl na porce) ---- */
+let batch=[], batchServings=2;
+function batchTotals(){return batch.reduce((a,it)=>({kcal:a.kcal+(+it.kcal||0),p:a.p+(+it.protein||0),c:a.c+(+it.carbs||0),f:a.f+(+it.fat||0)}),{kcal:0,p:0,c:0,f:0})}
+function addToBatch(o){batch.push({name:o.name||"Ingredience",kcal:+o.kcal||0,protein:+o.protein||0,carbs:+o.carbs||0,fat:+o.fat||0});renderBatch()}
+function plurPolozka(n){return n===1?"položka":(n>=2&&n<=4)?"položky":"položek"}
+function renderBatch(){const box=$("#batchBox");if(!box)return;
+  if(!batch.length){box.innerHTML=`<div class="small muted">Zatím prázdné. Vyplň jídlo ve formuláři nahoře a klepni <b>„Do dávky ↓"</b>. Opakuj pro každou ingredienci.</div>`;return}
+  box.innerHTML=
+    batch.map((it,i)=>`<div class="item"><div class="tag" style="min-width:52px">${Math.round(it.kcal)}<br><span style="font-size:10px;font-weight:600">kcal</span></div><div class="body"><div class="t1">${esc(it.name)}</div><div class="t2">B ${Math.round(it.protein)} · S ${Math.round(it.carbs)} · T ${Math.round(it.fat)}</div></div><button class="del" data-rmbatch="${i}">×</button></div>`).join("")
+    +`<div class="setrow" style="margin-top:10px"><div class="lb">Počet porcí z dávky<span class="sub2">Na kolik porcí ji rozdělíš.</span></div>
+        <div class="stepper" style="max-width:140px;flex:none"><button type="button" data-d="-1">−</button><input type="number" id="batchServInput" min="1" step="1" value="${Math.max(1,batchServings)}" inputmode="numeric"><button type="button" data-d="1">＋</button></div></div>
+      <div class="macro" id="batchPer" style="margin-top:8px"></div>
+      <div class="small muted" id="batchTotal" style="margin-top:8px"></div>
+      <label class="field" style="margin-top:12px"><span>Kolik porcí sníš (přidá do deníku)</span><div class="stepper" style="max-width:140px"><button type="button" data-d="-0.5">−</button><input type="number" id="batchAddPortions" min="0.5" step="0.5" value="1" inputmode="decimal"><button type="button" data-d="0.5">＋</button></div></label>
+      <div class="btn-row" style="margin-top:4px">
+        <button class="btn" id="batchAddBtn" type="button" style="flex:2">Přidat do deníku</button>
+        <button class="btn secondary" id="batchClearBtn" type="button" style="flex:1">Vymazat</button>
+      </div>`;
+  $$("#batchBox [data-rmbatch]").forEach(b=>b.onclick=()=>{batch.splice(+b.dataset.rmbatch,1);renderBatch()});
+  const upd=()=>{const t=batchTotals();const sv=Math.max(1,+$("#batchServInput").value||1);batchServings=sv;
+    const per=k=>Math.round(t[k]/sv);
+    $("#batchPer").innerHTML=`<div class="m"><div class="n">${per('kcal')}</div><div class="l">kcal / porce</div></div><div class="m"><div class="n">${per('p')} g</div><div class="l">Bílkoviny</div></div><div class="m"><div class="n">${per('c')} g</div><div class="l">Sacharidy</div></div>`;
+    $("#batchTotal").textContent=`Celá dávka: ${nbsp(Math.round(t.kcal))} kcal · B ${Math.round(t.p)} · S ${Math.round(t.c)} · T ${Math.round(t.f)} · ${batch.length} ${plurPolozka(batch.length)}`};
+  $("#batchServInput").addEventListener("input",upd);upd();
+  $("#batchClearBtn").onclick=()=>{batch=[];batchServings=2;renderBatch();toast("Dávka vymazána")};
+  $("#batchAddBtn").onclick=()=>{if(!batch.length)return;
+    const t=batchTotals();const sv=Math.max(1,+$("#batchServInput").value||1);const portions=Math.max(0.5,+$("#batchAddPortions").value||1);
+    const factor=portions/sv;
+    const nm=(batch.length===1?batch[0].name:"Dávka ("+batch.length+" ingr.)")+" — "+fmtNum(portions)+"/"+sv+" porce";
+    addFood({name:nm,kcal:Math.round(t.kcal*factor),protein:+(t.p*factor).toFixed(1),carbs:+(t.c*factor).toFixed(1),fat:+(t.f*factor).toFixed(1)});
+    toast("Přidáno "+Math.round(t.kcal*factor)+" kcal do deníku")};
+}
 
 /* ---- Výběr jídla + porce ---- */
 let curPortion=null;
@@ -1798,7 +1859,7 @@ function renderPortion(){const pp=$("#portionPanel");
   pp.innerHTML=`<div class="portion"><div style="font-weight:700;margin-bottom:8px">${esc(curPortion.food.n)}</div>
     <div class="row">
       <label class="mini-f"><span>Velikost porce (g)${curPortion.src?' · z balení':''}</span><div class="stepper"><button type="button" data-d="-10">−</button><input type="number" id="portionG" min="0" step="10" value="${curPortion.grams}" inputmode="numeric"><button type="button" data-d="10">＋</button></div></label>
-      <label class="mini-f"><span>Počet (ks/porcí)</span><div class="stepper"><button type="button" data-d="-1">−</button><input type="number" id="portionCount" min="1" step="1" value="${curPortion.count}" inputmode="numeric"><button type="button" data-d="1">＋</button></div></label>
+      <label class="mini-f"><span>Počet (ks/porcí)</span><div class="stepper"><button type="button" data-d="-0.5">−</button><input type="number" id="portionCount" min="0.5" step="0.5" value="${curPortion.count}" inputmode="decimal"><button type="button" data-d="0.5">＋</button></div></label>
     </div>
     <div class="small muted" style="margin:9px 0 4px">Hodnoty na 100 g${curPortion.src?" ("+esc(curPortion.src)+" — uprav, pokud nesedí s obalem)":" (uprav dle potřeby)"}:</div>
     <div class="row-4">
@@ -1913,6 +1974,7 @@ function renderCalories(){
     +(twk?`<br>Dnešní tréninky ≈ <b>${twk} kcal</b> výdej.`:"");
   renderAiBox();
   renderRecentChips();
+  renderBatch();
   // deník
   const subEl=$("#foodDaySub");if(subEl)subEl.textContent=czLongDate();
   $("#foodDate").textContent=fmtDateFull(todayISO());
@@ -1962,12 +2024,22 @@ function renderCalories(){
     toast("Předvyplněno — uprav a přidej ⤵")});
 }
 $("#formFood").addEventListener("submit",e=>{
-  e.preventDefault();const f=e.target;const q=Math.max(1,+f.qty.value||1);
-  const nm=f.name.value.trim()+(q>1?" × "+q:"");
+  e.preventDefault();const f=e.target;const q=Math.max(0.01,+f.qty.value||1);
+  const nm=f.name.value.trim()+(Math.abs(q-1)>0.001?" × "+fmtNum(q):"");
   state.foods.push({id:uid(),date:todayISO(),name:nm,kcal:Math.round((+f.kcal.value||0)*q),
     protein:f.protein.value?+(+f.protein.value*q).toFixed(1):null,carbs:f.carbs.value?+(+f.carbs.value*q).toFixed(1):null,fat:f.fat.value?+(+f.fat.value*q).toFixed(1):null});
-  save();f.name.value="";f.kcal.value="";f.protein.value="";f.carbs.value="";f.fat.value="";f.qty.value="1";
-  renderCalories();toast("Jídlo přidáno 🍽️")});
+  save();f.name.value="";f.kcal.value="";f.protein.value="";f.carbs.value="";f.fat.value="";setQty(1);
+  renderCalories();toast("Jídlo přidáno")});
+/* zlomkové chipy množství + tlačítko Do dávky */
+$$("#qtyChips button").forEach(b=>b.addEventListener("click",()=>setQty(+b.dataset.q)));
+$("#formFood [name=qty]").addEventListener("input",()=>{const v=+$("#formFood [name=qty]").value||0;
+  $$("#qtyChips button").forEach(b=>b.classList.toggle("on",Math.abs((+b.dataset.q)-v)<0.01))});
+$("#toBatchBtn").addEventListener("click",()=>{const f=$("#formFood");
+  const q=Math.max(0.01,+f.qty.value||1);
+  if(!f.name.value.trim()||f.kcal.value===""){toast("Vyplň aspoň název a kcal");return}
+  addToBatch({name:f.name.value.trim(),kcal:(+f.kcal.value||0)*q,protein:(+f.protein.value||0)*q,carbs:(+f.carbs.value||0)*q,fat:(+f.fat.value||0)*q});
+  f.name.value="";f.kcal.value="";f.protein.value="";f.carbs.value="";f.fat.value="";setQty(1);
+  toast("Přidáno do dávky ↓")});
 
 /* ================== DATA & GRAFY ================== */
 function chartWeightBig(){
