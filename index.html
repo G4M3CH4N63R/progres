@@ -91,6 +91,35 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   section{display:none;animation:fade .25s ease}
   section.active{display:block}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .hub{display:none}
+  section.hubon>.hub{display:block}
+  section.hubon>:not(.hub){display:none!important}
+  section.soloon>.solocard{display:block}
+  section.soloon>.hubback{display:inline-flex}
+  section.soloon>:not(.solocard):not(.hubback){display:none!important}
+  #tab-trenink.soloon>.pausebar{display:flex!important}
+  .hub .page-sub{margin-bottom:16px}
+  .hub-main{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:none;cursor:pointer;background:var(--accent);color:#fff;border-radius:20px;padding:15px 18px;margin-bottom:12px;font:inherit}
+  .hub-main .ic{width:46px;height:46px;border-radius:13px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex:none}
+  .hub-main .ic svg{width:25px;height:25px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .hub-main .tx{flex:1;min-width:0}
+  .hub-main .tx b{display:block;font-size:17px;font-weight:700;letter-spacing:-.2px}
+  .hub-main .tx span{display:block;font-size:12.5px;color:rgba(255,255,255,.85);margin-top:2px}
+  .hub-main .ch{font-size:24px;color:rgba(255,255,255,.8);font-weight:300;flex:none}
+  .hubgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .hubgrid button{display:flex;flex-direction:column;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 6px 13px;cursor:pointer;color:var(--ink);font:inherit;box-shadow:var(--shadow)}
+  .hubgrid button:active{background:var(--accent-weak)}
+  .hubgrid button svg{width:28px;height:28px;fill:none;stroke:var(--accent);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .hubgrid button span{font-size:12px;font-weight:500;text-align:center;line-height:1.25}
+  .hubback{display:none;align-items:center;gap:5px;background:none;border:none;color:var(--accent);font:inherit;font-size:15px;font-weight:600;cursor:pointer;padding:2px 2px;margin:0 0 10px}
+  .hubback svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .tplitem{display:flex;align-items:stretch;gap:8px;margin-bottom:8px}
+  .tplpick{flex:1;text-align:left;background:var(--plane);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px}
+  .tplpick:active{background:var(--accent-weak)}
+  .tplpick .nm{font-size:15px;font-weight:600}
+  .tplpick .sb{font-size:12px;color:var(--muted)}
+  .tpldel{flex:none;width:42px;border:1px solid var(--line);border-radius:12px;background:var(--plane);color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
+  .tpldel:active{background:var(--accent-weak)}
   .page-title{font-size:32px;font-weight:700;letter-spacing:-.5px;margin:2px 0 4px;padding-right:46px}
   .page-sub{font-size:13px;color:var(--muted);font-weight:500;margin:0 0 18px}
   .page-title + .card, .page-sub + .card, .page-title + .tiles, .page-sub + .tiles, .page-title + .ring-cards{margin-top:2px}
@@ -442,6 +471,18 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
 
     <!-- ============ TRÉNINK ============ -->
     <section id="tab-trenink">
+      <div class="hub">
+        <div class="page-title">Trénink</div>
+        <div class="page-sub">Rychlé akce</div>
+        <button class="hub-main" type="button" data-card="#card-newworkout"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6 9v6M9 8v8M9 12h6M15 8v8M18 9v6"/></svg></span><span class="tx"><b>Nový trénink</b><span>Zapiš dnešní trénink</span></span><span class="ch">›</span></button>
+        <div class="hubgrid">
+          <button type="button" data-card="#card-newworkout" data-focus="addex"><svg viewBox="0 0 24 24"><path d="M4 7h10M4 12h6M4 17h6M16 14v6M13 17h6"/></svg><span>Přidat cvik</span></button>
+          <button type="button" data-card="#card-templates"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg><span>Šablony</span></button>
+          <button type="button" data-card="#card-aiplan"><svg viewBox="0 0 24 24"><path d="M12 3.5l1.6 4.4L18 9.5l-4.4 1.6L12 15.5l-1.6-4.4L6 9.5l4.4-1.6L12 3.5z"/><path d="M18.5 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg><span>AI plán</span></button>
+          <button type="button" data-card="#card-trhist"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5V8h3.5"/><path d="M12 8v4.2l3 1.8"/></svg><span>Historie</span></button>
+        </div>
+      </div>
+      <button class="hubback" type="button"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Rozcestník</button>
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding-right:46px">
         <div class="page-title" style="padding-right:0">Nový trénink</div>
         <button class="link-btn" id="tplToggle" type="button">Šablony</button>
@@ -457,7 +498,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <button class="pb-p danger" id="tStop" type="button" style="display:none">Stop</button>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-newworkout">
         <div id="tplRow" style="display:none;margin-bottom:12px">
           <span class="flabel">Šablony</span>
           <div style="display:flex;gap:8px">
@@ -503,12 +544,17 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         </form>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-templates">
+        <h2>Šablony <span class="hint">tvoje uložené tréninky</span></h2>
+        <div id="tplList"></div>
+      </div>
+
+      <div class="card" id="card-aiplan">
         <h2>AI plán tréninku <span class="hint">z tvého cíle a těla</span></h2>
         <div id="planBox"></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-trhist">
         <h2>Historie tréninků <span class="hint" id="woCount"></span></h2>
         <div id="sessList"></div>
       </div>
@@ -516,15 +562,27 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
 
     <!-- ============ TĚLO ============ -->
     <section id="tab-telo">
+      <div class="hub">
+        <div class="page-title">Tělo</div>
+        <div class="page-sub">Rychlé akce</div>
+        <button class="hub-main" type="button" data-card="#weighHero"><span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.3 11.5a3.7 3.7 0 0 1 7.4 0"/><path d="M12 11.5l2-1.6"/></svg></span><span class="tx"><b>Zapsat váhu</b><span>Rychlý zápis s + a −</span></span><span class="ch">›</span></button>
+        <div class="hubgrid">
+          <button type="button" data-card="#card-measures"><svg viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="7" rx="1.5"/><path d="M7 8.5v3M10 8.5v4M13 8.5v3M16 8.5v4"/></svg><span>Míry</span></button>
+          <button type="button" data-card="#card-bodyrec"><svg viewBox="0 0 24 24"><path d="M5 3.5h9l5 5V20.5H5z"/><path d="M14 3.5V9h5"/><path d="M8 13h8M8 16.5h5"/></svg><span>Detailní záznam</span></button>
+          <button type="button" data-card="#card-photos"><svg viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="3"/><circle cx="12" cy="13.5" r="3.3"/><path d="M8.5 7.5l1-2.2h5l1 2.2"/></svg><span>Fotky</span></button>
+          <button type="button" data-card="#card-bodyhist"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5V8h3.5"/><path d="M12 8v4.2l3 1.8"/></svg><span>Historie</span></button>
+        </div>
+      </div>
+      <button class="hubback" type="button"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Rozcestník</button>
       <div class="page-title">Tělo</div>
       <div class="page-sub" id="teloSub"></div>
       <div class="card hero" id="weighHero"></div>
-      <div class="card">
+      <div class="card" id="card-measures">
         <h2>Míry · cm <span class="hint">dnešní měření</span></h2>
         <div class="measure-list" id="measureList"></div>
         <button class="btn" id="saveMeasuresBtn" type="button" style="margin-top:12px">Uložit měření</button>
       </div>
-      <div class="card">
+      <div class="card" id="card-bodyrec">
         <h2>Detailní / zpětný záznam <span class="hint">váha + míry + pocit k datu</span></h2>
         <form id="formBody">
           <div class="row">
@@ -556,7 +614,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         </form>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-photos">
         <h2>Fotky progresu <span class="hint">zůstávají jen v tvém zařízení</span></h2>
         <div class="row">
           <div>
@@ -578,7 +636,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div id="photoEmpty"></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-bodyhist">
         <h2>Historie měření <span class="hint" id="bodyCount"></span></h2>
         <div id="bodyList"></div>
       </div>
@@ -586,11 +644,25 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
 
     <!-- ============ KALORIE ============ -->
     <section id="tab-kalorie">
+      <div class="hub">
+        <div class="page-title">Jídlo</div>
+        <div class="page-sub">Rychlé akce</div>
+        <button class="hub-main" type="button" data-card="#card-foodlog"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6 3v6M6 9a2 2 0 0 0 4 0V3M8 9v12"/><path d="M16 3c-1.4 0-2 2.2-2 4.5s.6 3.5 2 3.5v10"/></svg></span><span class="tx"><b>Přidat jídlo</b><span>Do dnešního deníku</span></span><span class="ch">›</span></button>
+        <div class="hubgrid">
+          <button type="button" data-run="scan"><svg viewBox="0 0 24 24"><path d="M4 8V6.5A2.5 2.5 0 0 1 6.5 4H8M16 4h1.5A2.5 2.5 0 0 1 20 6.5V8M20 16v1.5a2.5 2.5 0 0 1-2.5 2.5H16M8 20H6.5A2.5 2.5 0 0 1 4 17.5V16"/><path d="M8 9v6M11 9v6M13.5 9v6M16 9v6"/></svg><span>Sken kódu</span></button>
+          <button type="button" data-card="#card-ai"><svg viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="3"/><circle cx="12" cy="13.5" r="3.3"/><path d="M8.5 7.5l1-2.2h5l1 2.2"/></svg><span>Fotka jídla</span></button>
+          <button type="button" data-run="foodpick"><svg viewBox="0 0 24 24"><path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><span>Databáze</span></button>
+          <button type="button" data-card="#card-batch"><svg viewBox="0 0 24 24"><path d="M3 11h18M4 11a8 8 0 0 0 16 0"/><path d="M8.5 11c0-2 1.3-3.5 3.5-3.5s3.5 1.5 3.5 3.5"/></svg><span>Dávka / recept</span></button>
+          <button type="button" data-card="#card-diary"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h8"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span>Deník</span></button>
+          <button type="button" data-card="#card-steps"><svg viewBox="0 0 24 24"><path d="M4 19h4v-4h4v-4h4v-4h4"/></svg><span>Kroky</span></button>
+        </div>
+      </div>
+      <button class="hubback" type="button"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Rozcestník</button>
       <div class="page-title">Jídlo</div>
       <div class="page-sub" id="foodDaySub"></div>
       <div class="card hero" id="calHero" style="display:none"></div>
 
-      <div class="card">
+      <div class="card" id="card-foodlog">
         <h2>Přidat jídlo</h2>
         <button class="btn secondary" id="foodPickBtn" type="button" style="margin-bottom:12px">Vybrat z databáze / historie</button>
         <div id="recentFoods" class="recent-row"></div>
@@ -620,12 +692,12 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div id="calorieSummary" style="margin-top:14px"></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-diary">
         <h2>Dnešní deník <span class="hint" id="foodDate"></span></h2>
         <div id="foodList"></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-steps">
         <h2>Kroky dnes <span class="hint" id="stepsGoalHint"></span></h2>
         <div style="display:flex;gap:8px;align-items:flex-end">
           <label class="field" style="flex:1;margin:0"><span>Počet kroků</span><input type="number" id="stepsInput" min="0" step="100" placeholder="např. 8500"></label>
@@ -634,12 +706,12 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div class="small" id="stepsInfo" style="margin-top:10px"></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-ai">
         <h2>Přidat jídlo fotkou <span class="hint">AI odhad — experimentální</span></h2>
         <div id="aiBox"></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-batch">
         <h2>Dávka / recept <span class="hint">uvařils víc porcí?</span></h2>
         <p class="small muted" style="margin-top:0">Poskládej jídlo z ingrediencí přes tlačítko <b>„Do dávky"</b> u formuláře nahoře (funguje přes fotku, kód, databázi i ruční zadání). Pak řekni, na kolik porcí dávku rozdělíš, a appka přidá tvoji porci do deníku.</p>
         <div id="batchBox"></div>
@@ -648,6 +720,21 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
 
     <!-- ============ DATA ============ -->
     <section id="tab-data">
+      <div class="hub">
+        <div class="page-title">Progres</div>
+        <div class="page-sub">Rychlé akce</div>
+        <button class="hub-main" type="button" data-card="#card-pr"><span class="ic"><svg viewBox="0 0 24 24"><path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/><path d="M7 6.5H4.5v.5a3 3 0 0 0 3 3M17 6.5h2.5v.5a3 3 0 0 1-3 3"/><path d="M12 12.5V16M9 20h6M10.2 20l.6-4h2.4l.6 4"/></svg></span><span class="tx"><b>Osobní rekordy</b><span>Tvoje nej výkony</span></span><span class="ch">›</span></button>
+        <div class="hubgrid">
+          <button type="button" data-card="#card-strength"><svg viewBox="0 0 24 24"><path d="M4 5v14h16"/><path d="M7 14l3.5-3.5 3 2L21 6"/></svg><span>Grafy cviků</span></button>
+          <button type="button" data-card="#card-volume"><svg viewBox="0 0 24 24"><path d="M4 20V4M4 20h16"/><rect x="7" y="12" width="3" height="5" rx=".6"/><rect x="12" y="9" width="3" height="8" rx=".6"/><rect x="17" y="14" width="3" height="3" rx=".6"/></svg><span>Objem partií</span></button>
+          <button type="button" data-card="#card-weightbig"><svg viewBox="0 0 24 24"><path d="M4 5v14h16"/><path d="M7 9l3.5 3.5 3-2L21 15"/></svg><span>Váha & cíl</span></button>
+          <button type="button" data-card="#card-measurepos"><svg viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="7" rx="1.5"/><path d="M7 8.5v3M10 8.5v4M13 8.5v3M16 8.5v4"/></svg><span>Míry těla</span></button>
+          <button type="button" data-card="#card-heat"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg><span>Frekvence</span></button>
+          <button type="button" data-card="#card-calchart"><svg viewBox="0 0 24 24"><path d="M12 3c1 3.5 5 5 5 9a5 5 0 1 1-10 0c0-1.8.8-3.2 1.8-4.3C9.2 8 10 9 10.5 10 11.3 8 11 5 12 3z"/></svg><span>Kalorie</span></button>
+          <button type="button" data-card="#card-summary"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h8"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span>Souhrn</span></button>
+        </div>
+      </div>
+      <button class="hubback" type="button"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Rozcestník</button>
       <div class="page-title">Progres &amp; data</div>
       <div class="page-sub">tvůj dlouhodobý vývoj</div>
 
@@ -664,14 +751,14 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       </div>
 
       <div class="group-label">Váha & tělo</div>
-      <div class="card">
+      <div class="card" id="card-weightbig">
         <h2>Váha a cíl <span class="hint">se 7denním průměrem</span></h2>
         <div class="chart-wrap"><canvas id="chWeightBig"></canvas></div>
         <div class="small" id="weightTrend" style="margin-top:10px"></div>
       </div>
 
       <div class="group-label">Síla & výkon</div>
-      <div class="card">
+      <div class="card" id="card-strength">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
           <h2 style="margin:0" id="strengthTitle">Síla</h2>
           <div class="strength-pick"><select id="exSelect"></select><span class="chev">změnit ▾</span></div>
@@ -681,35 +768,35 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div class="cmp3" id="strengthCmp" style="margin-top:12px"></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-pr">
         <h2>Osobní rekordy <span class="hint">odhad 1RM</span></h2>
         <div id="prTable"></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-volume">
         <h2>Týdenní objem podle partií <span class="hint">kg × série × opak.</span></h2>
         <div class="chart-wrap"><canvas id="chVolume"></canvas></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-heat">
         <h2>Konzistence <span class="hint">posledních 20 týdnů</span></h2>
         <div class="heat" id="heatmap"></div>
         <div class="small muted" id="heatInfo"></div>
       </div>
 
       <div class="group-label">Míry & pocity</div>
-      <div class="card">
+      <div class="card" id="card-measurepos">
         <h2>Míry těla · 90 dní</h2>
         <div id="measurePos"></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-feel">
         <h2>Pocity <span class="hint">týdenní průměr</span></h2>
         <div class="chart-wrap xs"><canvas id="chFeel"></canvas></div>
       </div>
 
       <div class="group-label">Kalorie & aktivita</div>
-      <div class="card">
+      <div class="card" id="card-calchart">
         <h2>Kalorie <span class="hint">denně vs. cíl, 7denní průměr</span></h2>
         <div class="chart-wrap sm"><canvas id="chCal"></canvas></div>
       </div>
@@ -725,7 +812,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div style="overflow-x:auto"><div id="bodyTable"></div></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-summary">
         <h2>Souhrn</h2>
         <div id="dataSummary" class="small"></div>
       </div>
@@ -841,7 +928,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
 
   <nav>
     <button data-tab="prehled" class="on"><svg viewBox="0 0 24 24"><path d="M3 12l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Přehled</button>
-    <button data-tab="trenink"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11"/><path d="M4 9l1-1M9 4l-1 1M20 15l-1 1M15 20l1-1"/><rect x="2.5" y="8" width="4" height="8" rx="1"/><rect x="17.5" y="8" width="4" height="8" rx="1"/></svg>Trénink</button>
+    <button data-tab="trenink"><svg viewBox="0 0 24 24"><rect x="3" y="8.5" width="3" height="7" rx="1"/><rect x="18" y="8.5" width="3" height="7" rx="1"/><path d="M8 7.5v9M16 7.5v9M6 12h12"/></svg>Trénink</button>
     <button data-tab="telo"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.4"/><path d="M12 8v8M8 11l4-1 4 1M9 20l3-4 3 4"/></svg>Tělo</button>
     <button data-tab="kalorie"><svg viewBox="0 0 24 24"><path d="M12 2c1 3.5 5 5 5 9a5 5 0 11-10 0c0-1.8.8-3.2 1.8-4.3C9.2 8 10 9 10.5 10 11.3 8 11 5 12 2z"/></svg>Jídlo</button>
     <button data-tab="data"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progres</button>
@@ -1104,11 +1191,62 @@ function initSeg(root=document){
 function setSeg(name,val){const seg=$(`.seg[data-seg="${name}"]`);if(!seg)return;
   seg.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.val===String(val)));
   const inp=seg.parentElement.querySelector("input[type=hidden]");if(inp)inp.value=val}
-function switchTab(name){
+const HUBTABS=new Set(["trenink","telo","kalorie","data"]);
+function clearModes(sec){sec.classList.remove("hubon","soloon");sec.querySelectorAll(".solocard").forEach(c=>c.classList.remove("solocard"));}
+function switchTab(name,mode){
   $$("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===name));
-  $$("section").forEach(s=>s.classList.toggle("active",s.id==="tab-"+name));
-  window.scrollTo(0,0);renderTab(name)}
+  $$("section").forEach(s=>{if(s.id!=="tab-"+name)clearModes(s);s.classList.toggle("active",s.id==="tab-"+name);});
+  const sec=document.getElementById("tab-"+name),wantHub=HUBTABS.has(name)&&mode!=="body";
+  clearModes(sec);
+  if(wantHub)sec.classList.add("hubon");
+  window.scrollTo(0,0);
+  if(!wantHub)renderTab(name);
+}
 $$("nav button").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
+function showSolo(sec,cardSel,focus){
+  const el=cardSel?sec.querySelector(cardSel):null,card=el?(el.closest(".card")||el):null;
+  clearModes(sec);
+  if(card)card.classList.add("solocard");
+  sec.classList.add("soloon");
+  window.scrollTo(0,0);
+  renderTab(sec.id.replace("tab-",""));
+  if(focus==="addex"){const b=document.getElementById("addExBtn");if(b)b.click();}
+  requestAnimationFrame(()=>{try{window.dispatchEvent(new Event("resize"));}catch(e){}});
+}
+function showHub(sec){clearModes(sec);if(sec.querySelector(":scope > .hub"))sec.classList.add("hubon");else renderTab(sec.id.replace("tab-",""));window.scrollTo(0,0);}
+function hubAction(a){
+  if(a==="scan"){if(typeof startScan==="function")startScan();}
+  else if(a==="foodpick"){if(typeof openFoodPick==="function")openFoodPick();}
+}
+function renderTplList(){
+  var box=document.getElementById("tplList");if(!box)return;
+  if(!state.templates.length){box.innerHTML='<div class="small muted" style="padding:18px 4px">Zatím žádné uložené šablony.<br>Ve složce <b>Nový trénink</b> ulož trénink tlačítkem „Uložit jako šablonu".</div>';return}
+  box.innerHTML=state.templates.map(function(t){
+    var cnt=(t.exercises||[]).length;
+    var sub=[(t.muscles&&t.muscles.length?t.muscles.join(" · "):""),(t.type||""),cnt+" cviků"].filter(Boolean).join(" · ");
+    return '<div class="tplitem"><button class="tplpick" type="button" data-id="'+t.id+'"><span class="nm">'+esc(t.name)+'</span><span class="sb">'+esc(sub)+'</span></button><button class="tpldel" type="button" data-del="'+t.id+'" aria-label="Smazat">×</button></div>';
+  }).join("");
+}
+document.addEventListener("click",e=>{
+  const _pk=e.target.closest(".tplpick");
+  if(_pk){const t=state.templates.find(x=>x.id===_pk.dataset.id);if(t){if(typeof fillSessionForm==="function")fillSessionForm(t);showSolo(document.getElementById("tab-trenink"),"#card-newworkout");toast("Šablona načtena: "+t.name);}return;}
+  const _dl=e.target.closest(".tpldel");
+  if(_dl){state.templates=state.templates.filter(x=>x.id!==_dl.dataset.del);save();renderTplList();if(typeof renderTplRow==="function")renderTplRow();toast("Šablona smazána");return;}
+  const tile=e.target.closest(".hub-main,.hubgrid button");
+  if(tile&&tile.closest(".hub")){
+    const sec=tile.closest("section"),own=sec.id.replace("tab-","");
+    const goto=tile.dataset.goto,card=tile.dataset.card,run=tile.dataset.run;
+    if(run){hubAction(run);return;}
+    if(goto&&goto!==own){
+      $$("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===goto));
+      $$("section").forEach(s=>{if(s.id!=="tab-"+goto)clearModes(s);s.classList.toggle("active",s.id==="tab-"+goto);});
+      showSolo(document.getElementById("tab-"+goto),card,tile.dataset.focus);
+    } else if(card){showSolo(sec,card,tile.dataset.focus);if(card==="#card-templates")renderTplList();}
+    return;
+  }
+  const back=e.target.closest(".hubback");
+  if(back){const sec=back.closest("section");if(sec)showHub(sec);}
+});
 function currentTab(){const on=$("nav button.on");return on?on.dataset.tab:"prehled"}
 function renderTab(name){
   if(name==="prehled")renderDashboard();
