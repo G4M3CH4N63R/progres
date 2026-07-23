@@ -245,9 +245,14 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .tgl.on i{left:20px}
   .timer{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
   .timer .t{font-size:27px;font-weight:800;font-variant-numeric:tabular-nums;min-width:80px;letter-spacing:-.02em}
-  .exname{display:flex;min-width:0}
-  .exname input{flex:1;min-width:0;border-radius:11px 0 0 11px;border-right:none}
-  .exname .pick{flex:none;width:36px;border:1px solid var(--line);background:var(--surface);border-radius:0 11px 11px 0;color:var(--muted);cursor:pointer;font-size:12px}
+  .exname{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid transparent;border-radius:14px;padding:0 8px 0 14px}
+  .exname:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-weak)}
+  .exname .exn-ic{flex:none;display:grid;place-items:center;color:var(--accent)}
+  .exname .exn-ic svg{width:20px;height:20px;display:block}
+  .exname input{flex:1;min-width:0;border:none!important;background:transparent!important;box-shadow:none!important;border-radius:0;padding:15px 0;font-size:19px;font-weight:600;letter-spacing:-.2px}
+  .exname input:focus{outline:none}
+  .exname .pick{flex:none;width:34px;align-self:stretch;border:none;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;padding:0}
+  .exname .pick svg{width:18px;height:18px;display:block}
   .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
   .cal-head .t{font-weight:700;font-size:14.5px;text-transform:capitalize}
   .cal-head button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:16px;cursor:pointer}
@@ -291,12 +296,12 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   @keyframes sp{to{transform:rotate(360deg)}}
   /* v4: exercise rows, steppers, food picker, plan */
   .exrow2{border:1px solid var(--line);border-radius:12px;padding:9px 10px;margin-bottom:9px;background:var(--surface)}
-  .exr-top{display:flex;gap:7px;align-items:center;margin-bottom:8px}
-  .exr-top .exname{flex:1;min-width:0}
-  .exr-top .rm{flex:none;border:none;background:transparent;color:var(--muted);font-size:20px;cursor:pointer;padding:0 2px;line-height:1}
-  .uniti{display:flex;gap:3px;flex:none}
-  .uniti button{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:8px;padding:5px 7px;font-size:11px;font-weight:700;cursor:pointer}
-  .uniti button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .exr-top{display:flex;gap:6px;align-items:center;margin-bottom:10px}
+  .exr-top .rm{flex:none;border:none;background:transparent;color:var(--muted);font-size:22px;cursor:pointer;padding:0 4px;line-height:1;align-self:center}
+  .uniti{display:flex;gap:3px;background:var(--plane);border:1px solid var(--line);border-radius:11px;padding:3px;margin-bottom:11px}
+  [data-theme="dark"] .uniti{background:#151514}
+  .uniti button{flex:1;border:none;background:transparent;color:var(--ink2);border-radius:8px;padding:9px 4px;font-size:13.5px;font-weight:600;cursor:pointer;transition:.15s}
+  .uniti button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
   .exr-fields{display:flex;gap:8px}
   .mini-f{flex:1;min-width:0}
   .mini-f>span{display:block;font-size:11px;color:var(--muted);font-weight:600;margin-bottom:3px}
@@ -354,26 +359,30 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   /* série cviků (per-set) */
   .exrow2 .exr-hint{font-size:12px;color:var(--muted);margin:1px 0 8px;min-height:0}
   .exrow2 .exr-hint b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
-  .set-head{display:grid;gap:8px;align-items:center;padding:2px 0 4px;font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.4px}
-  .set-head span{text-align:center}
-  .set-row{display:grid;gap:8px;align-items:center;padding:4px 0}
-  .set-row .idx{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:center}
-  .set-cell{background:var(--card);border-radius:10px;border:1px solid var(--line);overflow:hidden}
-  [data-theme="dark"] .set-cell{background:var(--surface);border-color:transparent}
-  .set-cell input{width:100%;border:none!important;background:transparent;text-align:center;padding:10px 2px;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;box-shadow:none!important;border-radius:10px}
-  .set-cell input:focus{outline:2px solid var(--accent);outline-offset:-2px}
-  .set-cell{display:flex;align-items:stretch}
-  .set-cell input{min-width:0;padding-left:0;padding-right:0}
-  .set-cell .sc{flex:none;width:26px;border:none;background:transparent;color:var(--muted);font-size:16px;font-weight:700;cursor:pointer;padding:0;line-height:1}
-  .set-cell .sc:active{color:var(--accent)}
+  .set-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 12px 12px;margin-top:9px}
+  [data-theme="dark"] .set-card{background:var(--surface);border-color:transparent}
+  .set-card.done{border-color:color-mix(in srgb,var(--good) 45%,transparent)}
+  .sc-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .sc-lbl{font-size:13px;font-weight:700;color:var(--ink2)}
+  .sc-hd-r{display:flex;align-items:center;gap:8px}
+  .sc-steps{display:grid;grid-template-columns:1fr;gap:10px}
+  .sc-steps.two{grid-template-columns:1fr 1fr}
+  .sc-cap{font-size:10px;letter-spacing:.5px;color:var(--muted);font-weight:700;margin-bottom:5px;text-align:center}
+  .set-cell{display:flex;align-items:center;background:var(--plane);border-radius:12px;overflow:hidden}
+  [data-theme="dark"] .set-cell{background:#000}
+  .set-cell input{flex:1;min-width:0;border:none!important;background:transparent!important;box-shadow:none!important;text-align:center;padding:11px 0;font-size:21px;font-weight:700;font-variant-numeric:tabular-nums;border-radius:0;color:var(--ink)}
+  .set-cell input:focus{outline:none}
+  .set-cell .sc{flex:none;width:44px;height:46px;border:none;background:transparent;color:var(--accent);font-size:22px;font-weight:500;cursor:pointer;padding:0;line-height:1}
+  .set-cell .sc:active{opacity:.5}
   .favb{flex:none;border:none;background:transparent;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 2px;line-height:1}
   .favb.on{color:#f2a91e}
-  .set-done{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--hairline);background:transparent;cursor:pointer;display:grid;place-items:center;padding:0;margin:0 auto;color:#fff;font-size:14px;font-weight:800;line-height:1}
+  .set-done{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--hairline);background:transparent;cursor:pointer;display:grid;place-items:center;padding:0;color:#fff;font-size:15px;font-weight:800;line-height:1}
   .set-done.on{background:var(--good);border-color:var(--good)}
-  .set-rm{border:none;background:transparent;color:var(--muted);font-size:16px;cursor:pointer;padding:0;line-height:1}
-  .exr-foot{display:flex;justify-content:space-between;align-items:center;padding:9px 0 1px;margin-top:4px;border-top:1px solid var(--line)}
-  .exr-foot .add-set{color:var(--accent);font-weight:600;cursor:pointer;background:none;border:none;padding:0;font:inherit;font-size:14.5px}
-  .exr-foot .sum{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+  .set-rm{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:0 2px;line-height:1}
+  .exr-foot{display:flex;flex-direction:column-reverse;gap:7px;padding:9px 0 1px;margin-top:2px}
+  .exr-foot .add-set{width:100%;background:var(--accent-weak);color:var(--accent);font-weight:600;cursor:pointer;border:none;padding:12px;border-radius:12px;font:inherit;font-size:14.5px}
+  .exr-foot .sum{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;text-align:center}
+  .exr-foot .sum:empty{display:none}
   /* Nastavení */
   .set-list{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px}
   .set-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-top:1px solid var(--line);cursor:pointer;color:var(--ink)}
@@ -1484,12 +1493,11 @@ function addExRow(d={}){
   const r=document.createElement("div");r.className="exrow2";r.dataset.unit=unit;
   r.innerHTML=`
     <div class="exr-top">
-      <div class="exname"><input class="exn" list="exdb" placeholder="Cvik" value="${esc(d.n||"")}" autocomplete="off"><button type="button" class="pick" title="Procházet cviky">▾</button></div>
-      <div class="uniti"><button type="button" data-u="kg">kg</button><button type="button" data-u="reps">opak.</button><button type="button" data-u="time">čas</button></div>
+      <div class="exname"><span class="exn-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3-3"></path></svg></span><input class="exn" list="exdb" placeholder="Vyber cvik" value="${esc(d.n||"")}" autocomplete="off"><button type="button" class="pick" title="Procházet cviky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button></div>
       <button type="button" class="rm" title="Odebrat cvik">×</button>
     </div>
+    <div class="uniti"><button type="button" data-u="kg">kg</button><button type="button" data-u="reps">opakování</button><button type="button" data-u="time">čas</button></div>
     <div class="exr-hint"></div>
-    <div class="set-head"></div>
     <div class="sets"></div>
     <div class="exr-foot"><button type="button" class="add-set">＋ Přidat sérii</button><span class="sum"></span></div>`;
   r.querySelector(".rm").onclick=()=>r.remove();
@@ -1500,51 +1508,44 @@ function addExRow(d={}){
     updateExHint(r)});
   r.querySelector(".exn").addEventListener("input",()=>updateExHint(r));
   r.querySelectorAll(".uniti button").forEach(b=>b.onclick=()=>{r._tu=true;setRowUnit(r,b.dataset.u)});
-  r.querySelector(".add-set").onclick=()=>{const s=readSetRows(r);const last=s[s.length-1]||{};
+  r.querySelector(".add-set").onclick=()=>{markFilledDone(r);const s=readSetRows(r);const last=s[s.length-1]||{};
     addSetRow(r,{w:last.w,r:last.r,sec:last.sec,done:false});updateExSum(r)};
   $("#exRows").appendChild(r);
   const initSets=Array.isArray(d.sets)&&d.sets.length?d.sets:exSets(d);
   setRowUnit(r,unit,initSets.length?initSets:[{}]);
   updateExHint(r);
   return r}
-function setGrid(unit){return unit==="kg"?"22px 1fr 1fr 30px 18px":"22px 1fr 30px 18px"}
-function setHeadHTML(unit){const cols=unit==="kg"?["#","KG","OPAK.","",""]:unit==="reps"?["#","OPAKOVÁNÍ","",""]:["#","SEKUNDY","",""];
-  return cols.map((c,i)=>`<span style="${i===0?'text-align:center':'text-align:center'}">${c}</span>`).join("")}
 function addSetRow(r,st){st=st||{};const unit=r.dataset.unit;const box=r.querySelector(".sets");
   const val=x=>(x==null||x===""||x===0)?"":x;
   const idx=box.children.length+1;
-  const row=document.createElement("div");row.className="set-row";row.style.gridTemplateColumns=setGrid(unit);
-  let cells=`<span class="idx">${idx}</span>`;
-  const cell=(cls,sd,ph,v,im)=>`<div class="set-cell"><button type="button" class="sc" data-d="-${sd}" tabindex="-1">−</button><input type="number" class="${cls}" inputmode="${im}" min="0" step="any" value="${v}" placeholder="${ph}"><button type="button" class="sc" data-d="${sd}" tabindex="-1">＋</button></div>`;
-  if(unit==="time")cells+=cell("f-sec",5,"s",val(st.sec),"numeric");
-  else if(unit==="reps")cells+=cell("f-r",1,"opak.",val(st.r),"numeric");
-  else cells+=cell("f-w",1.25,"kg",val(st.w),"decimal")+cell("f-r",1,"opak.",val(st.r),"numeric");
-  cells+=`<button type="button" class="set-done${st.done?" on":""}" title="Hotovo">${st.done?"✓":""}</button>`;
-  cells+=`<button type="button" class="set-rm" title="Odebrat sérii">×</button>`;
-  row.innerHTML=cells;
-  const ready=()=>{const el=row.querySelector(unit==="time"?".f-sec":".f-r");return !!(el&&el.value!=="")};
-  row.querySelector(".set-done").onclick=function(){
+  const card=document.createElement("div");card.className="set-card"+(st.done?" done":"");
+  const step=(cap,cls,sd,ph,v,im)=>`<div class="sc-step"><div class="sc-cap">${cap}</div><div class="set-cell"><button type="button" class="sc" data-d="-${sd}" tabindex="-1">−</button><input type="number" class="${cls}" inputmode="${im}" min="0" step="any" value="${v}" placeholder="${ph}"><button type="button" class="sc" data-d="${sd}" tabindex="-1">＋</button></div></div>`;
+  let steps,two="";
+  if(unit==="time")steps=step("SEKUNDY","f-sec",5,"s",val(st.sec),"numeric");
+  else if(unit==="reps")steps=step("OPAKOVÁNÍ","f-r",1,"opak.",val(st.r),"numeric");
+  else{steps=step("KG","f-w",1.25,"kg",val(st.w),"decimal")+step("OPAK.","f-r",1,"opak.",val(st.r),"numeric");two=" two"}
+  card.innerHTML=`<div class="sc-hd"><span class="sc-lbl">${idx}. série</span><div class="sc-hd-r"><button type="button" class="set-rm" title="Odebrat sérii">×</button><button type="button" class="set-done${st.done?" on":""}" title="Hotovo">${st.done?"✓":""}</button></div></div><div class="sc-steps${two}">${steps}</div>`;
+  const ready=()=>{const el=card.querySelector(unit==="time"?".f-sec":".f-r");return !!(el&&el.value!=="")};
+  card.querySelector(".set-done").onclick=function(){
     if(!this.classList.contains("on")&&!ready()){toast(unit==="time"?"Nejdřív vyplň sekundy":"Nejdřív vyplň opakování");return}
-    const on=this.classList.toggle("on");this.textContent=on?"✓":"";updateExSum(r)};
-  row.querySelector(".set-rm").onclick=()=>{row.remove();reindexSets(r);updateExSum(r)};
-  row.querySelectorAll(".set-cell input").forEach(inp=>{
-    inp.addEventListener("input",()=>{
-      const dn=row.querySelector(".set-done");const ok=ready();
-      if(ok&&!dn.classList.contains("on")){dn.classList.add("on");dn.textContent="✓"}
-      else if(!ok&&dn.classList.contains("on")){dn.classList.remove("on");dn.textContent=""}
-      updateExSum(r)});
+    const on=this.classList.toggle("on");this.textContent=on?"✓":"";card.classList.toggle("done",on);updateExSum(r)};
+  card.querySelector(".set-rm").onclick=()=>{card.remove();reindexSets(r);updateExSum(r)};
+  card.querySelectorAll(".set-cell input").forEach(inp=>{
+    inp.addEventListener("input",()=>updateExSum(r));
     inp.addEventListener("focus",()=>setTimeout(()=>{try{inp.select()}catch(e){}},0))});
-  box.appendChild(row)}
-function reindexSets(r){[...r.querySelectorAll(".sets .set-row")].forEach((row,i)=>row.querySelector(".idx").textContent=i+1)}
-function readSetRows(r){return [...r.querySelectorAll(".sets .set-row")].map(row=>{
+  box.appendChild(card)}
+function reindexSets(r){[...r.querySelectorAll(".sets .set-card")].forEach((row,i)=>{const l=row.querySelector(".sc-lbl");if(l)l.textContent=(i+1)+". série"})}
+function markFilledDone(r){const unit=r.dataset.unit;
+  r.querySelectorAll(".sets .set-card").forEach(card=>{
+    const el=card.querySelector(unit==="time"?".f-sec":".f-r");
+    if(el&&el.value!==""){const dn=card.querySelector(".set-done");if(dn&&!dn.classList.contains("on")){dn.classList.add("on");dn.textContent="✓";card.classList.add("done")}}})}
+function readSetRows(r){return [...r.querySelectorAll(".sets .set-card")].map(row=>{
   const g=c=>{const el=row.querySelector(c);return el&&el.value!==""?(+el.value||0):0};
   return {w:g(".f-w"),r:g(".f-r"),sec:g(".f-sec"),done:row.querySelector(".set-done").classList.contains("on")}})}
 function setRowUnit(r,unit,sets){
   if(!sets)sets=readSetRows(r);
   r.dataset.unit=unit;
   r.querySelectorAll(".uniti button").forEach(b=>b.classList.toggle("on",b.dataset.u===unit));
-  r.querySelector(".set-head").style.gridTemplateColumns=setGrid(unit);
-  r.querySelector(".set-head").innerHTML=setHeadHTML(unit);
   const box=r.querySelector(".sets");box.innerHTML="";
   (sets.length?sets:[{}]).forEach(st=>addSetRow(r,st));
   updateExSum(r)}
@@ -1612,7 +1613,7 @@ $("#pickerSearch").addEventListener("input",renderPickerList);
 $("#pickModeInput").addEventListener("change",renderPickerList);
 $("#pickerClose").addEventListener("click",closePicker);
 $("#pickerBg").addEventListener("click",e=>{if(e.target===$("#pickerBg"))closePicker()});
-$("#addExBtn").addEventListener("click",()=>addExRow());
+$("#addExBtn").addEventListener("click",()=>{$$("#exRows .exrow2").forEach(markFilledDone);addExRow()});
 function readExRows(){return $$("#exRows .exrow2").map(r=>{
   const n=r.querySelector(".exn").value.trim();const unit=r.dataset.unit;
   const sets=readSetRows(r).filter(st=>setHasVal(unit,st)).map(st=>({w:st.w,r:st.r,sec:st.sec,done:!!st.done}));
