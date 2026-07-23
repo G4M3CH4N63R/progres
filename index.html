@@ -245,14 +245,14 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .tgl.on i{left:20px}
   .timer{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
   .timer .t{font-size:27px;font-weight:800;font-variant-numeric:tabular-nums;min-width:80px;letter-spacing:-.02em}
-  .exname{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid transparent;border-radius:14px;padding:0 8px 0 14px}
+  .exname{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid transparent;border-radius:14px;padding:0 6px 0 14px;cursor:pointer}
   .exname:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-weak)}
   .exname .exn-ic{flex:none;display:grid;place-items:center;color:var(--accent)}
   .exname .exn-ic svg{width:20px;height:20px;display:block}
-  .exname input{flex:1;min-width:0;border:none!important;background:transparent!important;box-shadow:none!important;border-radius:0;padding:15px 0;font-size:19px;font-weight:600;letter-spacing:-.2px}
+  .exname input{flex:1;min-width:0;border:none!important;background:transparent!important;box-shadow:none!important;border-radius:0;padding:15px 0;font-size:19px;font-weight:600;letter-spacing:-.2px;cursor:pointer;caret-color:transparent}
   .exname input:focus{outline:none}
-  .exname .pick{flex:none;width:34px;align-self:stretch;border:none;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;padding:0}
-  .exname .pick svg{width:18px;height:18px;display:block}
+  .exname .pick{flex:none;width:40px;align-self:stretch;border:none;background:transparent;color:var(--ink2);cursor:pointer;display:grid;place-items:center;padding:0}
+  .exname .pick svg{width:16px;height:16px;display:block}
   .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
   .cal-head .t{font-weight:700;font-size:14.5px;text-transform:capitalize}
   .cal-head button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:16px;cursor:pointer}
@@ -709,11 +709,9 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
           <button type="button" data-run="scan"><svg viewBox="0 0 24 24"><path d="M4 8V6.5A2.5 2.5 0 0 1 6.5 4H8M16 4h1.5A2.5 2.5 0 0 1 20 6.5V8M20 16v1.5a2.5 2.5 0 0 1-2.5 2.5H16M8 20H6.5A2.5 2.5 0 0 1 4 17.5V16"/><path d="M8 9v6M11 9v6M13.5 9v6M16 9v6"/></svg><span>Sken kódu</span></button>
           <button type="button" data-card="#card-ai"><svg viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="3"/><circle cx="12" cy="13.5" r="3.3"/><path d="M8.5 7.5l1-2.2h5l1 2.2"/></svg><span>Fotka jídla</span></button>
           <button type="button" data-run="foodpick"><svg viewBox="0 0 24 24"><path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><span>Databáze</span></button>
-          <button type="button" data-card="#card-batch"><svg viewBox="0 0 24 24"><path d="M3 11h18M4 11a8 8 0 0 0 16 0"/><path d="M8.5 11c0-2 1.3-3.5 3.5-3.5s3.5 1.5 3.5 3.5"/></svg><span>Dávka / recept</span></button>
+          <button type="button" data-card="#card-recipes"><svg viewBox="0 0 24 24"><path d="M3 11h18M4 11a8 8 0 0 0 16 0"/><path d="M8.5 11c0-2 1.3-3.5 3.5-3.5s3.5 1.5 3.5 3.5"/></svg><span>Recepty</span></button>
           <button type="button" data-card="#card-favfoods"><svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.6 6.1.6-4.6 4.1 1.4 6L12 16.9 6.1 19.8l1.4-6-4.6-4.1 6.1-.6z"/></svg><span>Oblíbené</span></button>
-          <button type="button" data-card="#card-macropie"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 12V3.5"/><path d="M12 12l7.4 4.3"/></svg><span>Makro</span></button>
-          <button type="button" data-card="#card-diary"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h8"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span>Deník</span></button>
-          <button type="button" data-card="#card-steps"><svg viewBox="0 0 24 24"><path d="M4 19h4v-4h4v-4h4v-4h4"/></svg><span>Kroky</span></button>
+          <button type="button" data-card="#card-today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 12V3.5"/><path d="M12 12l7.4 4.3"/></svg><span>Dnešní makro</span></button>
         </div>
       </div>
       <button class="hubback" type="button"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Rozcestník</button>
@@ -749,20 +747,19 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
           <button class="btn secondary" type="button" id="toBatchBtn" style="margin-top:9px">Do dávky ↓</button>
         </form>
         <div id="calorieSummary" style="margin-top:14px"></div>
-      </div>
-
-      <div class="card" id="card-diary">
-        <h2>Dnešní deník <span class="hint" id="foodDate"></span></h2>
-        <div id="foodList"></div>
-      </div>
-
-      <div class="card" id="card-steps">
-        <h2>Kroky dnes <span class="hint" id="stepsGoalHint"></span></h2>
-        <div style="display:flex;gap:8px;align-items:flex-end">
-          <label class="field" style="flex:1;margin:0"><span>Počet kroků</span><input type="number" id="stepsInput" min="0" step="100" placeholder="např. 8500"></label>
-          <button class="btn secondary small" id="saveStepsBtn" type="button" style="width:auto;padding:12px 16px">Uložit</button>
+        <div id="batchWrap" style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px">
+          <div class="group-label" style="margin:0 4px 6px">Dávka (více porcí)</div>
+          <div id="batchBox"></div>
         </div>
-        <div class="small" id="stepsInfo" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card" id="card-today">
+        <h2>Dnešní makro <span class="hint" id="foodDate"></span></h2>
+        <div id="macroPieBox"></div>
+        <div style="margin-top:14px">
+          <div class="group-label" style="margin:6px 4px 8px">Dnešní jídla</div>
+          <div id="foodList"></div>
+        </div>
       </div>
 
       <div class="card" id="card-ai">
@@ -770,21 +767,14 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div id="aiBox"></div>
       </div>
 
-      <div class="card" id="card-batch">
-        <h2>Dávka / recept <span class="hint">uvařils víc porcí?</span></h2>
-        <p class="small muted" style="margin-top:0">Poskládej jídlo z ingrediencí přes tlačítko <b>„Do dávky"</b> u formuláře nahoře (funguje přes fotku, kód, databázi i ruční zadání). Pak řekni, na kolik porcí dávku rozdělíš, a appka přidá tvoji porci do deníku.</p>
-        <div id="batchBox"></div>
+      <div class="card" id="card-recipes">
+        <h2>Recepty <span class="hint">tvoje uložená jídla</span></h2>
         <div id="recipeBox"></div>
       </div>
 
       <div class="card" id="card-favfoods">
         <h2>Oblíbená jídla <span class="hint">rychlé přidání do deníku</span></h2>
         <div id="favFoodsBox"></div>
-      </div>
-
-      <div class="card" id="card-macropie">
-        <h2>Rozložení maker <span class="hint">dnešek</span></h2>
-        <div id="macroPieBox"></div>
       </div>
     </section>
 
@@ -1547,7 +1537,7 @@ function addExRow(d={}){
   const r=document.createElement("div");r.className="exrow2";r.dataset.unit=unit;
   r.innerHTML=`
     <div class="exr-top">
-      <div class="exname"><span class="exn-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3-3"></path></svg></span><input class="exn" list="exdb" placeholder="Vyber cvik" value="${esc(d.n||"")}" autocomplete="off"><button type="button" class="pick" title="Procházet cviky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+      <div class="exname"><span class="exn-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3-3"></path></svg></span><input class="exn" readonly placeholder="Vyber cvik" value="${esc(d.n||"")}" autocomplete="off"><button type="button" class="pick" title="Procházet cviky"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 7h12l-6 7z"></path></svg></button></div>
       <button type="button" class="rm" title="Odebrat cvik">×</button>
     </div>
     <div class="uniti"><button type="button" data-u="kg">kg</button><button type="button" data-u="reps">opakování</button><button type="button" data-u="time">čas</button></div>
@@ -1555,7 +1545,7 @@ function addExRow(d={}){
     <div class="sets"></div>
     <div class="exr-foot"><button type="button" class="add-set">＋ Přidat sérii</button><span class="sum"></span></div>`;
   r.querySelector(".rm").onclick=()=>r.remove();
-  r.querySelector(".pick").onclick=()=>openPicker(r);
+  r.querySelector(".exname").addEventListener("click",()=>openPicker(r));
   r.querySelector(".exn").addEventListener("change",e=>{
     const def=exDef(e.target.value.trim());
     if(def){selectMuscle(def.muscle);if(!r._tu)setRowUnit(r,def.unit)}
@@ -1895,10 +1885,10 @@ $("#saveGoal").addEventListener("click",()=>{
     targetWeight:f.targetWeight.value?+f.targetWeight.value:null,targetKcal:r.target,targetProtein:r.protein});
   save();renderSettings();toast("Cíl uložen: "+r.target+" kcal / "+r.protein+" g bílkovin")});
 
-$("#saveStepsBtn").addEventListener("click",()=>{
+(function(){const sb=$("#saveStepsBtn");if(!sb)return;sb.addEventListener("click",()=>{
   const v=$("#stepsInput").value;
   if(v!=="")state.steps[todayISO()]=Math.max(0,+v||0);
-  save();renderCalories();toast("Kroky uloženy")});
+  save();renderCalories();toast("Kroky uloženy")})})();
 $("#saveStepGoalBtn").addEventListener("click",()=>{
   const g=$("#stepGoalInput").value;
   if(g!=="")state.profile.stepGoal=Math.max(0,+g||0);
@@ -2100,7 +2090,7 @@ function batchTotals(){return batch.reduce((a,it)=>({kcal:a.kcal+(+it.kcal||0),p
 function addToBatch(o){batch.push({name:o.name||"Ingredience",kcal:+o.kcal||0,protein:+o.protein||0,carbs:+o.carbs||0,fat:+o.fat||0});renderBatch()}
 function plurPolozka(n){return n===1?"položka":(n>=2&&n<=4)?"položky":"položek"}
 function renderBatch(){const box=$("#batchBox");if(!box)return;
-  if(!batch.length){box.innerHTML=`<div class="small muted">Zatím prázdné. Vyplň jídlo ve formuláři nahoře a klepni <b>„Do dávky ↓"</b>. Opakuj pro každou ingredienci.</div>`;renderRecipes();return}
+  if(!batch.length){box.innerHTML=`<div class="small muted">Zatím prázdné. Klepni <b>„Do dávky ↓"</b> u jídla výše a slož várku z ingrediencí.</div>`;renderRecipes();return}
   box.innerHTML=
     batch.map((it,i)=>`<div class="item"><div class="tag" style="min-width:52px">${Math.round(it.kcal)}<br><span style="font-size:10px;font-weight:600">kcal</span></div><div class="body"><div class="t1">${esc(it.name)}</div><div class="t2">B ${Math.round(it.protein)} · S ${Math.round(it.carbs)} · T ${Math.round(it.fat)}</div></div><button class="del" data-rmbatch="${i}">×</button></div>`).join("")
     +`<div class="setrow" style="margin-top:10px"><div class="lb">Počet porcí z dávky<span class="sub2">Na kolik porcí ji rozdělíš.</span></div>
@@ -2139,13 +2129,13 @@ function recipeTotals(r){return (r.items||[]).reduce((a,it)=>({kcal:a.kcal+(+it.
 function plurPorce(n){return n===1?"porce":(n>=2&&n<=4)?"porce":"porcí"}
 function sortedRecipes(){return [...(state.recipes||[])].sort((a,b)=>(b.fav?1:0)-(a.fav?1:0)||a.name.localeCompare(b.name,"cs"))}
 function renderRecipes(){const box=$("#recipeBox");if(!box)return;const rs=sortedRecipes();
-  if(!rs.length){box.innerHTML="";return}
-  box.innerHTML=`<div class="group-label" style="margin:18px 0 6px">Moje recepty</div>`+rs.map(r=>{const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
+  if(!rs.length){box.innerHTML=`<div class="empty" style="padding:22px 12px"><div class="big">🍳</div>Zatím žádné recepty.<br><span class="muted">Slož jídlo přes „Do dávky ↓" u formuláře Přidat jídlo, rozděl na porce a ulož jako recept — objeví se tady.</span></div>`;return}
+  box.innerHTML=rs.map(r=>{const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
     const ing=(r.items||[]).map(it=>`<div class="ingr-row"><span>${esc(it.name)}</span><span>${macroLine(it.protein,it.carbs,it.fat,it.kcal)}</span></div>`).join("");
     return `<div class="fav-card"><div class="fav-hd"><button class="favb${r.fav?" on":""}" data-fav="${r.id}" title="Oblíbený">${r.fav?"★":"☆"}</button><div class="fav-b"><div class="t1">${esc(r.name)}</div><div class="t2">${Math.round(t.kcal/sv)} kcal/porce · ${r.items.length} ${plurPolozka(r.items.length)} · ${sv} ${plurPorce(sv)}</div></div><button class="btn small secondary" type="button" data-open="${r.id}">Otevřít</button><button class="del" data-rmrec="${r.id}" title="Smazat">×</button></div><div class="fav-actions"><button class="btn small" type="button" data-addrec="${r.id}">＋ Přidat 1 porci do deníku</button></div><details class="ingr"><summary>Ingredience & makra</summary>${ing||'<div class="small muted">Bez ingrediencí.</div>'}<div class="ingr-tot">Celkem: ${macroLine(t.p,t.c,t.f,t.kcal)}</div></details></div>`}).join("");
   $$("#recipeBox [data-fav]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.fav);if(r){r.fav=!r.fav;save();renderRecipes();renderFavFoods()}});
   $$("#recipeBox [data-open]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.open);if(!r)return;
-    batch=clone(r.items);batchServings=Math.max(1,+r.servings||1);batchName=r.name;renderBatch();toast("Recept otevřen — uprav nebo přidej do deníku")});
+    batch=clone(r.items);batchServings=Math.max(1,+r.servings||1);batchName=r.name;renderBatch();showSolo(document.getElementById("tab-kalorie"),"#card-foodlog");toast("Recept otevřen v Přidat jídlo — uprav nebo přidej do deníku")});
   $$("#recipeBox [data-addrec]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.addrec);if(!r)return;const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
     addFood({name:r.name+" — 1 porce",kcal:Math.round(t.kcal/sv),protein:+(t.p/sv).toFixed(1),carbs:+(t.c/sv).toFixed(1),fat:+(t.f/sv).toFixed(1)});toast("Přidáno do deníku ✓")});
   $$("#recipeBox [data-rmrec]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.rmrec);if(!r)return;
@@ -2338,10 +2328,10 @@ function renderCalories(){
   const twk=todayWorkoutKcal();
   // kroky (rychlý zápis na obrazovce Jídlo; cíl a přepínače jsou v Nastavení)
   const st=+state.steps[todayISO()]||0;
-  $("#stepsInput").value=st||"";
+  const stInp=$("#stepsInput");if(stInp)stInp.value=st||"";
   const sk=stepKcal(st);
   const gh=$("#stepsGoalHint");if(gh)gh.textContent=p.stepGoal?("cíl "+nbsp(p.stepGoal)):"";
-  $("#stepsInfo").innerHTML=(st?`Dnes <b>${nbsp(st)}</b> kroků ≈ <b>${sk} kcal</b>${p.stepGoal?` · ${Math.min(100,Math.round(st/p.stepGoal*100))} % cíle`:""}.`:`<span class="muted">Zapiš dnešní kroky (najdeš je v appce Zdraví na iPhonu).</span>`)
+  const stInfo=$("#stepsInfo");if(stInfo)stInfo.innerHTML=(st?`Dnes <b>${nbsp(st)}</b> kroků ≈ <b>${sk} kcal</b>${p.stepGoal?` · ${Math.min(100,Math.round(st/p.stepGoal*100))} % cíle`:""}.`:`<span class="muted">Zapiš dnešní kroky (najdeš je v appce Zdraví na iPhonu).</span>`)
     +(twk?`<br>Dnešní tréninky ≈ <b>${twk} kcal</b> výdej.`:"");
   renderAiBox();
   renderRecentChips();
@@ -2350,7 +2340,7 @@ function renderCalories(){
   renderMacroPie();
   // deník
   const subEl=$("#foodDaySub");if(subEl)subEl.textContent=czLongDate();
-  $("#foodDate").textContent=fmtDateFull(todayISO());
+  {const fd=$("#foodDate");if(fd)fd.textContent=fmtDateFull(todayISO());}
   const today=state.foods.filter(x=>x.date===todayISO());
   const kcal=today.reduce((s,x)=>s+(+x.kcal||0),0),
         prot=today.reduce((s,x)=>s+(+x.protein||0),0),
