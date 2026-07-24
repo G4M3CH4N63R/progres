@@ -121,7 +121,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .tpldel:active{background:var(--accent-weak)}
   .page-title{font-size:32px;font-weight:700;letter-spacing:-.5px;margin:2px 0 4px;padding-right:46px}
   .page-sub{font-size:13px;color:var(--muted);font-weight:500;margin:0 0 18px}
-  .page-title + .card, .page-sub + .card, .page-title + .tiles, .page-sub + .tiles, .page-title + .ring-cards{margin-top:2px}
+  .page-title + .card, .page-sub + .card, .page-title + .tiles, .page-sub + .tiles, .page-title + .ring-cards, .page-sub + .swipe{margin-top:2px}
   .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
   .card h2{font-size:16px;font-weight:700;margin:0 0 13px;letter-spacing:-.02em}
   .group-label{font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:24px 4px 9px}
@@ -138,6 +138,29 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .tile .mini-bar>i{display:block;height:100%;border-radius:3px;background:var(--accent)}
   .tile .mini-bar>i.g{background:var(--good)}
   .delta.up{color:var(--good)} .delta.down{color:var(--bad)} .delta.flat{color:var(--muted)}
+  .swipe{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:2px -16px 8px;padding:2px 16px 4px}
+  .swipe::-webkit-scrollbar{display:none}
+  .swipe-card{scroll-snap-align:center;flex:0 0 calc(100% - 42px);box-sizing:border-box;background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:18px;min-height:152px}
+  .swipe-card h3{margin:0 0 14px;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .swipe-dots{display:flex;justify-content:center;gap:6px;margin:0 0 16px}
+  .swipe-dots i{width:7px;height:7px;border-radius:50%;background:var(--hairline);transition:.2s}
+  .swipe-dots i.on{background:var(--accent);width:18px;border-radius:4px}
+  .big-stat{font-size:38px;font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1}
+  .big-stat small{font-size:15px;color:var(--muted);font-weight:500;letter-spacing:0}
+  .cal-break{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+  .cbrk{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px}
+  .cbrk span{color:var(--muted);font-weight:600}
+  .cbrk b{font-variant-numeric:tabular-nums;font-weight:800}
+  .macro-legend2{flex:1;display:flex;flex-direction:column;gap:10px;font-size:14px;min-width:0}
+  .macro-legend2 div{display:flex;align-items:center;gap:8px}
+  .macro-legend2 i{width:11px;height:11px;border-radius:50%;flex:none}
+  .macro-legend2 b{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:800}
+  .dfoods{display:flex;flex-direction:column}
+  .dfood{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:14px;padding:6px 0;border-top:1px solid var(--line)}
+  .dfood:first-child{border-top:none}
+  .dfood span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dfood b{font-variant-numeric:tabular-nums;font-weight:700;flex:none}
+  .dfood.mut span{color:var(--muted);font-weight:600}
   label.field{display:block;margin-bottom:11px}
   label.field > span, .flabel{display:block;font-size:12.5px;font-weight:600;color:var(--ink2);margin-bottom:5px}
   input,select,textarea{
@@ -280,6 +303,37 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   nav button{flex:1;border:none;background:transparent;color:var(--muted);font:inherit;font-size:10.5px;font-weight:600;cursor:pointer;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;border-radius:10px}
   nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
   nav button.on{color:var(--accent)}
+  .fab{position:fixed;z-index:35;right:calc(50% - 280px + 16px);bottom:calc(74px + var(--safe-bottom));width:56px;height:56px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:30px;font-weight:300;line-height:1;box-shadow:0 6px 18px rgba(0,0,0,.32);cursor:pointer;display:grid;place-items:center;transition:transform .15s}
+  @media(max-width:576px){.fab{right:16px}}
+  .fab:active{transform:scale(.92)}
+  .fab-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:55;display:none;align-items:flex-end;justify-content:center}
+  .fab-bg.show{display:flex}
+  .fab-sheet{background:var(--card);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:18px 16px calc(20px + var(--safe-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.3)}
+  .fab-sheet h3{margin:0 0 14px;font-size:16px;font-weight:700;text-align:center}
+  .fab-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .fab-tile{display:flex;flex-direction:column;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 8px;cursor:pointer;color:var(--ink);font:inherit;font-size:13px;font-weight:600}
+  .fab-tile:active{background:var(--accent-weak)}
+  .fab-tile .fi{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:21px}
+  .wk-hero{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+  .wk-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .wk-hd .t{font-size:14px;font-weight:700}
+  .wk-hd button{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:15px;cursor:pointer}
+  .wk-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+  .wk-dow{font-size:10px;color:var(--muted);text-align:center;font-weight:700}
+  .wk-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;font-size:13px;font-weight:700;background:var(--surface);border:1.5px solid transparent;gap:1px}
+  .wk-day.today{border-color:var(--accent)}
+  .wk-day .k{font-size:8.5px;font-weight:700;opacity:.85}
+  .wk-sum{font-size:12.5px;color:var(--muted);margin-top:12px;text-align:center}
+  .wk-sum b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .wk-day.sel{outline:2px solid var(--accent);outline-offset:1px}
+  .wk-det{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;line-height:1.55}
+  .wk-det b{font-variant-numeric:tabular-nums}
+  .bo-m{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;padding:4px 0}
+  .bo-m span{color:var(--muted);font-weight:600}
+  .bo-m b{font-variant-numeric:tabular-nums;font-weight:800}
+  .bo-m small{color:var(--muted);font-weight:600;font-size:10px}
+  .bo-m i{font-size:10.5px;font-weight:700;font-style:normal}
+  .bo-m i.dn{color:var(--good-ink)} .bo-m i.up{color:var(--muted)}
   .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:none;align-items:flex-end;justify-content:center}
   .modal-bg.show{display:flex}
   .modal{background:var(--card);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px 18px calc(20px + var(--safe-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.2);max-height:88vh;overflow:auto}
@@ -523,7 +577,8 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
     <section id="tab-prehled" class="active">
       <div class="page-title" id="greet">Přehled</div>
       <div class="page-sub" id="greetSub"></div>
-      <div class="tiles" id="statTiles"></div>
+      <div class="swipe" id="statSwipe"></div>
+      <div class="swipe-dots" id="statDots"></div>
       <div class="card">
         <h2>Kalendář tréninků <span class="hint">klepni na den</span></h2>
         <div class="cal-head">
@@ -555,10 +610,8 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="hub">
         <div class="page-title">Trénink</div>
         <div class="page-sub">Rychlé akce</div>
-        <button class="hub-main" type="button" data-card="#card-newworkout"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6 9v6M9 8v8M9 12h6M15 8v8M18 9v6"/></svg></span><span class="tx"><b>Nový trénink</b><span>Zapiš dnešní trénink</span></span><span class="ch">›</span></button>
+        <div id="trainWeek"></div>
         <div class="hubgrid">
-          <button type="button" data-card="#card-newworkout" data-focus="addex"><svg viewBox="0 0 24 24"><path d="M4 7h10M4 12h6M4 17h6M16 14v6M13 17h6"/></svg><span>Přidat cvik</span></button>
-          <button type="button" data-card="#card-templates"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg><span>Šablony</span></button>
           <button type="button" data-card="#card-aiplan"><svg viewBox="0 0 24 24"><path d="M12 3.5l1.6 4.4L18 9.5l-4.4 1.6L12 15.5l-1.6-4.4L6 9.5l4.4-1.6L12 3.5z"/><path d="M18.5 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg><span>AI plán</span></button>
           <button type="button" data-card="#card-trhist"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5V8h3.5"/><path d="M12 8v4.2l3 1.8"/></svg><span>Historie</span></button>
         </div>
@@ -645,11 +698,8 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="hub">
         <div class="page-title">Tělo</div>
         <div class="page-sub">Rychlé akce</div>
-        <button class="hub-main" type="button" data-card="#weighHero"><span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.3 11.5a3.7 3.7 0 0 1 7.4 0"/><path d="M12 11.5l2-1.6"/></svg></span><span class="tx"><b>Zapsat váhu</b><span>Rychlý zápis s + a −</span></span><span class="ch">›</span></button>
+        <div id="bodyOverview"></div>
         <div class="hubgrid">
-          <button type="button" data-card="#card-measures"><svg viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="7" rx="1.5"/><path d="M7 8.5v3M10 8.5v4M13 8.5v3M16 8.5v4"/></svg><span>Míry</span></button>
-          <button type="button" data-card="#card-bodyrec"><svg viewBox="0 0 24 24"><path d="M5 3.5h9l5 5V20.5H5z"/><path d="M14 3.5V9h5"/><path d="M8 13h8M8 16.5h5"/></svg><span>Detailní záznam</span></button>
-          <button type="button" data-card="#card-photos"><svg viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="3"/><circle cx="12" cy="13.5" r="3.3"/><path d="M8.5 7.5l1-2.2h5l1 2.2"/></svg><span>Fotky</span></button>
           <button type="button" data-card="#card-bodyhist"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5V8h3.5"/><path d="M12 8v4.2l3 1.8"/></svg><span>Historie</span></button>
         </div>
       </div>
@@ -727,11 +777,8 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="hub">
         <div class="page-title">Jídlo</div>
         <div class="page-sub">Rychlé akce</div>
-        <button class="hub-main" type="button" data-card="#card-foodlog"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6 3v6M6 9a2 2 0 0 0 4 0V3M8 9v12"/><path d="M16 3c-1.4 0-2 2.2-2 4.5s.6 3.5 2 3.5v10"/></svg></span><span class="tx"><b>Přidat jídlo</b><span>Do dnešního deníku</span></span><span class="ch">›</span></button>
+        <div id="foodWeek"></div>
         <div class="hubgrid">
-          <button type="button" data-run="scan"><svg viewBox="0 0 24 24"><path d="M4 8V6.5A2.5 2.5 0 0 1 6.5 4H8M16 4h1.5A2.5 2.5 0 0 1 20 6.5V8M20 16v1.5a2.5 2.5 0 0 1-2.5 2.5H16M8 20H6.5A2.5 2.5 0 0 1 4 17.5V16"/><path d="M8 9v6M11 9v6M13.5 9v6M16 9v6"/></svg><span>Sken kódu</span></button>
-          <button type="button" data-card="#card-ai"><svg viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="3"/><circle cx="12" cy="13.5" r="3.3"/><path d="M8.5 7.5l1-2.2h5l1 2.2"/></svg><span>Fotka jídla</span></button>
-          <button type="button" data-run="foodpick"><svg viewBox="0 0 24 24"><path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><span>Databáze</span></button>
           <button type="button" data-card="#card-recipes"><svg viewBox="0 0 24 24"><path d="M3 11h18M4 11a8 8 0 0 0 16 0"/><path d="M8.5 11c0-2 1.3-3.5 3.5-3.5s3.5 1.5 3.5 3.5"/></svg><span>Recepty</span></button>
           <button type="button" data-card="#card-favfoods"><svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.6 6.1.6-4.6 4.1 1.4 6L12 16.9 6.1 19.8l1.4-6-4.6-4.1 6.1-.6z"/></svg><span>Oblíbené</span></button>
           <button type="button" data-card="#card-today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 12V3.5"/><path d="M12 12l7.4 4.3"/></svg><span>Dnešní makro</span></button>
@@ -1020,6 +1067,8 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
     <button data-tab="kalorie"><svg viewBox="0 0 24 24"><path d="M12 2c1 3.5 5 5 5 9a5 5 0 11-10 0c0-1.8.8-3.2 1.8-4.3C9.2 8 10 9 10.5 10 11.3 8 11 5 12 2z"/></svg>Jídlo</button>
     <button data-tab="data"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progres</button>
   </nav>
+  <button class="fab" id="fab" type="button" aria-label="Rychlé přidání">＋</button>
+  <div class="fab-bg" id="fabBg"><div class="fab-sheet" id="fabSheet"></div></div>
 </div>
 
 <datalist id="exdb"></datalist>
@@ -1296,6 +1345,7 @@ function switchTab(name,mode){
   const sec=document.getElementById("tab-"+name),wantHub=HUBTABS.has(name)&&mode!=="body";
   clearModes(sec);
   if(wantHub)sec.classList.add("hubon");
+  if(wantHub&&typeof renderHubExtras==="function")renderHubExtras(name);
   window.scrollTo(0,0);
   if(!wantHub)renderTab(name);
 }
@@ -1310,7 +1360,7 @@ function showSolo(sec,cardSel,focus){
   if(focus==="addex"){const b=document.getElementById("addExBtn");if(b)b.click();}
   requestAnimationFrame(()=>{try{window.dispatchEvent(new Event("resize"));}catch(e){}});
 }
-function showHub(sec){clearModes(sec);if(sec.querySelector(":scope > .hub"))sec.classList.add("hubon");else renderTab(sec.id.replace("tab-",""));window.scrollTo(0,0);}
+function showHub(sec){clearModes(sec);const _nm=sec.id.replace("tab-","");if(sec.querySelector(":scope > .hub")){sec.classList.add("hubon");if(typeof renderHubExtras==="function")renderHubExtras(_nm);}else renderTab(_nm);window.scrollTo(0,0);}
 function hubAction(a){
   if(a==="scan"){if(typeof startScan==="function")startScan();}
   else if(a==="foodpick"){if(typeof openFoodPick==="function")openFoodPick();}
@@ -1345,6 +1395,57 @@ document.addEventListener("click",e=>{
   if(back){const sec=back.closest("section");if(sec)showHub(sec);}
 });
 function currentTab(){const on=$("nav button.on");return on?on.dataset.tab:"prehled"}
+const FABMENU={
+  kalorie:[{t:"Přidat jídlo",e:"🍽️",bg:"var(--accent)",go:()=>fabGo("kalorie","#card-foodlog")},{t:"Databáze / hledat",e:"🔍",bg:"#5e5ce6",go:()=>fabGo("kalorie",null,"foodpick")},{t:"Sken kódu",e:"🏷️",bg:"#ff2d55",go:()=>fabGo("kalorie",null,"scan")},{t:"Fotka jídla",e:"📷",bg:"#30b0c7",go:()=>fabGo("kalorie","#card-ai")}],
+  trenink:[{t:"Fitko",e:"🏋️",bg:"var(--accent)",go:()=>fabGo("trenink","#card-newworkout",null,null,"Fitko")},{t:"Kardio",e:"🏃",bg:"#ff2d55",go:()=>fabGo("trenink","#card-newworkout",null,null,"Kardio")},{t:"Jiné",e:"🧘",bg:"#5e5ce6",go:()=>fabGo("trenink","#card-newworkout",null,null,"Jiné")},{t:"Ze šablony",e:"📋",bg:"#ff9f0a",go:()=>fabGo("trenink","#card-templates")}],
+  telo:[{t:"Zvážit se",e:"⚖️",bg:"var(--accent)",go:()=>fabGo("telo","#weighHero")},{t:"Míry",e:"📏",bg:"#30d158",go:()=>fabGo("telo","#card-measures")},{t:"Detailní záznam",e:"📝",bg:"#ff9f0a",go:()=>fabGo("telo","#card-bodyrec")},{t:"Fotka postavy",e:"📸",bg:"#30b0c7",go:()=>fabGo("telo","#card-photos")}],
+  prehled:[{t:"Přidat jídlo",e:"🍽️",bg:"var(--accent)",go:()=>fabGo("kalorie","#card-foodlog")},{t:"Nový trénink",e:"🏋️",bg:"#30d158",go:()=>fabGo("trenink","#card-newworkout")},{t:"Zvážit se",e:"⚖️",bg:"#ff9f0a",go:()=>fabGo("telo","#weighHero")}]
+};
+function fabGo(tab,card,run,focus,type){closeFab();switchTab(tab);
+  if(run==="scan"){if(typeof startScan==="function")startScan();return;}
+  if(run==="foodpick"){if(typeof openFoodPick==="function")openFoodPick();return;}
+  if(card){const sec=document.getElementById("tab-"+tab);if(sec)showSolo(sec,card,focus);}
+  if(type){const ts=$("#formSession [name=type]");if(ts){ts.value=type;ts.dispatchEvent(new Event("change",{bubbles:true}));}}}
+function buildFabMenu(){const items=FABMENU[currentTab()]||FABMENU.prehled;const sheet=$("#fabSheet");if(!sheet)return;
+  sheet.innerHTML='<h3>Rychlé přidání</h3><div class="fab-grid">'+items.map((it,i)=>`<button class="fab-tile" type="button" data-fi="${i}"><span class="fi" style="background:${it.bg}">${it.e}</span>${it.t}</button>`).join("")+'</div>';
+  $$("#fabSheet [data-fi]").forEach(b=>b.onclick=()=>items[+b.dataset.fi].go());}
+function openFab(){buildFabMenu();$("#fabBg").classList.add("show")}
+function closeFab(){$("#fabBg").classList.remove("show")}
+{const _fb=$("#fab");if(_fb)_fb.addEventListener("click",openFab);const _fbg=$("#fabBg");if(_fbg)_fbg.addEventListener("click",e=>{if(e.target===_fbg)closeFab()});}
+let wkOff={train:0,food:0},selDay={train:null,food:null};
+function mondayArr(off){const d=new Date();d.setHours(0,0,0,0);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow+off*7);return Array.from({length:7},(_,i)=>{const x=new Date(d);x.setDate(d.getDate()+i);return x});}
+function isoD(x){return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0")}
+function dayBg(ss){if(!ss||!ss.length)return "";const cols=[];ss.forEach(s=>s.muscles.forEach(m=>{const c=muscleColor(m);if(!cols.includes(c))cols.push(c)}));if(!cols.length)cols.push(muscleColor("Jiné"));const use=cols.slice(0,4),n=use.length;const bg=n===1?use[0]:"linear-gradient(135deg,"+use.map((c,i)=>c+" "+(i/n*100).toFixed(1)+"% "+((i+1)/n*100).toFixed(1)+"%").join(",")+")";return "background:"+bg+";color:#141414";}
+function renderHubExtras(name){if(name==="trenink")renderTrainWeek();else if(name==="telo")renderBodyOverview();else if(name==="kalorie")renderFoodWeek();}
+function renderTrainWeek(){const el=$("#trainWeek");if(!el)return;const days=mondayArr(wkOff.train);const bySess={};state.sessions.forEach(s=>(bySess[s.date]=bySess[s.date]||[]).push(s));const DOW=["Po","Út","St","Čt","Pá","So","Ne"];const ti=todayISO();let wkS=0,exC=0,vol=0;
+  const cells=days.map(x=>{const iso=isoD(x);const ss=bySess[iso];if(ss){wkS++;ss.forEach(s=>{exC+=s.exercises.length;vol+=sessionVolKg(s)});}return `<div class="wk-day${iso===ti?" today":""}${iso===(selDay.train||ti)?" sel":""}" data-d="${iso}" style="${dayBg(ss)};cursor:pointer">${x.getDate()}</div>`;}).join("");
+  const dows=DOW.map(d=>`<div class="wk-dow">${d}</div>`).join("");
+  const range=days[0].getDate()+". – "+days[6].getDate()+".";
+  const sum=wkS?`Odtrénováno <b>${wkS}</b> dní · <b>${exC}</b> cviků · <b>${nbsp(Math.round(vol))}</b> kg`:"Tento týden zatím žádný trénink.";
+  const _lbl=wkOff.train===0?("Tento týden · "+CZMG[days[6].getMonth()]+" "+days[6].getFullYear()):(days[0].getDate()+".–"+days[6].getDate()+". "+CZMG[days[6].getMonth()]+" "+days[6].getFullYear());
+  const dsel=selDay.train||ti,dss=bySess[dsel];
+  const det=`<div class="wk-det"><b>${fmtDateFull(dsel)}</b><br>`+(dss?dss.map(s=>`${esc(s.muscles.join(" + "))} <span class="muted">(${esc(s.type)}, ${estDur(s)} min)</span><br><span class="muted">${s.exercises.map(e=>esc(e.n)+(exValStr(e)?" "+exValStr(e):"")).join(" · ")}</span>`).join("<br>"):`<span class="muted">Žádný trénink tento den.</span>`)+`</div>`;
+  el.innerHTML=`<div class="wk-hero"><div class="wk-hd"><button type="button" data-wk="-1">‹</button><span class="t">${_lbl}</span><button type="button" data-wk="1">›</button></div><div class="wk-grid">${dows}${cells}</div><div class="wk-sum">${sum}</div>${det}</div>`;
+  el.querySelectorAll("[data-wk]").forEach(b=>b.onclick=()=>{wkOff.train+=+b.dataset.wk;renderTrainWeek();});
+  el.querySelectorAll("[data-d]").forEach(c=>c.onclick=()=>{selDay.train=c.dataset.d;renderTrainWeek();});}
+function renderFoodWeek(){const el=$("#foodWeek");if(!el)return;const days=mondayArr(wkOff.food);const byF={};state.foods.forEach(f=>{byF[f.date]=(byF[f.date]||0)+(+f.kcal||0)});const DOW=["Po","Út","St","Čt","Pá","So","Ne"];const ti=todayISO();
+  const cells=days.map(x=>{const iso=isoD(x);const k=Math.round(byF[iso]||0);return `<div class="wk-day${iso===ti?" today":""}${iso===(selDay.food||ti)?" sel":""}" data-d="${iso}" style="${k?"background:var(--accent-weak);color:var(--ink)":""};cursor:pointer">${x.getDate()}${k?`<span class="k">${k>=1000?(k/1000).toFixed(1)+"k":k}</span>`:""}</div>`;}).join("");
+  const dows=DOW.map(d=>`<div class="wk-dow">${d}</div>`).join("");
+  const range=days[0].getDate()+". – "+days[6].getDate()+".";
+  const fsel=selDay.food||ti;const todayF=state.foods.filter(f=>f.date===fsel);const kcalT=Math.round(todayF.reduce((s,f)=>s+(+f.kcal||0),0));
+  const list=todayF.length?`<div class="dfoods">${todayF.slice(0,6).map(f=>`<div class="dfood"><span>${esc(f.name)}</span><b>${nbsp(Math.round(f.kcal||0))}</b></div>`).join("")}<div class="dfood mut"><span>${todayF.length>6?"+ "+(todayF.length-6)+" dalších · Celkem":"Celkem"}</span><b>${nbsp(kcalT)} kcal</b></div></div>`:`<div class="wk-sum">Žádné jídlo tento den.</div>`;
+  const _lblF=wkOff.food===0?("Tento týden · "+CZMG[days[6].getMonth()]+" "+days[6].getFullYear()):(days[0].getDate()+".–"+days[6].getDate()+". "+CZMG[days[6].getMonth()]+" "+days[6].getFullYear());const _dt=fsel===ti?"Dnešní jídla":("Jídla · "+fmtDate(fsel));el.innerHTML=`<div class="wk-hero"><div class="wk-hd"><button type="button" data-wk="-1">‹</button><span class="t">${_lblF}</span><button type="button" data-wk="1">›</button></div><div class="wk-grid">${dows}${cells}</div><div class="group-label" style="margin:14px 4px 4px">${_dt}</div>${list}</div>`;
+  el.querySelectorAll("[data-wk]").forEach(b=>b.onclick=()=>{wkOff.food+=+b.dataset.wk;renderFoodWeek();});
+  el.querySelectorAll("[data-d]").forEach(c=>c.onclick=()=>{selDay.food=c.dataset.d;renderFoodWeek();});}
+function mLatest(key){const arr=state.body.filter(b=>b[key]!=null).sort((a,b)=>a.date.localeCompare(b.date));if(!arr.length)return null;const cur=arr[arr.length-1][key];const cut=isoNdaysAgo(90);const st=(arr.filter(b=>b.date>=cut)[0]||arr[0])[key];return {cur,chg:+(cur-st).toFixed(1)};}
+function renderBodyOverview(){const el=$("#bodyOverview");if(!el)return;const bw=state.body.filter(b=>b.weight!=null).sort((a,b)=>a.date.localeCompare(b.date));const tgtW=state.profile.targetWeight;let wCard;
+  if(bw.length){const cur=bw[bw.length-1].weight;const cut90=isoNdaysAgo(90);const start=(bw.filter(b=>b.date>=cut90)[0]||bw[0]).weight;const chg=+(cur-start).toFixed(1);const chgTxt=`<div class="sub ${chg<0?"good":""}">${chg>0?"+":""}${String(chg).replace(".",",")} kg / 90 dní</div>`;
+    if(tgtW&&start!==tgtW){let pct=(cur-start)/(tgtW-start);pct=Math.max(0,Math.min(1,pct));wCard=`<div class="ring-card">${ringSVG(84,pct,"var(--accent)",Math.round(pct*100)+" %",17,"k cíli "+tgtW+" kg",8)}<div class="cap">Váha ${String(cur).replace(".",",")} kg</div>${chgTxt}</div>`;}
+    else wCard=`<div class="ring-card">${ringSVG(84,0,"var(--accent)",String(cur).replace(".",","),17,"kg",8)}<div class="cap">Aktuální váha</div>${chgTxt}</div>`;}
+  else wCard=`<div class="ring-card">${ringSVG(84,0,"var(--accent)","–",17,"kg",8)}<div class="cap">Váha</div><div class="sub">zatím bez dat</div></div>`;
+  const mrow=(lbl,key)=>{const m=mLatest(key);if(!m)return `<div class="bo-m"><span>${lbl}</span><b>–</b></div>`;return `<div class="bo-m"><span>${lbl}</span><b>${String(m.cur).replace(".",",")}<small> cm</small>${m.chg?` <i class="${m.chg<0?"dn":"up"}">${m.chg>0?"+":""}${String(m.chg).replace(".",",")}</i>`:""}</b></div>`;};
+  const mCard=`<div class="ring-card" style="text-align:left"><div class="cap" style="text-align:center;margin-bottom:8px">Míry (cm)</div>${mrow("Pas","waist")}${mrow("Hrudník","chest")}${mrow("Biceps","biceps")}${mrow("Stehno","thigh")}</div>`;
+  el.innerHTML=`<div class="ring-cards" style="margin-bottom:0">${wCard}${mCard}</div>`;}
 function renderTab(name){
   if(name==="prehled")renderDashboard();
   else if(name==="trenink")renderSessions();
@@ -1460,13 +1561,23 @@ function renderDashboard(){
   const stepsT=+state.steps[todayISO()]||0;
   const kcalPct=tgt?Math.min(100,Math.round(kcalT/tgt*100)):0;
   const protPct=state.profile.targetProtein?Math.min(100,Math.round(protT/state.profile.targetProtein*100)):0;
-  const tiles=[
-    {lbl:"Váha",val:curW!=null?`${curW}<small> kg</small>`:"–",extra:wDelta},
-    {lbl:`Tréninky · 7 dní`,val:`${wkDays}<small> ${wkDays===1?"den":wkDays>=2&&wkDays<=4?"dny":"dní"}</small>`,extra:wkVol?`<div class="delta flat">${nbsp(wkVol)} kg objem</div>`:`<div class="delta flat">zatím nic</div>`},
-    {lbl:"Kalorie dnes",val:`${nbsp(kcalT)}`,extra:tgt?`<div class="mini-bar"><i style="width:${kcalPct}%"></i></div><div class="delta flat" style="margin-top:6px">z cíle ${nbsp(tgt)} kcal</div>`:`<div class="delta flat">nastav cíl v Jídlo</div>`},
-    {lbl:"Bílkoviny dnes",val:`${Math.round(protT)}<small> g</small>`,extra:state.profile.targetProtein?`<div class="mini-bar"><i class="g" style="width:${protPct}%"></i></div><div class="delta flat" style="margin-top:6px">cíl ${state.profile.targetProtein} g</div>`:`<div class="delta flat">nastav cíl bílkovin</div>`},
-  ];
-  $("#statTiles").innerHTML=tiles.map(t=>`<div class="tile"><div class="lbl">${t.lbl}</div><div class="val">${t.val}</div>${t.extra||""}</div>`).join("");
+  const carbT=todayF.reduce((s,f)=>s+(+f.carbs||0),0), fatT=todayF.reduce((s,f)=>s+(+f.fat||0),0);
+  const wkoT=(typeof todayWorkoutKcal==="function")?Math.round(todayWorkoutKcal()):0;
+  const remain=tgt!=null?Math.round(tgt-kcalT+(state.profile.addWorkoutToGoal?wkoT:0)):null;
+  const tP=state.profile.targetProtein||0, tC=tgt?Math.round(tgt*0.45/4):0, tF=tgt?Math.round(tgt*0.30/9):0;
+  const exCountX=wkSess.reduce((a,s)=>a+s.exercises.length,0), wkKcalX=Math.round(wkSess.reduce((a,s)=>a+workoutKcal(s),0)), trX=weightTrendInfo();
+  const macroDonut=(p,c,f)=>{const kp=Math.max(0,p*4),kc=Math.max(0,c*4),kf=Math.max(0,f*9),tot=kp+kc+kf,R=54,CIRC=2*Math.PI*R,cx=70,cy=70;let off=0,arcs="";
+    if(tot>0){[[kp,"var(--good)"],[kc,"var(--warn)"],[kf,"var(--purple)"]].forEach(sg=>{const len=CIRC*(sg[0]/tot);arcs+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${sg[1]}" stroke-width="18" stroke-dasharray="${len.toFixed(2)} ${(CIRC-len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})"></circle>`;off+=len;});}
+    return `<svg viewBox="0 0 140 140" width="118" height="118" style="flex:none"><circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="var(--grid)" stroke-width="18"></circle>${arcs}<text x="${cx}" y="${cy-1}" text-anchor="middle" class="ring-num" font-size="21">${Math.round(tot)}</text><text x="${cx}" y="${cy+15}" text-anchor="middle" class="ring-sub" font-size="10">kcal</text></svg>`;};
+  const calBig=remain!=null?(Math.abs(remain)>=1000?nbsp(remain):String(remain)):(kcalT>=1000?nbsp(kcalT):String(kcalT));
+  const c1=`<div class="hero-cal">${ringSVG(104,tgt?Math.min(1,kcalT/tgt):0,"var(--accent)",calBig,calBig.length>=5?17:23,remain!=null?"zbývá":"kcal dnes",11)}<div class="cal-break"><div class="cbrk"><span>Cíl</span><b>${tgt?nbsp(tgt):"–"}</b></div><div class="cbrk"><span>Jídlo</span><b>${nbsp(kcalT)}</b></div><div class="cbrk"><span>Pohyb</span><b>${nbsp(wkoT)}</b></div></div></div>`;
+  const c2=curW!=null?`<div class="big-stat">${curW}<small> kg</small></div>${wDelta}${trX?`<div class="delta flat" style="margin-top:8px">Trend ${trX.perWeek>0?"+":""}${trX.perWeek.toFixed(2)} kg/týden${trX.eta?` · cíl ${state.profile.targetWeight} kg ≈ ${trX.eta}`:""}</div>`:""}`:`<div class="delta flat">Zatím žádná váha — přidej v sekci Tělo.</div>`;
+  const c3=todayF.length?`<div class="dfoods">${todayF.slice(0,5).map(f=>`<div class="dfood"><span>${esc(f.name)}</span><b>${nbsp(Math.round(f.kcal||0))}</b></div>`).join("")}${todayF.length>5?`<div class="dfood mut"><span>+ ${todayF.length-5} dalších</span><b>${nbsp(kcalT)} kcal</b></div>`:`<div class="dfood mut"><span>Celkem</span><b>${nbsp(kcalT)} kcal</b></div>`}</div>`:`<div class="delta flat">Zatím žádné jídlo dnes — přidej v sekci Jídlo.</div>`;
+  const c4=(protT||carbT||fatT)?`<div class="hero-cal">${macroDonut(protT,carbT,fatT)}<div class="macro-legend2"><div><i style="background:var(--good)"></i>Bílkoviny<b>${Math.round(protT)} g</b></div><div><i style="background:var(--warn)"></i>Sacharidy<b>${Math.round(carbT)} g</b></div><div><i style="background:var(--purple)"></i>Tuky<b>${Math.round(fatT)} g</b></div></div></div>`:`<div class="delta flat">Zatím žádná makra dnes — přidej jídlo.</div>`;
+  const cards=[["Kalorie dnes",c1],["Váha",c2],["Dnešní jídla",c3],["Makro dnes",c4]];
+  const sw=$("#statSwipe");if(sw)sw.innerHTML=cards.map(c=>`<div class="swipe-card"><h3>${c[0]}</h3>${c[1]}</div>`).join("");
+  const dots=$("#statDots");if(dots)dots.innerHTML=cards.map((_,i)=>`<i class="${i===0?"on":""}"></i>`).join("");
+  if(sw&&!sw._wired){sw._wired=true;sw.addEventListener("scroll",()=>{const c=sw.querySelector(".swipe-card");if(!c)return;const cw=c.offsetWidth+12;const i=Math.max(0,Math.min(cards.length-1,Math.round(sw.scrollLeft/cw)));$$("#statDots i").forEach((d,k)=>d.classList.toggle("on",k===i));});}
   $("#weightHint").textContent=body.length?`${body.length} záznamů`:"";
   const tr=weightTrendInfo();
   $("#weightTrendMini").innerHTML=tr?`Trend: <b>${tr.perWeek>0?"+":""}${tr.perWeek.toFixed(2)} kg/týden</b>${tr.eta?` · cíl ${state.profile.targetWeight} kg ≈ <b>${tr.eta}</b>`:""}`:"";
