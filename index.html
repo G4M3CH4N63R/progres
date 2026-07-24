@@ -1073,6 +1073,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
     <h3>Vybrat jídlo</h3>
     <div id="portionPanel"></div>
     <input type="text" id="foodSearch" placeholder="Hledat jídlo…" autocomplete="off">
+    <button class="btn secondary small" id="foodOnlineBtn" type="button" style="margin-top:8px;width:100%">🌐 Hledat online (Open Food Facts)</button>
     <button class="btn secondary small" id="addCustomFoodBtn" type="button" style="margin-top:10px;width:100%">＋ Vlastní jídlo (hodnoty na 100 g)</button>
     <div id="customFoodForm" style="display:none;margin-top:10px">
       <input type="text" id="cfName" placeholder="Název jídla" autocomplete="off">
@@ -1673,7 +1674,7 @@ function addSetRow(r,st){st=st||{};const unit=r.dataset.unit;const box=r.querySe
   let steps;
   if(unit==="time")steps=step("SEKUNDY","f-sec",5,"s",300,"numeric",val(st.sec));
   else if(unit==="reps")steps=step("OPAKOVÁNÍ","f-r",1,"opak.",50,"numeric",val(st.r));
-  else steps=step("KG","f-w",0.1,"kg",100,"decimal",val(st.w))+step("OPAKOVÁNÍ","f-r",1,"opak.",50,"numeric",val(st.r));
+  else steps=step("KG","f-w",0.1,"kg",100,"decimal",val(st.w),0.5)+step("OPAKOVÁNÍ","f-r",1,"opak.",50,"numeric",val(st.r));
   card.innerHTML=`<div class="sc-hd"><span class="sc-lbl">${idx}. série</span><div class="sc-hd-r"><button type="button" class="set-rm" title="Odebrat sérii">×</button><button type="button" class="set-done${st.done?" on":""}" title="Hotovo">${st.done?"✓":""}</button></div></div><div class="sc-steps">${steps}</div>`;
   const ready=()=>{const el=card.querySelector(unit==="time"?".f-sec":".f-r");return !!(el&&el.value!=="")};
   card.querySelector(".set-done").onclick=function(){
@@ -2036,13 +2037,42 @@ $("#workoutToggle").addEventListener("click",()=>{
 
 /* ---- Databáze jídel (na 100 g): [název, kcal, bílk, sach, tuky] ---- */
 const FOODDB=[
-["Kuřecí prsa (vařené)",120,26,0,2],["Krůtí prsa",110,24,0,1.5],["Hovězí libové",180,26,0,8],["Vepřová panenka",145,22,0,6],["Losos",208,20,0,13],["Tuňák ve vlastní šťávě",116,26,0,1],["Vejce",155,13,1.1,11],["Šunka drůbeží",110,18,1,4],
-["Bílý jogurt 3%",61,3.5,4.7,3.3],["Řecký jogurt 0%",59,10,3.6,0.4],["Tvaroh nízkotučný",72,12,3.5,0.5],["Cottage sýr",98,11,3.4,4.3],["Eidam 30%",275,28,0,17],["Mozzarella",250,18,3,18],["Mléko polotučné",47,3.4,4.8,1.5],["Whey protein (prášek)",400,80,8,6],
-["Ovesné vločky",375,13,60,7],["Rýže vařená",130,2.7,28,0.3],["Basmati vařená",120,3,25,0.4],["Brambory vařené",87,2,20,0.1],["Batáty",86,1.6,20,0.1],["Těstoviny vařené",158,6,31,0.9],["Celozrnný chléb",250,9,45,3],["Rohlík",290,9,55,4],["Proteinová houska",235,22,20,7],["Rýžové chlebíčky",387,8,81,3],
-["Banán",89,1.1,23,0.3],["Jablko",52,0.3,14,0.2],["Borůvky",57,0.7,14,0.3],["Pomeranč",47,0.9,12,0.1],["Avokádo",160,2,9,15],
-["Brokolice",34,2.8,7,0.4],["Rajče",18,0.9,3.9,0.2],["Okurka",15,0.7,3.6,0.1],["Mrkev",41,0.9,10,0.2],["Špenát",23,2.9,3.6,0.4],
-["Čočka vařená",116,9,20,0.4],["Fazole vařené",127,8.7,22,0.5],["Cizrna vařená",164,8.9,27,2.6],
-["Mandle",579,21,22,50],["Arašidové máslo",588,25,20,50],["Vlašské ořechy",654,15,14,65],["Olivový olej",884,0,0,100],["Máslo",717,0.9,0.1,81],["Med",304,0.3,82,0],["Hořká čokoláda 70%",546,8,46,31]
+// Maso a drůbež
+["Kuřecí prsa (vařené)",120,26,0,2],["Kuřecí prsa (syrové)",110,23,0,1.5],["Kuřecí stehno bez kůže",130,18,0,6],["Kuřecí křídla",203,18,0,14],["Krůtí prsa",110,24,0,1.5],["Krůtí mleté",150,20,0,7],["Hovězí libové",180,26,0,8],["Hovězí mleté 10%",217,26,0,12],["Hovězí steak (roštěná)",217,26,0,12],["Vepřová panenka",145,22,0,6],["Vepřová kýta",180,21,0,11],["Vepřové mleté",263,17,0,21],["Vepřový bůček",518,9,0,53],["Jehněčí",294,25,0,21],["Kachní prsa",337,19,0,28],
+// Uzeniny
+["Slanina",541,37,1.4,42],["Šunka drůbeží",110,18,1,4],["Šunka vepřová nejvyšší jakost",107,18,1,4],["Kuřecí šunka 90%",95,17,1,3],["Salám Vysočina",440,15,2,41],["Klobása",300,13,2,27],["Párek",270,11,2,24],["Špekáček",320,12,1,30],["Paštika",320,10,3,30],["Játra kuřecí",119,17,1,5],["Tlačenka",180,14,1,13],["Debrecínka",280,13,1,25],["Turistický salám",380,18,2,33],["Lovecký salám",470,18,1,44],["Kabanos",450,20,1,40],
+// Ryby
+["Losos",208,20,0,13],["Losos uzený",117,18,0,4.3],["Tuňák ve vlastní šťávě",116,26,0,1],["Tuňák v oleji",190,25,0,10],["Treska",82,18,0,0.7],["Pangasius",90,15,0,3],["Makrela",205,19,0,14],["Sardinky v oleji",208,25,0,11],["Krevety",99,24,0.2,0.3],["Pstruh",119,20,0,3.5],["Sleď matjes",210,17,0,15],["Kapr",127,18,0,5.6],["Rybí filé",96,18,0,2],["Kalmáry",92,15,3,1.4],["Rybí prsty",200,12,18,9],
+// Vejce
+["Vejce",155,13,1.1,11],["Vaječný bílek",52,11,0.7,0.2],["Vaječný žloutek",322,16,3.6,27],["Míchaná vejce",166,11,1.3,12],["Omeleta",154,11,0.6,12],
+// Mléčné a sýry
+["Bílý jogurt 3%",61,3.5,4.7,3.3],["Bílý jogurt 0%",41,4,5,0.1],["Řecký jogurt 0%",59,10,3.6,0.4],["Řecký jogurt 5%",97,9,4,5],["Skyr",63,11,4,0.2],["Kefír",52,3.3,4,1.5],["Tvaroh nízkotučný",72,12,3.5,0.5],["Tvaroh polotučný",120,13,4,5],["Cottage sýr",98,11,3.4,4.3],["Cottage light",72,12,3,1.5],["Eidam 30%",275,28,0,17],["Eidam 45%",340,25,0,27],["Gouda",356,25,2.2,27],["Mozzarella",250,18,3,18],["Mozzarella light",164,18,1,10],["Parmazán",431,38,4,29],["Hermelín",300,18,1,25],["Niva",353,21,0,29],["Žervé",253,7,3,23],["Lučina",230,7,3,21],["Tavený sýr",290,10,5,25],["Feta",264,14,4,21],["Ricotta",174,11,3,13],["Mléko plnotučné",64,3.3,4.8,3.6],["Mléko polotučné",47,3.4,4.8,1.5],["Mléko odtučněné",34,3.4,5,0.1],["Smetana ke šlehání 33%",337,2,3,33],["Zakysaná smetana 15%",161,3,4,15],["Podmáslí",40,3.3,4.7,0.9],["Máslo",717,0.9,0.1,81],["Whey protein prášek",400,80,8,6],["Kasein prášek",370,78,6,3],
+// Rostlinné alternativy
+["Sójové mléko",42,3.3,2.5,1.8],["Mandlové mléko",22,0.5,3,1.1],["Ovesné mléko",46,1,7,1.5],["Kokosový nápoj",30,0.2,3,2],["Tofu",144,15,2,9],["Tempeh",192,20,8,11],["Sójové maso suché",345,52,20,1],["Veganský jogurt",70,3,9,3],
+// Obiloviny a přílohy
+["Ovesné vločky",375,13,60,7],["Rýže vařená",130,2.7,28,0.3],["Rýže basmati vařená",120,3,25,0.4],["Rýže natural vařená",111,2.6,23,0.9],["Brambory vařené",87,2,20,0.1],["Brambory pečené",93,2.5,21,0.1],["Bramborová kaše",83,2,15,1.5],["Hranolky",312,3.4,41,15],["Batáty",86,1.6,20,0.1],["Těstoviny vařené",158,6,31,0.9],["Těstoviny celozrnné vařené",124,5,26,0.5],["Kuskus vařený",112,3.8,23,0.2],["Bulgur vařený",83,3,19,0.2],["Quinoa vařená",120,4.4,21,1.9],["Jáhly vařené",119,3.5,23,1],["Pohanka vařená",92,3.4,20,0.6],["Gnocchi",170,4,35,1],["Houskový knedlík",200,6,38,2],["Bramborový knedlík",180,4,38,1],["Polenta vařená",85,2,18,0.4],["Kroupy vařené",123,2.3,28,0.4],
+// Pečivo
+["Celozrnný chléb",250,9,45,3],["Chléb Šumava",240,7,48,1.5],["Žitný chléb",259,8.5,48,3.3],["Toustový chléb",270,9,49,3.5],["Rohlík",290,9,55,4],["Houska",280,9,54,3],["Bageta",270,9,52,2.5],["Kaiserka",280,9,53,3.5],["Croissant máslový",406,8,45,21],["Proteinová houska",235,22,20,7],["Rýžové chlebíčky",387,8,81,3],["Knäckebrot",350,10,66,5],["Pita chléb",275,9,55,1.2],["Tortilla pšeničná",310,8,50,8],["Lívanec",220,6,35,6],["Palačinka",180,6,25,6],["Vafle",290,7,40,11],["Kobliha",340,6,45,15],
+// Luštěniny
+["Čočka vařená",116,9,20,0.4],["Fazole vařené",127,8.7,22,0.5],["Fazole červené",127,8.7,22,0.5],["Cizrna vařená",164,8.9,27,2.6],["Hrách vařený",118,8,21,0.4],["Hummus",177,8,20,9],["Edamame",121,12,9,5],["Bílé fazole",139,9.7,25,0.5],
+// Zelenina
+["Brokolice",34,2.8,7,0.4],["Květák",25,1.9,5,0.3],["Rajče",18,0.9,3.9,0.2],["Rajčatový protlak",82,4,19,0.5],["Okurka",15,0.7,3.6,0.1],["Mrkev",41,0.9,10,0.2],["Špenát",23,2.9,3.6,0.4],["Paprika červená",31,1,6,0.3],["Cuketa",17,1.2,3.1,0.3],["Lilek",25,1,6,0.2],["Cibule",40,1.1,9,0.1],["Česnek",149,6,33,0.5],["Kapusta",49,3,9,0.9],["Zelí bílé",25,1.3,6,0.1],["Kysané zelí",19,0.9,4,0.1],["Ledový salát",14,0.9,3,0.1],["Rukola",25,2.6,3.7,0.7],["Žampiony",22,3.1,3.3,0.3],["Kukuřice",86,3.2,19,1.2],["Zelený hrášek",81,5,14,0.4],["Dýně",26,1,7,0.1],["Červená řepa",43,1.6,10,0.2],["Celer",16,0.7,3,0.2],["Pórek",61,1.5,14,0.3],["Fazolové lusky",31,1.8,7,0.2],["Ředkvičky",16,0.7,3.4,0.1],["Chřest",20,2.2,3.9,0.1],["Avokádo",160,2,9,15],["Olivy",115,0.8,6,11],
+// Ovoce
+["Banán",89,1.1,23,0.3],["Jablko",52,0.3,14,0.2],["Hruška",57,0.4,15,0.1],["Pomeranč",47,0.9,12,0.1],["Mandarinka",53,0.8,13,0.3],["Grep",42,0.8,11,0.1],["Citron",29,1.1,9,0.3],["Borůvky",57,0.7,14,0.3],["Jahody",32,0.7,7.7,0.3],["Maliny",52,1.2,12,0.7],["Ostružiny",43,1.4,10,0.5],["Hroznové víno",69,0.7,18,0.2],["Vodní meloun",30,0.6,8,0.2],["Žlutý meloun",34,0.8,8,0.2],["Ananas",50,0.5,13,0.1],["Mango",60,0.8,15,0.4],["Kiwi",61,1.1,15,0.5],["Broskev",39,0.9,10,0.3],["Meruňka",48,1.4,11,0.4],["Švestky",46,0.7,11,0.3],["Třešně",63,1,16,0.2],["Nektarinka",44,1.1,11,0.3],["Datle",282,2.5,75,0.4],["Rozinky",299,3,79,0.5],["Sušené meruňky",241,3.4,63,0.5],["Sušené fíky",249,3.3,64,0.9],["Granátové jablko",83,1.7,19,1.2],["Kokosová dužina",354,3.3,15,33],
+// Ořechy, semínka, tuky
+["Mandle",579,21,22,50],["Vlašské ořechy",654,15,14,65],["Kešu",553,18,30,44],["Lískové ořechy",628,15,17,61],["Para ořechy",659,14,12,67],["Pistácie",562,20,28,45],["Arašídy",567,26,16,49],["Arašidové máslo",588,25,20,50],["Mandlové máslo",614,21,19,56],["Slunečnicová semínka",584,21,20,51],["Dýňová semínka",559,30,11,49],["Chia semínka",486,17,42,31],["Lněné semínko",534,18,29,42],["Sezam",573,18,23,50],["Olivový olej",884,0,0,100],["Řepkový olej",884,0,0,100],["Kokosový olej",892,0,0,100],["Sádlo",900,0,0,100],["Margarín",717,0.2,0.7,80],
+// Sladké
+["Med",304,0.3,82,0],["Javorový sirup",260,0,67,0.1],["Cukr",400,0,100,0],["Hořká čokoláda 70%",546,8,46,31],["Mléčná čokoláda",535,7,59,30],["Bílá čokoláda",539,6,59,32],["Nutella",539,6,57,31],["Máslové sušenky",480,6,64,22],["Piškoty",390,8,80,4],["Oplatka",480,6,62,23],["Vanilková zmrzlina",207,3.5,24,11],["Nanuk",190,2,25,9],["Pudink",100,3,17,2],["Tvarohový dezert",130,6,17,4],["Bábovka",380,6,55,15],["Krémový dort",370,5,45,19],["Cheesecake",321,6,26,22],["Marmeláda",250,0.5,62,0.1],["Müsli tyčinka",420,6,65,15],["Perník",360,5,73,6],
+// Snacky
+["Brambůrky chipsy",536,6,53,34],["Solené tyčinky",380,10,73,5],["Popcorn",387,12,78,4],["Krekry",430,9,68,14],["Tortilla chipsy",489,7,63,23],["Solené oříšky mix",600,18,20,52],["Sušené maso jerky",250,33,11,8],["Proteinová tyčinka",350,32,35,9],["Müsli",367,9,64,7],["Granola",471,10,64,20],["Cornflakes",357,7,84,0.9],["Čokoládové cereálie",380,6,82,4],
+// Nápoje
+["Coca-Cola",42,0,10.6,0],["Coca-Cola Zero",0.3,0,0,0],["Pomerančový džus",45,0.7,10,0.2],["Jablečný džus",46,0.1,11,0.1],["Ledový čaj",30,0,7.5,0],["Energetický nápoj",45,0,11,0],["Pivo světlé 10°",42,0.5,3.5,0],["Pivo 12°",43,0.5,3.6,0],["Bílé víno",82,0.1,2.6,0],["Červené víno",85,0.1,2.6,0],["Prosecco",80,0.2,3,0],["Vodka 40%",231,0,0,0],["Rum 40%",231,0,0,0],["Whisky 40%",250,0,0,0],["Černá káva",2,0.1,0,0],["Cappuccino",40,2,4,1.5],["Latte",55,3,6,2],["Kakao s mlékem",90,3.5,12,3],["Protein shake (voda)",120,24,3,1.5],["Kokosová voda",19,0.7,3.7,0.2],["Limonáda",38,0,9.5,0],["Tonik",34,0,8.5,0],["Ovocné smoothie",60,1,14,0.3],
+// Fast food a hotová jídla
+["Pizza Margherita",250,11,30,9],["Pizza šunková",260,12,30,11],["Hamburger",254,13,30,9],["Cheeseburger",303,15,29,15],["Kuřecí nugety",296,15,18,19],["Hot dog",290,10,24,17],["Kebab v pitě",215,15,17,10],["Kuřecí kebab maso",165,18,3,8],["Sushi nigiri",143,4,30,0.4],["Sushi maki losos",145,5,28,1.5],["Bramboráky",268,4,30,15],["Smažený sýr",290,15,18,17],["Vepřový řízek smažený",290,20,12,18],["Kuřecí řízek smažený",250,20,12,13],["Hovězí guláš",130,11,6,7],["Svíčková na smetaně",180,7,22,7],["Rajská s masem",120,7,10,6],["Čínské nudle s kuřecím",160,8,20,5],["Špagety boloňské",150,7,18,5],["Lasagne",135,8,12,6],["Wrap s kuřecím",200,12,20,8],["Bramborový salát",200,3,18,13],["Obložený chlebíček",250,8,25,13],["Toustový sendvič šunka sýr",280,14,28,12],
+// Omáčky a dochucovadla
+["Kečup",112,1.3,26,0.2],["Hořčice",66,4,5,3.5],["Majonéza",680,1,2,75],["Tatarská omáčka",500,1,6,52],["BBQ omáčka",170,1,40,0.5],["Sójová omáčka",53,8,5,0.1],["Caesar dresink",450,2,5,47],["Pesto",450,5,6,45],["Balzamikový ocet",88,0.5,17,0],["Rajčatová passata",35,1.6,7,0.2],["Salsa",36,1.5,7,0.2],["Sriracha",93,2,19,0.9],
+// Fitness produkty
+["Proteinová palačinka",180,15,18,5],["Proteinový pudink",90,10,8,1.5],["Proteinové müsli",380,30,40,8],["Proteinová kaše",370,25,45,7],["Gainer prášek",380,20,60,5],["Proteinová zmrzlina",120,10,15,2],["Rýžový protein",380,80,4,3],["Hrachový protein",380,80,3,5],["Energetický gel",250,0,62,0]
 ];
 
 /* ---- AI (Claude API) ---- */
@@ -2328,20 +2358,41 @@ let curPortion=null;
 function recentFoodEntries(){const seen=new Set(),out=[];
   [...state.foods].sort((a,b)=>b.date.localeCompare(a.date)).forEach(f=>{const k=f.name.toLowerCase();if(seen.has(k))return;seen.add(k);out.push(f)});
   return out}
-function openFoodPick(){$("#foodSearch").value="";$("#customFoodForm").style.display="none";curPortion=null;$("#portionPanel").innerHTML="";renderFoodPickList();$("#foodPickBg").classList.add("show")}
+let offResults=[],offQuery="";
+async function offSearch(q){
+  let r;try{r=await fetch("https://world.openfoodfacts.org/cgi/search.pl?search_terms="+encodeURIComponent(q)+"&search_simple=1&action=process&json=1&page_size=25&fields=product_name,product_name_cs,brands,nutriments")}
+  catch(e){throw new Error("Bez internetu online hledání nefunguje.")}
+  if(!r.ok)throw new Error("Open Food Facts nedostupné ("+r.status+").");
+  const j=await r.json();const out=[];
+  for(const p of (j.products||[])){const nu=p.nutriments||{};
+    let kcal=nu["energy-kcal_100g"];if(kcal==null&&nu["energy_100g"]!=null)kcal=Math.round(nu["energy_100g"]/4.184);
+    const nm=(p.product_name_cs||p.product_name||"").trim();
+    if(kcal==null||!nm)continue;
+    out.push({n:nm+(p.brands?" ("+String(p.brands).split(",")[0].trim()+")":""),per100:{kcal:Math.round(kcal),p:Math.round((+nu.proteins_100g||0)*10)/10,c:Math.round((+nu.carbohydrates_100g||0)*10)/10,f:Math.round((+nu.fat_100g||0)*10)/10},src:"Open Food Facts"});
+    if(out.length>=20)break;}
+  if(!out.length)throw new Error("Nic online nenalezeno.");
+  return out;}
+async function runOffSearch(){const q=$("#foodSearch").value.trim();if(q.length<2){toast("Napiš aspoň 2 znaky");return}
+  const b=$("#foodOnlineBtn");b.disabled=true;b.innerHTML='<span class="spin"></span> Hledám online…';
+  try{offResults=await offSearch(q);offQuery=q.toLowerCase();}catch(e){offResults=[];toast(e.message);}
+  b.disabled=false;b.textContent="🌐 Hledat online (Open Food Facts)";renderFoodPickList();}
+function openFoodPick(){$("#foodSearch").value="";offResults=[];offQuery="";$("#customFoodForm").style.display="none";curPortion=null;$("#portionPanel").innerHTML="";renderFoodPickList();var ob=$("#foodOnlineBtn");if(ob)ob.onclick=runOffSearch;$("#foodPickBg").classList.add("show")}
 function closeFoodPick(){$("#foodPickBg").classList.remove("show");curPortion=null}
 function renderFoodPickList(){
   const q=$("#foodSearch").value.trim().toLowerCase();
+  if(q!==offQuery)offResults=[];
   const rec=recentFoodEntries().filter(f=>!q||f.name.toLowerCase().includes(q)).slice(0,20);
   const custom=(state.foodDb||[]).filter(f=>!q||f.n.toLowerCase().includes(q));
   const db=FOODDB.filter(f=>!q||f[0].toLowerCase().includes(q));
   const rcp=sortedRecipes().filter(r=>!q||r.name.toLowerCase().includes(q));
   let html="";
+  if(offResults.length)html+='<div class="pick-h">Online (Open Food Facts)</div>'+offResults.map((f,i)=>`<button type="button" class="pick-i" data-off="${i}">${esc(f.n)}<span class="muted" style="float:right;font-weight:500">${f.per100.kcal}/100g</span></button>`).join("");
   if(rcp.length)html+=`<div class="pick-h">Moje recepty (1 porce)</div>`+rcp.map((r,i)=>{const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);return `<div class="pick-row"><button type="button" class="pick-i" data-recipe="${i}">${esc(r.name)}<span class="muted" style="float:right;font-weight:500">${Math.round(t.kcal/sv)} kcal</span></button><button type="button" class="pick-fav${r.fav?" on":""}" data-favrcp="${i}" title="Oblíbený">${r.fav?"★":"☆"}</button></div>`}).join("");
   if(rec.length)html+=`<div class="pick-h">Nedávná jídla (kopírovat)</div>`+rec.map((f,i)=>{const cn=f.name.replace(/\s*×\s*\d+$/,"");return `<div class="pick-row"><button type="button" class="pick-i" data-recent="${i}">${esc(f.name)}<span class="muted" style="float:right;font-weight:500">${f.kcal} kcal</span></button><button type="button" class="pick-fav${isFavFood(cn)?" on":""}" data-favrec="${i}" title="Oblíbený">${isFavFood(cn)?"★":"☆"}</button></div>`}).join("");
   if(custom.length)html+=`<div class="pick-h">Moje jídla (na 100 g)</div>`+custom.map((f,i)=>`<button type="button" class="pick-i" data-custom="${i}">${esc(f.n)}<span class="muted" style="float:right;font-weight:500">${f.kcal}/100 g</span></button>`).join("");
   html+=`<div class="pick-h">Databáze (na 100 g)</div>`+db.map((f,i)=>`<button type="button" class="pick-i" data-db="${i}">${esc(f[0])}<span class="muted" style="float:right;font-weight:500">${f[1]}/100 g</span></button>`).join("");
   $("#foodPickList").innerHTML=html;
+  $$("#foodPickList [data-off]").forEach(b=>b.onclick=()=>openPortion(offResults[+b.dataset.off]));
   $$("#foodPickList [data-recent]").forEach(b=>b.onclick=()=>{const f=rec[+b.dataset.recent];
     closeFoodPick();prefillFood(f.name.replace(/\s*×\s*\d+$/,""),f.kcal,f.protein,f.carbs,f.fat);toast("Předvyplněno — uprav a přidej ⤵")});
   $$("#foodPickList [data-recipe]").forEach(b=>b.onclick=()=>{const r=rcp[+b.dataset.recipe];const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
