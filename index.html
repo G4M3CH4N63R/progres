@@ -97,7 +97,6 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   section.soloon>.solocard{display:block}
   section.soloon>.hubback{display:inline-flex}
   section.soloon>:not(.solocard):not(.hubback){display:none!important}
-  #tab-trenink.soloon>.pausebar{display:flex!important}
   .hub .page-sub{margin-bottom:16px}
   .hub-main{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:none;cursor:pointer;background:var(--accent);color:#fff;border-radius:20px;padding:15px 18px;margin-bottom:12px;font:inherit}
   .hub-main .ic{width:46px;height:46px;border-radius:13px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex:none}
@@ -249,8 +248,9 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .exname:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-weak)}
   .exname .exn-ic{flex:none;display:grid;place-items:center;color:var(--accent)}
   .exname .exn-ic svg{width:20px;height:20px;display:block}
-  .exname input{flex:1;min-width:0;border:none!important;background:transparent!important;box-shadow:none!important;border-radius:0;padding:15px 0;font-size:19px;font-weight:600;letter-spacing:-.2px;cursor:pointer;caret-color:transparent}
-  .exname input:focus{outline:none}
+  .exname .exn{display:none}
+  .exn-disp{flex:1;min-width:0;padding:12px 0;font-size:16px;font-weight:600;letter-spacing:-.2px;line-height:1.25;color:var(--ink);cursor:pointer;overflow-wrap:anywhere;text-wrap:pretty}
+  .exn-disp.empty{color:var(--muted);font-weight:500}
   .exname .pick{flex:none;width:40px;align-self:stretch;border:none;background:transparent;color:var(--ink2);cursor:pointer;display:grid;place-items:center;padding:0}
   .exname .pick svg{width:16px;height:16px;display:block}
   .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -366,15 +366,39 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .sc-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
   .sc-lbl{font-size:13px;font-weight:700;color:var(--ink2)}
   .sc-hd-r{display:flex;align-items:center;gap:8px}
-  .sc-steps{display:grid;grid-template-columns:1fr;gap:10px}
-  .sc-steps.two{grid-template-columns:1fr 1fr}
-  .sc-cap{font-size:10px;letter-spacing:.5px;color:var(--muted);font-weight:700;margin-bottom:5px;text-align:center}
-  .set-cell{display:flex;align-items:center;background:var(--plane);border-radius:12px;overflow:hidden}
-  [data-theme="dark"] .set-cell{background:#000}
-  .set-cell input{flex:1;min-width:0;border:none!important;background:transparent!important;box-shadow:none!important;text-align:center;padding:11px 0;font-size:21px;font-weight:700;font-variant-numeric:tabular-nums;border-radius:0;color:var(--ink)}
-  .set-cell input:focus{outline:none}
-  .set-cell .sc{flex:none;width:44px;height:46px;border:none;background:transparent;color:var(--accent);font-size:22px;font-weight:500;cursor:pointer;padding:0;line-height:1}
-  .set-cell .sc:active{opacity:.5}
+  .sc-steps{display:grid;grid-template-columns:1fr;gap:14px}
+  .sc-cap{font-size:10.5px;letter-spacing:.5px;color:var(--muted);font-weight:700}
+  .ss-hd{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px}
+  .ss-hd .sc-cap{margin:0}
+  .ss-num{display:flex;align-items:baseline;gap:4px;background:var(--plane);border-radius:9px;padding:3px 9px}
+  [data-theme="dark"] .ss-num{background:#000}
+  .ss-num input{width:auto;max-width:78px;min-width:34px;border:none!important;background:transparent!important;box-shadow:none!important;text-align:right;padding:3px 0;font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;border-radius:0;color:var(--ink)}
+  .ss-num input:focus{outline:none;color:var(--accent)}
+  .ss-num .ss-u{font-size:12px;font-weight:600;color:var(--muted)}
+  .set-slide{display:flex;align-items:center;gap:9px}
+  .set-slide .sc{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:20px;font-weight:600;cursor:pointer;padding:0;line-height:1;display:grid;place-items:center}
+  .set-slide .sc:active{background:var(--accent-weak);transform:scale(.93)}
+  .set-rng{-webkit-appearance:none;appearance:none;flex:1;width:auto;min-width:0;height:7px;border-radius:4px;padding:0!important;border:none!important;box-shadow:none!important;background:linear-gradient(90deg,var(--accent) var(--p,0%),var(--grid) 0);cursor:pointer}
+  .set-rng::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:1px solid var(--hairline);box-shadow:0 1px 4px rgba(0,0,0,.28);cursor:pointer}
+  .set-rng::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:1px solid var(--hairline);box-shadow:0 1px 4px rgba(0,0,0,.28);cursor:pointer}
+  [data-theme="dark"] .set-rng::-webkit-slider-thumb{background:#f2f2f7;border-color:#48484a}
+  [data-theme="dark"] .set-rng::-moz-range-thumb{background:#f2f2f7;border-color:#48484a}
+  .rest-ctrl{margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+  .rest-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+  .rest-hd .rest-val{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .rest-go{flex:none;width:44px;height:38px;border-radius:11px;border:none;background:var(--accent);color:#fff;font-size:15px;cursor:pointer;display:grid;place-items:center;padding:0}
+  .rest-go:active{transform:scale(.95)}
+  .rest-go.running{background:var(--bad)}
+  .port-slider{margin-top:14px}
+  .cardio-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .dial-wrap{position:relative;width:220px;max-width:100%;margin:8px auto 2px;aspect-ratio:1}
+  .dial{display:block;width:100%;height:auto;touch-action:none;cursor:pointer}
+  .dial #durTicks line{stroke:var(--hairline);stroke-width:2}
+  .dial-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+  .dial-center input{pointer-events:auto;width:120px;text-align:center;border:none!important;background:transparent!important;box-shadow:none!important;font-size:44px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink);padding:0;border-radius:0}
+  .dial-center input:focus{outline:none;color:var(--accent)}
+  .dial-center span{font-size:14px;font-weight:600;color:var(--muted);margin-top:-2px}
+  .dial-center #durSub{font-size:12.5px;color:var(--accent);font-weight:700;margin-top:3px}
   .favb{flex:none;border:none;background:transparent;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 2px;line-height:1}
   .favb.on{color:#f2a91e}
   .set-done{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--hairline);background:transparent;cursor:pointer;display:grid;place-items:center;padding:0;color:#fff;font-size:15px;font-weight:800;line-height:1}
@@ -545,15 +569,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <button class="link-btn" id="tplToggle" type="button">Šablony</button>
       </div>
       <div class="page-sub" id="treninkSub"></div>
-      <div class="pausebar">
-        <span class="pb-t" id="tDisp">0:00</span>
-        <span class="muted" style="font-size:12px;margin-right:2px">pauza</span>
-        <button class="pb-p" data-timer="60" type="button">1:00</button>
-        <button class="pb-p" data-timer="90" type="button">1:30</button>
-        <button class="pb-p" data-timer="120" type="button">2:00</button>
-        <button class="pb-p" data-timer="180" type="button">3:00</button>
-        <button class="pb-p danger" id="tStop" type="button" style="display:none">Stop</button>
-      </div>
+      <!-- pauza je nově posuvná lišta u každého cviku -->
 
       <div class="card" id="card-newworkout">
         <div id="tplRow" style="display:none;margin-bottom:12px">
@@ -570,30 +586,37 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
             <div class="row-3" style="margin-top:10px">
               <label class="field"><span>Datum</span><input type="date" name="date" required></label>
               <label class="field"><span>Typ</span>
-                <select name="type"><option>Síla</option><option>Objem</option><option>Vytrvalost</option><option>Kardio</option></select>
+                <select name="type"><option>Fitko</option><option>Kardio</option><option>Jiné</option></select>
               </label>
               <label class="field"><span>Délka (min)</span><input type="number" name="dur" min="0" step="5" placeholder="auto"></label>
             </div>
           </details>
           <div style="margin-bottom:11px">
-            <span class="flabel">Partie <span class="muted" style="font-weight:500">(klidně vyber víc)</span></span>
-            <div class="chips" id="muscleChips">
-              <button type="button" data-val="Hrudník">Hrudník</button>
-              <button type="button" data-val="Záda">Záda</button>
-              <button type="button" data-val="Nohy">Nohy</button>
-              <button type="button" data-val="Ramena">Ramena</button>
-              <button type="button" data-val="Biceps">Biceps</button>
-              <button type="button" data-val="Triceps">Triceps</button>
-              <button type="button" data-val="Břicho">Břicho</button>
-              <button type="button" data-val="Celé tělo">Celé tělo</button>
-              <button type="button" data-val="Kardio">Kardio</button>
-              <button type="button" data-val="Jiné">Jiné</button>
-            </div>
+            <span class="flabel" id="chipsLabel">Partie <span class="muted" style="font-weight:500">(klidně vyber víc)</span></span>
+            <div class="chips" id="muscleChips"></div>
           </div>
-          <div style="margin-bottom:11px">
+          <div id="fitkoBox" style="margin-bottom:11px">
             <span class="flabel">Cviky <span class="muted" style="font-weight:500">(u každého vyplň série níže)</span></span>
             <div id="exRows"></div>
             <button class="btn secondary small" type="button" id="addExBtn">＋ Přidat cvik</button>
+          </div>
+          <div id="cardioBox" style="display:none;margin-bottom:11px">
+            <div class="cardio-card">
+              <span class="flabel" style="text-align:center">Délka tréninku <span class="muted" style="font-weight:500">(táhni po kruhu)</span></span>
+              <div class="dial-wrap">
+                <svg class="dial" viewBox="0 0 220 220" id="durDial">
+                  <circle id="durBg" cx="110" cy="110" r="88" fill="none" stroke="var(--grid)" stroke-width="16"></circle>
+                  <g id="durTicks"></g>
+                  <circle id="durArc" cx="110" cy="110" r="88" fill="none" stroke="var(--accent)" stroke-width="16" stroke-linecap="round" transform="rotate(-90 110 110)"></circle>
+                  <circle id="durKnob" cx="110" cy="22" r="13" fill="#fff" stroke="var(--accent)" stroke-width="3"></circle>
+                </svg>
+                <div class="dial-center"><input type="number" id="cardioMin" inputmode="numeric" min="0" step="1" value="30"><span>min</span><span id="durSub"></span></div>
+              </div>
+            </div>
+            <div id="cardioDistWrap" class="cardio-card" style="margin-top:11px">
+              <div class="ss-hd"><span class="sc-cap" id="cardioDistLbl">VZDÁLENOST</span><div class="ss-num"><input type="number" id="cardioDist" inputmode="decimal" min="0" step="any" value="0"><span class="ss-u" id="cardioDistUnit">km</span></div></div>
+              <div class="set-slide"><button type="button" class="sc" id="cardioDistMinus">−</button><input type="range" id="cardioDistRng" class="set-rng" min="0" max="42" step="0.1" value="0"><button type="button" class="sc" id="cardioDistPlus">＋</button></div>
+            </div>
           </div>
           <label class="field"><span>Poznámka</span><textarea name="notes" placeholder="Pocit, technika, energie…"></textarea></label>
           <button class="btn" type="submit">＋ Uložit trénink</button>
@@ -741,6 +764,10 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
               <button type="button" data-q="1.5">1½</button>
               <button type="button" data-q="2">2</button>
             </div>
+          </div>
+          <div class="port-slider">
+            <div class="ss-hd"><span class="sc-cap">PŘESNÁ PORCE</span><div class="ss-num"><input type="number" id="qtyNum" inputmode="decimal" min="0" step="any" value="1"><span class="ss-u">×</span></div></div>
+            <div class="set-slide"><button type="button" class="sc" data-qd="-0.25">−</button><input type="range" id="qtyRange" class="set-rng" min="0" max="10" step="0.25" value="1"><button type="button" class="sc" data-qd="0.25">＋</button></div>
           </div>
           <input type="hidden" name="qty" value="1">
           <button class="btn" type="submit" id="addFoodBtn" style="margin-top:12px">Přidat jídlo</button>
@@ -1150,7 +1177,7 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;","
 function e1rm(w,r){if(!w)return 0;if(!r||r<=1)return w;return w*(1+r/30)}
 function periodCut(){const p=+($("#periodInput").value||90);return p===0?"0000-00-00":isoNdaysAgo(p)}
 function stepKcal(steps){const w=+state.profile.weight||75;return Math.round(steps*w*0.0005)}
-const METS={"Síla":5.0,"Objem":4.5,"Vytrvalost":5.5,"Kardio":8.0};
+const METS={"Fitko":5.0,"Kardio":8.0,"Jiné":4.0,"Síla":5.0,"Objem":4.5,"Vytrvalost":5.5};
 function estDur(s){if(s.dur)return s.dur;
   if(s.type==="Kardio")return 30;
   const sets=s.exercises.reduce((a,e)=>a+exSets(e).length,0);
@@ -1168,7 +1195,7 @@ const CZMF=["leden","únor","březen","duben","květen","červen","červenec","s
 const CZMG=["ledna","února","března","dubna","května","června","července","srpna","září","října","listopadu","prosince"];
 const CZDOW=["neděle","pondělí","úterý","středa","čtvrtek","pátek","sobota"];
 function czLongDate(dt){const d=dt||new Date();return CZDOW[d.getDay()]+" "+d.getDate()+". "+CZMG[d.getMonth()]}
-const MUSCLE_COLOR={"Nohy":"#0a84ff","Záda":"#30d158","Hrudník":"#ff9f0a","Triceps":"#bf5af2","Biceps":"#64d2ff","Ramena":"#ff375f","Břicho":"#ffcc00","Celé tělo":"#8e8e93","Kardio":"#5ac8fa","Jiné":"#8e8e93"};
+const MUSCLE_COLOR={"Nohy":"#0a84ff","Záda":"#30d158","Hrudník":"#ff9f0a","Triceps":"#bf5af2","Biceps":"#64d2ff","Ramena":"#ff375f","Břicho":"#ffcc00","Celé tělo":"#8e8e93","Kardio":"#5ac8fa","Běh":"#ff8c1a","Kolo":"#a2845e","Plavání":"#30b0c7","Rotoped":"#5ac8fa","Veslování":"#00b8a3","Eliptický":"#9b7bd4","Švihadlo":"#ffd426","Chůze":"#7d8a3a","Jóga":"#5e5ce6","Box":"#ff2d55","Strečink":"#b58df1","Jiné":"#8e8e93"};
 function muscleColor(m){return MUSCLE_COLOR[m]||"#8e8e93"}
 function movingAvg(vals,n){return vals.map((v,i)=>{const a=vals.slice(Math.max(0,i-n+1),i+1).filter(x=>x!=null);
   return a.length?+(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):null})}
@@ -1182,8 +1209,15 @@ const EXDB=[
 ["Bicepsový zdvih s velkou činkou","Biceps"],["Střídavé zdvihy s jednoručkami","Biceps"],["Kladivové zdvihy","Biceps"],["Zdvihy na Scottově lavici","Biceps"],
 ["Kliky na bradlech","Triceps","reps"],["Francouzský tlak","Triceps"],["Stahování kladky na triceps","Triceps"],["Kick-back","Triceps"],["Úzký bench press","Triceps"],
 ["Zkracovačky","Břicho","reps"],["Plank","Břicho","time"],["Přítahy nohou ve visu","Břicho","reps"],["Ruské rotace","Břicho","reps"],["Ab wheel (kolečko)","Břicho","reps"],
-["Běh","Kardio","time"],["Rotoped","Kardio","time"],["Veslařský trenažér","Kardio","time"],["Švihadlo","Kardio","time"],["Chůze do kopce","Kardio","time"],["Eliptický trenažér","Kardio","time"],["Plavání","Kardio","time"],
-["Kettlebell swing","Celé tělo"],["Clean & press","Celé tělo"],["Burpees","Celé tělo","reps"],["Thruster","Celé tělo"]
+["Kettlebell swing","Celé tělo"],["Clean & press","Celé tělo"],["Burpees","Celé tělo","reps"],["Thruster","Celé tělo"],
+["Běh","Běh","time"],["Sprint / intervaly","Běh","time"],
+["Jízda na kole","Kolo","time"],["Spinning","Kolo","time"],
+["Plavání","Plavání","time"],["Plavání – kraul","Plavání","time"],["Plavání – prsa","Plavání","time"],
+["Rotoped","Rotoped","time"],["Veslařský trenažér","Veslování","time"],["Eliptický trenažér","Eliptický","time"],
+["Švihadlo","Švihadlo","time"],["Chůze do kopce","Chůze","time"],
+["Jóga","Jóga","time"],["Pozdrav slunci","Jóga","time"],
+["Strečink / mobilita","Strečink","time"],["Mobilita","Strečink","time"],
+["Box – stínový box","Box","time"],["Box – pytel","Box","time"],["Box – lapy","Box","time"],["Skákání přes švihadlo","Box","time"]
 ];
 function allExercises(){return EXDB.map(x=>[x[0],x[1],x[2]||"kg"])
   .concat((state.customExercises||[]).map(c=>[c.n,c.m,c.unit||"kg"]))}
@@ -1213,7 +1247,7 @@ function sessionVolKg(s){return (s.exercises||[]).reduce((a,e)=>a+exVolumeKg(e),
 function exDoneSets(e){const u=exUnit(e);return exSets(e).filter(st=>setHasVal(u,st)).length}
 function exValStr(e){const u=exUnit(e);const sets=exSets(e).filter(st=>setHasVal(u,st));
   if(!sets.length)return "";
-  if(u==="time"){const uni=sets.every(st=>st.sec===sets[0].sec);return uni?(sets.length+"× "+fmtSec(sets[0].sec)):sets.map(st=>fmtSec(st.sec)).join(", ");}
+  if(u==="time"){const uni=sets.every(st=>st.sec===sets[0].sec);const base=uni?((sets.length>1?sets.length+"× ":"")+fmtSec(sets[0].sec)):sets.map(st=>fmtSec(st.sec)).join(", ");return (e.dist?fmtMetric(e.dist,e.distUnit,e.mkind)+" · ":"")+base;}
   if(u==="reps"){const uni=sets.every(st=>st.r===sets[0].r);return uni?(sets.length+"×"+sets[0].r):(sets.map(st=>st.r).join("/")+" op.");}
   const uniform=sets.every(st=>st.w===sets[0].w&&st.r===sets[0].r);
   if(uniform)return (sets.length>1?sets.length+"× ":"")+fmtNum(sets[0].w)+" kg × "+sets[0].r;
@@ -1221,6 +1255,8 @@ function exValStr(e){const u=exUnit(e);const sets=exSets(e).filter(st=>setHasVal
   if(sameW)return fmtNum(sets[0].w)+" kg · "+sets.map(st=>st.r).join("/");
   return sets.map(st=>fmtNum(st.w)+"×"+st.r).join(", ")+" kg";}
 function fmtSec(s){s=+s||0;return s>=60?(Math.floor(s/60)+":"+String(s%60).padStart(2,"0")+" min"):(s+" s")}
+function fmtDist(v,u){v=+v||0;return (u==="m"?Math.round(v):fmtNum(v))+" "+(u||"km")}
+function fmtMetric(v,u,kind){v=+v||0;if(kind==="rpe")return "náročnost "+Math.round(v)+"/10";if(kind==="count")return Math.round(v)+" "+(u||"×");return fmtDist(v,u);}
 /* poslední záznam cviku (pro nápovědu „minule…") */
 function lastExerciseVal(name,beforeId){const nl=(name||"").toLowerCase();if(!nl)return"";
   const ss=[...state.sessions].filter(s=>s.id!==beforeId).sort((a,b)=>b.date.localeCompare(a.date));
@@ -1461,12 +1497,15 @@ function renderCalendar(){
     const ss=bySess[iso];
     const cls=["cal-d",ss?"has":"",iso===todayISO()?"today":"",iso===calSel?"sel":""].filter(Boolean).join(" ");
     let style="";
-    if(ss){const prim=(ss[0].muscles&&ss[0].muscles[0])||"Jiné";style=`background:${muscleColor(prim)};color:#000`;
-      ss.forEach(s=>s.muscles.forEach(m=>monthMuscles.add(m)));}
+    if(ss){const cols=[];ss.forEach(s=>s.muscles.forEach(m=>{monthMuscles.add(m);const c=muscleColor(m);if(!cols.includes(c))cols.push(c)}));
+      if(!cols.length)cols.push(muscleColor("Jiné"));
+      const use=cols.slice(0,4),n=use.length;
+      const bg=n===1?use[0]:`linear-gradient(135deg,${use.map((c,i)=>`${c} ${(i/n*100).toFixed(1)}% ${((i+1)/n*100).toFixed(1)}%`).join(",")})`;
+      style=`background:${bg};color:#141414;text-shadow:0 1px 1px rgba(255,255,255,.5)`;}
     html+=`<div class="${cls}" data-cal="${iso}" style="${style}" title="${ss?ss.map(s=>s.muscles.join("+")).join(", "):""}">${d}${byBody.has(iso)?'<span class="bd"></span>':""}</div>`}
   $("#calGrid").innerHTML=html;
   const leg=$("#calLegend");
-  if(leg){const order=["Nohy","Záda","Hrudník","Triceps","Biceps","Ramena","Břicho","Celé tělo","Kardio","Jiné"];
+  if(leg){const order=["Nohy","Záda","Hrudník","Triceps","Biceps","Ramena","Břicho","Celé tělo","Běh","Kolo","Plavání","Rotoped","Veslování","Eliptický","Švihadlo","Chůze","Jóga","Box","Strečink","Kardio","Jiné"];
     const ms=order.filter(m=>monthMuscles.has(m));
     leg.innerHTML=ms.length?ms.map(m=>`<span><i style="background:${muscleColor(m)}"></i>${esc(m)}</span>`).join(""):"";}
   $$("#calGrid [data-cal]").forEach(el=>el.onclick=()=>{
@@ -1517,32 +1556,90 @@ function beep(){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAu
     g.gain.setValueAtTime(0.001,t0+off);g.gain.exponentialRampToValueAtTime(0.35,t0+off+0.02);
     g.gain.exponentialRampToValueAtTime(0.001,t0+off+0.18);o.start(t0+off);o.stop(t0+off+0.2)});}catch(e){}}
 function fmtT(s){return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
-function updT(){$("#tDisp").textContent=fmtT(Math.max(0,timerLeft));
-  $("#tStop").style.display=timerInt?"":"none"}
-function startTimer(sec){timerLeft=sec;clearInterval(timerInt);
+let _restInt=null,_restRow=null;
+function stopRestUI(row){
+  if(_restInt){clearInterval(_restInt);_restInt=null}
+  const rr=_restRow||row;
+  if(rr){const g=rr.querySelector(".rest-go"),v=rr.querySelector(".rest-val"),rng=rr.querySelector(".rest-rng");
+    if(g){g.classList.remove("running");g.textContent="▶"}
+    if(v&&rng)v.textContent=fmtT(+rng.value)}
+  _restRow=null}
+function startRestUI(row,sec){
+  if(_restRow&&_restRow!==row)stopRestUI(_restRow);
+  if(_restInt){clearInterval(_restInt);_restInt=null}
+  _restRow=row;let left=sec;
+  const g=row.querySelector(".rest-go"),v=row.querySelector(".rest-val");
+  if(g){g.classList.add("running");g.textContent="⏸"}
   try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
-  timerInt=setInterval(()=>{timerLeft--;
-    if(timerLeft<=0){clearInterval(timerInt);timerInt=null;timerLeft=0;beep();toast("⏱️ Pauza skončila — jedeme!")}
-    updT()},1000);updT()}
-$$("[data-timer]").forEach(b=>b.addEventListener("click",()=>startTimer(+b.dataset.timer)));
-$("#tStop").addEventListener("click",()=>{clearInterval(timerInt);timerInt=null;timerLeft=0;updT()});
+  const tick=()=>{if(v)v.textContent=fmtT(Math.max(0,left))};tick();
+  _restInt=setInterval(()=>{left--;if(left<=0){stopRestUI(row);beep();toast("⏱️ Pauza skončila — jedeme!");return}tick()},1000)}
 
 function selectedMuscles(){return $$("#muscleChips button.on").map(b=>b.dataset.val)}
 function setMuscles(arr){$$("#muscleChips button").forEach(b=>b.classList.toggle("on",arr.includes(b.dataset.val)))}
 function selectMuscle(m){const b=$$("#muscleChips button").find(x=>x.dataset.val===m);if(b)b.classList.add("on")}
-$$("#muscleChips button").forEach(b=>b.addEventListener("click",()=>{b.classList.toggle("on");fillExDb()}));
+const CHIPSETS={"Fitko":["Hrudník","Záda","Nohy","Ramena","Biceps","Triceps","Břicho","Celé tělo"],"Kardio":["Běh","Kolo","Plavání","Rotoped","Veslování","Eliptický","Švihadlo","Chůze"],"Jiné":["Jóga","Box","Strečink"]};
+const CARDIO_DIST={"Běh":{kind:"dist",u:"km",max:42,step:0.1},"Kolo":{kind:"dist",u:"km",max:200,step:0.5},"Plavání":{kind:"dist",u:"m",max:5000,step:25},"Veslování":{kind:"dist",u:"m",max:10000,step:50},"Rotoped":{kind:"dist",u:"km",max:100,step:0.5},"Chůze":{kind:"dist",u:"km",max:50,step:0.1},"Eliptický":{kind:"dist",u:"km",max:50,step:0.5},"Švihadlo":{kind:"count",u:"přeskoků",max:3000,step:1},"Jóga":{kind:"rpe",u:"/10",max:10,step:1},"Box":{kind:"rpe",u:"/10",max:10,step:1},"Strečink":{kind:"rpe",u:"/10",max:10,step:1}};
+function normalizeType(t){if(t==="Kardio")return "Kardio";if(t==="Jiné"||t==="Jóga")return "Jiné";return "Fitko"}
+function curType(){const s=$("#formSession [name=type]");return normalizeType(s?s.value:"Fitko")}
+function renderChips(keep){const box=$("#muscleChips");if(!box)return;const sel=keep?selectedMuscles():[];
+  const t=curType();const list=CHIPSETS[t]||CHIPSETS["Fitko"];
+  box.innerHTML=list.map(m=>`<button type="button" data-val="${m}"${sel.includes(m)?' class="on"':''}>${m}</button>`).join("");
+  const lab=$("#chipsLabel");if(lab)lab.innerHTML=(t==="Fitko"?"Partie":"Aktivita")+` <span class="muted" style="font-weight:500">(${t==="Fitko"?"klidně vyber víc":"vyber jednu"})</span>`;
+  applyTypeMode()}
+function applyTypeMode(){const fitko=curType()==="Fitko";const fb=$("#fitkoBox"),cb=$("#cardioBox");
+  if(fb)fb.style.display=fitko?"":"none";if(cb)cb.style.display=fitko?"none":"";
+  if(!fitko){initCardioDial();updateCardioActivity();}}
+function drawDial(){const R=88,C=2*Math.PI*R,cm=$("#cardioMin");const min=Math.max(0,+(cm&&cm.value)||0);
+  const laps=Math.floor(min/60);let frac=(min-laps*60)/60;if(min>0&&frac===0)frac=1;
+  const arc=$("#durArc");if(arc){arc.style.strokeDasharray=C;arc.style.strokeDashoffset=C*(1-frac);}
+  const kn=$("#durKnob");if(kn){const a=(-90+frac*360)*Math.PI/180;kn.setAttribute("cx",(110+R*Math.cos(a)).toFixed(1));kn.setAttribute("cy",(110+R*Math.sin(a)).toFixed(1));}
+  const bg=$("#durBg");if(bg)bg.setAttribute("stroke",laps>0?"var(--accent-weak)":"var(--grid)");
+  const sub=$("#durSub");if(sub)sub.textContent=min>=60?(Math.floor(min/60)+" h "+(min%60)+" min"):"";}
+function buildDialTicks(){const g=$("#durTicks");if(!g||g.childNodes.length)return;let h="";
+  for(let i=0;i<12;i++){const a=i*30*Math.PI/180,r1=70,r2=79;
+   h+=`<line x1="${(110+r1*Math.sin(a)).toFixed(1)}" y1="${(110-r1*Math.cos(a)).toFixed(1)}" x2="${(110+r2*Math.sin(a)).toFixed(1)}" y2="${(110-r2*Math.cos(a)).toFixed(1)}"></line>`;}
+  g.innerHTML=h;}
+function dialDeg(cx,cy){const svg=$("#durDial");const r=svg.getBoundingClientRect();
+  const x=cx-r.left-r.width/2,y=cy-r.top-r.height/2;let deg=Math.atan2(y,x)*180/Math.PI+90;if(deg<0)deg+=360;return deg;}
+function initCardioDial(){buildDialTicks();const svg=$("#durDial");
+  if(svg&&!svg._wired){svg._wired=true;let drag=false,prev=0;const pt=e=>e.touches?e.touches[0]:e;
+    svg.addEventListener("pointerdown",e=>{drag=true;const p=pt(e);prev=dialDeg(p.clientX,p.clientY);e.preventDefault();});
+    window.addEventListener("pointermove",e=>{if(!drag)return;const p=pt(e);const d=dialDeg(p.clientX,p.clientY);let delta=d-prev;if(delta>180)delta-=360;else if(delta<-180)delta+=360;prev=d;const cm=$("#cardioMin");if(cm){cm.value=Math.max(0,Math.round((+cm.value||0)+delta/6));drawDial();}e.preventDefault();});
+    window.addEventListener("pointerup",()=>{drag=false;});
+    const cm=$("#cardioMin");if(cm){cm.addEventListener("input",drawDial);cm.addEventListener("focus",()=>setTimeout(()=>{try{cm.select()}catch(e){}},0));}}
+  drawDial();}
+function setCardioDist(v){const rng=$("#cardioDistRng"),num=$("#cardioDist");if(!rng||!num)return;v=Math.max(0,v);const mx=+rng.max||1;
+  if(document.activeElement!==num)num.value=(Math.round(v*100)/100);
+  rng.value=Math.min(mx,v);rng.style.setProperty("--p",(Math.min(mx,v)/mx*100)+"%");}
+function metricLabel(cfg){if(cfg.kind==="count")return "POČET PŘESKOKŮ";if(cfg.kind==="rpe")return "NÁROČNOST (1–10)";return "VZDÁLENOST ("+cfg.u+")";}
+function updateCardioActivity(){const act=selectedMuscles()[0],cfg=CARDIO_DIST[act],wrap=$("#cardioDistWrap");if(!wrap)return;
+  if(cfg){wrap.style.display="";$("#cardioDistUnit").textContent=cfg.u;$("#cardioDistLbl").textContent=metricLabel(cfg);
+    const rng=$("#cardioDistRng");rng.max=cfg.max;rng.step=cfg.step;setCardioDist(0);}
+  else wrap.style.display="none";}
+$("#muscleChips").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+  if(curType()!=="Fitko"){const wasOn=b.classList.contains("on");$$("#muscleChips button").forEach(x=>x.classList.remove("on"));if(!wasOn)b.classList.add("on");updateCardioActivity();}
+  else b.classList.toggle("on");fillExDb()});
+{const _ts=$("#formSession [name=type]");if(_ts)_ts.addEventListener("change",()=>{renderChips(false);fillExDb()});}
+(function(){const rng=$("#cardioDistRng"),num=$("#cardioDist");
+  if(rng)rng.addEventListener("input",()=>setCardioDist(+rng.value));
+  if(num){num.addEventListener("input",()=>setCardioDist(+num.value||0));num.addEventListener("focus",()=>setTimeout(()=>{try{num.select()}catch(e){}},0));}
+  const mB=$("#cardioDistMinus"),pB=$("#cardioDistPlus");
+  if(mB)mB.addEventListener("click",()=>setCardioDist((+$("#cardioDist").value||0)-(+($("#cardioDistRng").step)||1)));
+  if(pB)pB.addEventListener("click",()=>setCardioDist((+$("#cardioDist").value||0)+(+($("#cardioDistRng").step)||1)));})();
+renderChips(false);
 
 function addExRow(d={}){
   const unit=d.unit||(d.n?exUnit(d):"kg");
   const r=document.createElement("div");r.className="exrow2";r.dataset.unit=unit;
   r.innerHTML=`
     <div class="exr-top">
-      <div class="exname"><span class="exn-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3-3"></path></svg></span><input class="exn" readonly placeholder="Vyber cvik" value="${esc(d.n||"")}" autocomplete="off"><button type="button" class="pick" title="Procházet cviky"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 7h12l-6 7z"></path></svg></button></div>
+      <div class="exname"><span class="exn-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3-3"></path></svg></span><span class="exn-disp empty">Vyber cvik</span><input type="hidden" class="exn" value="${esc(d.n||"")}"><button type="button" class="pick" title="Procházet cviky"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 7h12l-6 7z"></path></svg></button></div>
       <button type="button" class="rm" title="Odebrat cvik">×</button>
     </div>
     <div class="uniti"><button type="button" data-u="kg">kg</button><button type="button" data-u="reps">opakování</button><button type="button" data-u="time">čas</button></div>
     <div class="exr-hint"></div>
     <div class="sets"></div>
+    <div class="rest-ctrl"><div class="rest-hd"><span class="sc-cap">PAUZA MEZI SÉRIEMI</span><span class="rest-val">1:30</span></div><div class="set-slide"><button type="button" class="rest-go" title="Spustit pauzu">▶</button><input type="range" class="set-rng rest-rng" min="0" max="240" step="5" value="90"></div></div>
     <div class="exr-foot"><button type="button" class="add-set">＋ Přidat sérii</button><span class="sum"></span></div>`;
   r.querySelector(".rm").onclick=()=>r.remove();
   r.querySelector(".exname").addEventListener("click",()=>openPicker(r));
@@ -1555,28 +1652,47 @@ function addExRow(d={}){
   r.querySelector(".add-set").onclick=()=>{markFilledDone(r);const s=readSetRows(r);const last=s[s.length-1]||{};
     addSetRow(r,{w:last.w,r:last.r,sec:last.sec,done:false});updateExSum(r)};
   $("#exRows").appendChild(r);
+  setExName(r,d.n);
+  const rGo=r.querySelector(".rest-go"),rRng=r.querySelector(".rest-rng"),rVal=r.querySelector(".rest-val");
+  const rFill=()=>rRng.style.setProperty("--p",(+rRng.value/(+rRng.max||1)*100)+"%");
+  const rLabel=()=>{if(!rGo.classList.contains("running"))rVal.textContent=fmtT(+rRng.value)};
+  rRng.addEventListener("input",()=>{rFill();rLabel()});
+  rGo.addEventListener("click",()=>{rGo.classList.contains("running")?stopRestUI(r):startRestUI(r,+rRng.value)});
+  rRng.value=(d.rest!=null?d.rest:90);rFill();rLabel();
   const initSets=Array.isArray(d.sets)&&d.sets.length?d.sets:exSets(d);
   setRowUnit(r,unit,initSets.length?initSets:[{}]);
   updateExHint(r);
   return r}
+function setExName(r,n){const i=r.querySelector(".exn");if(i)i.value=n||"";
+  const d=r.querySelector(".exn-disp");if(d){d.textContent=n||"Vyber cvik";d.classList.toggle("empty",!n)}}
 function addSetRow(r,st){st=st||{};const unit=r.dataset.unit;const box=r.querySelector(".sets");
   const val=x=>(x==null||x===""||x===0)?"":x;
   const idx=box.children.length+1;
   const card=document.createElement("div");card.className="set-card"+(st.done?" done":"");
-  const step=(cap,cls,sd,ph,v,im)=>`<div class="sc-step"><div class="sc-cap">${cap}</div><div class="set-cell"><button type="button" class="sc" data-d="-${sd}" tabindex="-1">−</button><input type="number" class="${cls}" inputmode="${im}" min="0" step="any" value="${v}" placeholder="${ph}"><button type="button" class="sc" data-d="${sd}" tabindex="-1">＋</button></div></div>`;
-  let steps,two="";
-  if(unit==="time")steps=step("SEKUNDY","f-sec",5,"s",val(st.sec),"numeric");
-  else if(unit==="reps")steps=step("OPAKOVÁNÍ","f-r",1,"opak.",val(st.r),"numeric");
-  else{steps=step("KG","f-w",1.25,"kg",val(st.w),"decimal")+step("OPAK.","f-r",1,"opak.",val(st.r),"numeric");two=" two"}
-  card.innerHTML=`<div class="sc-hd"><span class="sc-lbl">${idx}. série</span><div class="sc-hd-r"><button type="button" class="set-rm" title="Odebrat sérii">×</button><button type="button" class="set-done${st.done?" on":""}" title="Hotovo">${st.done?"✓":""}</button></div></div><div class="sc-steps${two}">${steps}</div>`;
+  const step=(cap,cls,sd,unitLbl,mx,im,v,ss)=>`<div class="sc-step"><div class="ss-hd"><span class="sc-cap">${cap}</span><div class="ss-num"><input type="number" class="${cls}" inputmode="${im}" min="0" step="any" value="${v}" placeholder="0"><span class="ss-u">${unitLbl}</span></div></div><div class="set-slide"><button type="button" class="sc" data-d="-${sd}" tabindex="-1">−</button><input type="range" class="set-rng" min="0" max="${mx}" step="${ss||sd}" value="${(+v||0)}"><button type="button" class="sc" data-d="${sd}" tabindex="-1">＋</button></div></div>`;
+  let steps;
+  if(unit==="time")steps=step("SEKUNDY","f-sec",5,"s",300,"numeric",val(st.sec));
+  else if(unit==="reps")steps=step("OPAKOVÁNÍ","f-r",1,"opak.",50,"numeric",val(st.r));
+  else steps=step("KG","f-w",0.1,"kg",100,"decimal",val(st.w))+step("OPAKOVÁNÍ","f-r",1,"opak.",50,"numeric",val(st.r));
+  card.innerHTML=`<div class="sc-hd"><span class="sc-lbl">${idx}. série</span><div class="sc-hd-r"><button type="button" class="set-rm" title="Odebrat sérii">×</button><button type="button" class="set-done${st.done?" on":""}" title="Hotovo">${st.done?"✓":""}</button></div></div><div class="sc-steps">${steps}</div>`;
   const ready=()=>{const el=card.querySelector(unit==="time"?".f-sec":".f-r");return !!(el&&el.value!=="")};
   card.querySelector(".set-done").onclick=function(){
     if(!this.classList.contains("on")&&!ready()){toast(unit==="time"?"Nejdřív vyplň sekundy":"Nejdřív vyplň opakování");return}
     const on=this.classList.toggle("on");this.textContent=on?"✓":"";card.classList.toggle("done",on);updateExSum(r)};
   card.querySelector(".set-rm").onclick=()=>{card.remove();reindexSets(r);updateExSum(r)};
-  card.querySelectorAll(".set-cell input").forEach(inp=>{
-    inp.addEventListener("input",()=>updateExSum(r));
-    inp.addEventListener("focus",()=>setTimeout(()=>{try{inp.select()}catch(e){}},0))});
+  card.querySelectorAll(".sc-step").forEach(stp=>{
+    const num=stp.querySelector('input[type="number"]'),rng=stp.querySelector('input[type="range"]');
+    const mx=+rng.max||100;
+    const fill=()=>{const p=Math.max(0,Math.min(100,(+num.value||0)/mx*100));rng.style.setProperty("--p",p+"%")};
+    const fromNum=()=>{rng.value=Math.max(0,Math.min(mx,+num.value||0));fill()};
+    num.addEventListener("input",()=>{fromNum();updateExSum(r)});
+    num.addEventListener("focus",()=>setTimeout(()=>{try{num.select()}catch(e){}},0));
+    rng.addEventListener("input",()=>{num.value=(+rng.value);fill();updateExSum(r)});
+    stp.querySelectorAll(".sc[data-d]").forEach(b=>b.addEventListener("click",()=>{
+      const nv=Math.max(0,Math.round(((+num.value||0)+(+b.dataset.d))*1000)/1000);
+      num.value=nv;fromNum();updateExSum(r)}));
+    fromNum();
+  });
   box.appendChild(card)}
 function reindexSets(r){[...r.querySelectorAll(".sets .set-card")].forEach((row,i)=>{const l=row.querySelector(".sc-lbl");if(l)l.textContent=(i+1)+". série"})}
 function markFilledDone(r){const unit=r.dataset.unit;
@@ -1612,7 +1728,7 @@ document.addEventListener("click",e=>{const b=e.target.closest(".stepper button[
   inp.dispatchEvent(new Event("input",{bubbles:true}));inp.dispatchEvent(new Event("change",{bubbles:true}))});
 
 /* ---- Picker cviků ---- */
-const MUSCLE_ORDER=["Hrudník","Záda","Nohy","Ramena","Biceps","Triceps","Břicho","Kardio","Celé tělo"];
+const MUSCLE_ORDER=["Hrudník","Záda","Nohy","Ramena","Biceps","Triceps","Břicho","Celé tělo","Běh","Kolo","Plavání","Rotoped","Veslování","Eliptický","Švihadlo","Chůze","Jóga","Box","Strečink"];
 let pickerRow=null;
 function openPicker(row){pickerRow=row;$("#pickerSearch").value="";$("#customExForm").style.display="none";
   setSeg("pickmode",selectedMuscles().length?"sel":"all");
@@ -1635,7 +1751,7 @@ function renderPickerList(){
     `<div class="pick-h">${esc(m)}</div>`+groups[m].map(x=>`<button type="button" class="pick-i" data-ex="${esc(x.n)}" data-m="${esc(x.m)}" data-u="${x.u}">${esc(x.n)}<span class="muted" style="font-weight:500;float:right">${x.u==="reps"?"opak.":x.u==="time"?"čas":""}</span></button>`).join("")
   ).join(""):`<div class="empty">Nic nenalezeno. Můžeš si přidat vlastní cvik ↑</div>`;
   $$("#pickerList .pick-i").forEach(b=>b.onclick=()=>{
-    if(pickerRow){pickerRow.querySelector(".exn").value=b.dataset.ex;
+    if(pickerRow){setExName(pickerRow,b.dataset.ex);
       if(b.dataset.m&&b.dataset.m!=="Moje cviky")selectMuscle(b.dataset.m);
       pickerRow._tu=true;setRowUnit(pickerRow,b.dataset.u||"kg");updateExHint(pickerRow);fillExDb();closePicker()}
     else closePicker()})}
@@ -1650,7 +1766,7 @@ $("#cexSave").addEventListener("click",()=>{
   const c={n,m:$("#cexMuscle").value,unit:$("#cexUnit").value};
   state.customExercises.push(c);save();fillExDb();
   $("#customExForm").style.display="none";$("#cexName").value="";
-  if(pickerRow){pickerRow.querySelector(".exn").value=n;selectMuscle(c.m);pickerRow._tu=true;setRowUnit(pickerRow,c.unit);updateExHint(pickerRow);closePicker()}
+  if(pickerRow){setExName(pickerRow,n);selectMuscle(c.m);pickerRow._tu=true;setRowUnit(pickerRow,c.unit);updateExHint(pickerRow);closePicker()}
   else renderPickerList();
   toast("✅ Cvik uložen do nabídky: "+n)});
 $("#pickerSearch").addEventListener("input",renderPickerList);
@@ -1660,12 +1776,17 @@ $("#pickerBg").addEventListener("click",e=>{if(e.target===$("#pickerBg"))closePi
 $("#addExBtn").addEventListener("click",()=>{$$("#exRows .exrow2").forEach(markFilledDone);addExRow()});
 function readExRows(){return $$("#exRows .exrow2").map(r=>{
   const n=r.querySelector(".exn").value.trim();const unit=r.dataset.unit;
+  const rr=r.querySelector(".rest-rng");const rest=rr?(+rr.value||0):0;
   const sets=readSetRows(r).filter(st=>setHasVal(unit,st)).map(st=>({w:st.w,r:st.r,sec:st.sec,done:!!st.done}));
-  return {n,unit,sets}}).filter(x=>x.n&&x.sets.length)}
+  return {n,unit,rest,sets}}).filter(x=>x.n&&x.sets.length)}
 function fillSessionForm(sess){const f=$("#formSession");
-  f.date.value=todayISO();f.type.value=sess.type||"Síla";
+  f.date.value=todayISO();f.type.value=normalizeType(sess.type||"Fitko");
   f.dur.value=sess.dur||"";
-  setMuscles(sess.muscles||[]);f.notes.value="";fillExDb();
+  renderChips(false);setMuscles(sess.muscles||[]);f.notes.value="";fillExDb();
+  if(curType()!=="Fitko"){applyTypeMode();updateCardioActivity();
+    const e0=(sess.exercises||[])[0]||{};const sec=(e0.sets&&e0.sets[0]&&e0.sets[0].sec)||((sess.dur||0)*60);
+    if($("#cardioMin")){$("#cardioMin").value=Math.round(sec/60)||sess.dur||0;drawDial();}
+    setCardioDist(e0.dist||0);$("#exRows").innerHTML="";return;}
   $("#exRows").innerHTML="";(sess.exercises||[]).forEach(e=>addExRow(e));
   if(!(sess.exercises||[]).length)addExRow()}
 
@@ -1716,7 +1837,13 @@ $("#tplDel").addEventListener("click",()=>{
   const t=state.templates.find(x=>x.id===$("#tplSelect").value);if(!t)return;
   state.templates=state.templates.filter(x=>x.id!==t.id);save();renderTplRow();toast("Šablona smazána")});
 $("#saveTplBtn").addEventListener("click",()=>{
-  const f=$("#formSession");const ex=readExRows();const mus=selectedMuscles();
+  const f=$("#formSession");
+  if(curType()!=="Fitko"){const act=selectedMuscles()[0];if(!act){toast("Vyber aktivitu");return}
+    const mins=Math.max(0,Math.round(+($("#cardioMin").value)||0));const cfg=CARDIO_DIST[act];const dist=cfg?(+$("#cardioDist").value||0):0;
+    const exOne={n:act,unit:"time",sets:[{sec:mins*60,done:false}]};if(cfg&&dist>0){exOne.dist=dist;exOne.distUnit=cfg.u;exOne.mkind=cfg.kind;}
+    state.templates.push({id:uid(),name:act+(mins?" · "+mins+" min":""),muscles:[act],type:curType(),exercises:[exOne]});
+    save();renderTplRow();toast("💾 Šablona uložena");return;}
+  const ex=readExRows();const mus=selectedMuscles();
   if(!ex.length){toast("Přidej aspoň jeden cvik");return}
   const name=(mus.length?mus.join(" + "):"Trénink")+" · "+ex.length+" cviků";
   state.templates.push({id:uid(),name,muscles:mus,type:f.type.value,exercises:ex});
@@ -1724,6 +1851,15 @@ $("#saveTplBtn").addEventListener("click",()=>{
 
 $("#formSession").addEventListener("submit",e=>{
   e.preventDefault();const f=e.target;
+  if(curType()!=="Fitko"){
+    const act=selectedMuscles()[0];if(!act){toast("Vyber aktivitu");return}
+    const mins=Math.max(0,Math.round(+($("#cardioMin").value)||0));if(mins<=0){toast("Nastav délku tréninku");return}
+    const cfg=CARDIO_DIST[act];const dist=cfg?(+$("#cardioDist").value||0):0;
+    const exOne={n:act,unit:"time",sets:[{sec:mins*60,done:true}]};if(cfg&&dist>0){exOne.dist=dist;exOne.distUnit=cfg.u;exOne.mkind=cfg.kind;}
+    state.sessions.push({id:uid(),date:f.date.value,muscles:[act],type:curType(),dur:mins,notes:f.notes.value.trim(),exercises:[exOne]});
+    save();f.notes.value="";$("#cardioMin").value=30;drawDial();setCardioDist(0);$$("#muscleChips button").forEach(x=>x.classList.remove("on"));updateCardioActivity();
+    renderSessions();toast("Trénink uložen 💪");return;
+  }
   const ex=readExRows();
   if(!ex.length){toast("Přidej aspoň jeden cvik");return}
   let mus=selectedMuscles();
@@ -2046,16 +2182,17 @@ function renderAiBox(){
     btn.disabled=true;btn.innerHTML='<span class="spin"></span> Analyzuji…';st.textContent="";
     try{const res=await aiAnalyzeFood(imgs,$("#aiDesc").value.trim());
       const pocet=Math.max(1,Math.round(+res.pocet||1));
-      prefillFood(res.nazev||"Jídlo z fotky",res.kcal,res.bilkoviny_g,res.sacharidy_g,res.tuky_g,pocet);
       const perK=(+res.kcal||0)/pocet,perP=(+res.bilkoviny_g||0)/pocet,perC=(+res.sacharidy_g||0)/pocet,perF=(+res.tuky_g||0)/pocet;
       st.innerHTML=`<div class="ai-est">Odhad: <b>${esc(res.nazev||"?")}</b>${pocet>1?` × ${pocet} ks`:""} ≈ ${Math.round(res.kcal||0)} kcal · B ${Math.round(res.bilkoviny_g||0)} · S ${Math.round(res.sacharidy_g||0)} · T ${Math.round(res.tuky_g||0)}${res.poznamka?`<br><span class="muted">${esc(res.poznamka)}</span>`:""}</div>
         <div class="ai-add"><span class="ai-add-l">Porce do deníku</span><div class="stepper" style="width:132px;flex:none"><button type="button" data-d="-0.5" tabindex="-1">−</button><input type="number" id="aiPortions" min="0.5" step="0.5" value="${pocet}" inputmode="decimal"><button type="button" data-d="0.5" tabindex="-1">＋</button></div></div>
         <button class="btn" id="aiAddDiary" type="button" style="margin-top:10px">＋ Přidat do deníku</button>
-        <div class="small muted" style="margin-top:7px">…nebo uprav podrobně dole ve formuláři „Přidat jídlo".</div>`;
+        <button class="btn secondary" id="aiEditForm" type="button" style="margin-top:9px">✎ Upravit ve formuláři</button>
+        <div class="small muted" style="margin-top:7px">Nic se nepřidá samo — přidej si to sám tlačítkem výše.</div>`;
       const addBtn=$("#aiAddDiary");if(addBtn)addBtn.onclick=()=>{const q=Math.max(0.5,+$("#aiPortions").value||1);
         addFood({name:(res.nazev||"Jídlo z fotky")+(Math.abs(q-1)>0.001?" × "+fmtNum(q):""),kcal:Math.round(perK*q),protein:+(perP*q).toFixed(1),carbs:+(perC*q).toFixed(1),fat:+(perF*q).toFixed(1)});
         toast("Přidáno do deníku ✓")};
-      imgs=[];renderThumbs();$("#aiDesc").value="";toast("Odhad hotový — přidej do deníku ⤵");}
+      const edBtn=$("#aiEditForm");if(edBtn)edBtn.onclick=()=>{prefillFood(res.nazev||"Jídlo z fotky",res.kcal,res.bilkoviny_g,res.sacharidy_g,res.tuky_g,pocet);toast("Předvyplněno ve formuláři")};
+      imgs=[];renderThumbs();$("#aiDesc").value="";toast("Odhad hotový — rozhodni se, jestli přidat");}
     catch(err){st.innerHTML=`<span style="color:var(--bad)">Nepovedlo se: ${esc(err.message)}</span>`}
     btn.disabled=false;btn.textContent="Analyzovat";};
   $("#scanBtn").onclick=startScan;
@@ -2067,9 +2204,12 @@ function renderAiBox(){
     btn.disabled=false;btn.textContent="Najít";};
 }
 /* Nastavení množství (porce/kusy) ve formuláři + zvýraznění zlomkových chipů */
-function setQty(v){const inp=$("#formFood [name=qty]");if(!inp)return;
-  inp.value=(Math.round(v*10000)/10000);
+function setQty(v){v=Math.max(0,Math.round(v*10000)/10000);const inp=$("#formFood [name=qty]");if(!inp)return;
+  inp.value=v;
   $$("#qtyChips button").forEach(b=>b.classList.toggle("on",Math.abs((+b.dataset.q)-v)<0.01));
+  const num=$("#qtyNum"),rng=$("#qtyRange");
+  if(num&&document.activeElement!==num)num.value=v;
+  if(rng){const mx=+rng.max||10;rng.value=Math.min(mx,v);rng.style.setProperty("--p",(Math.min(mx,v)/mx*100)+"%")}
   updateAddBtn()}
 function updateAddBtn(){const btn=$("#addFoodBtn");if(!btn)return;const f=$("#formFood");
   const kcal=+f.kcal.value||0;const q=Math.max(0.01,+f.qty.value||1);const tot=Math.round(kcal*q);
@@ -2389,6 +2529,11 @@ $("#formFood").addEventListener("submit",e=>{
   renderCalories();toast("Jídlo přidáno")});
 /* zlomkové chipy množství + tlačítko Do dávky */
 $$("#qtyChips button").forEach(b=>b.addEventListener("click",()=>setQty(+b.dataset.q)));
+(function(){const qN=$("#qtyNum"),qR=$("#qtyRange");
+  if(qR)qR.addEventListener("input",()=>setQty(+qR.value));
+  if(qN){qN.addEventListener("input",()=>setQty(+qN.value||0));qN.addEventListener("focus",()=>setTimeout(()=>{try{qN.select()}catch(e){}},0));}
+  $$(".port-slider .sc[data-qd]").forEach(b=>b.addEventListener("click",()=>setQty((+($("#formFood [name=qty]").value)||0)+(+b.dataset.qd))));
+  setQty(+($("#formFood [name=qty]").value)||1);})();
 $("#formFood [name=kcal]").addEventListener("input",updateAddBtn);
 $("#toBatchBtn").addEventListener("click",()=>{const f=$("#formFood");
   const q=Math.max(0.01,+f.qty.value||1);
