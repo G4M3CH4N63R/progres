@@ -204,6 +204,13 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .item .t1{font-weight:700;font-size:15px}
   .item .t2{font-size:13px;color:var(--muted);margin-top:2px}
   .item .del{flex:none;border:none;background:transparent;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 6px;line-height:1;border-radius:8px}
+  .trash{flex:none;display:inline-flex;align-items:center;justify-content:center;border:none;background:transparent;color:var(--bad);cursor:pointer;padding:5px 6px;line-height:1;border-radius:9px}
+  .trash:active{background:color-mix(in srgb,var(--bad) 15%,transparent)}
+  .trash svg{display:block;width:19px;height:19px}
+  .item .del.trash,.sess .acts button.trash,.fav-hd .del.trash{color:var(--bad)}
+  .tpldel.trash{width:44px;border:1px solid color-mix(in srgb,var(--bad) 34%,var(--line));border-radius:12px;background:var(--plane)}
+  .btn.danger svg{width:17px;height:17px}
+  textarea[name=name]{min-height:48px;line-height:1.35;overflow:hidden;resize:none}
   .sess{border:1px solid var(--line);border-radius:14px;padding:12px 13px;margin-bottom:10px;background:var(--surface)}
   .sess .hd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px}
   .sess .dt{font-weight:800;font-size:14px}
@@ -613,7 +620,10 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div id="trainWeek"></div>
         <div class="hubgrid">
           <button type="button" data-card="#card-aiplan"><svg viewBox="0 0 24 24"><path d="M12 3.5l1.6 4.4L18 9.5l-4.4 1.6L12 15.5l-1.6-4.4L6 9.5l4.4-1.6L12 3.5z"/><path d="M18.5 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg><span>AI plán</span></button>
+          <button type="button" data-card="#card-templates"><svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Šablony</span></button>
+          <button type="button" data-card="#card-steps"><svg viewBox="0 0 24 24"><path d="M8.5 3.5c1.6 0 2.6 1.3 2.6 3.2 0 2-.9 3.4-.9 4.8 0 1.2.8 1.8.8 3 0 1.4-1 2.3-2.4 2.3s-2.4-1-2.4-2.6c0-1.6.6-2.4.6-3.7 0-1.6-1-2.9-1-4.5 0-1.6 1.1-2.5 2.7-2.5z"/><path d="M16.2 8.5c1.5 0 2.4 1.2 2.4 3 0 1.9-.8 3.2-.8 4.5 0 1.1.7 1.7.7 2.8 0 1.3-.9 2.2-2.2 2.2s-2.3-1-2.3-2.4c0-1.5.6-2.3.6-3.5 0-1.5-.9-2.7-.9-4.2 0-1.5 1-2.4 2.5-2.4z"/></svg><span>Kroky</span></button>
           <button type="button" data-card="#card-trhist"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5V8h3.5"/><path d="M12 8v4.2l3 1.8"/></svg><span>Historie</span></button>
+          <button type="button" data-run="stats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Statistiky</span></button>
         </div>
       </div>
       <button class="hubback" type="button"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Rozcestník</button>
@@ -630,7 +640,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
           <div style="display:flex;gap:8px">
             <select id="tplSelect" style="flex:1;min-width:0"></select>
             <button class="btn secondary small" id="tplUse" type="button">Použít</button>
-            <button class="btn danger small" id="tplDel" type="button">×</button>
+            <button class="btn danger small" id="tplDel" type="button" aria-label="Smazat šablonu" title="Smazat šablonu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 4.5h4a1 1 0 0 1 1 1V7H9V5.5a1 1 0 0 1 1-1z"/><path d="M6 7l1 12.2a1.5 1.5 0 0 0 1.5 1.3h7a1.5 1.5 0 0 0 1.5-1.3L18 7"/><path d="M10 11v6M14 11v6"/></svg></button>
           </div>
         </div>
         <form id="formSession">
@@ -682,6 +692,13 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div id="tplList"></div>
       </div>
 
+      <div class="card" id="card-steps">
+        <h2>Kroky <span class="hint" id="stepsGoalHint"></span></h2>
+        <label class="field"><span>Dnešní kroky</span><div class="stepper"><button type="button" data-d="-500" tabindex="-1">−</button><input type="number" id="stepsInput" min="0" step="500" inputmode="numeric" placeholder="0"><button type="button" data-d="500" tabindex="-1">＋</button></div></label>
+        <button class="btn" id="saveStepsBtn" type="button">Uložit kroky</button>
+        <div class="small muted" id="stepsInfo" style="margin-top:10px"></div>
+      </div>
+
       <div class="card" id="card-aiplan">
         <h2>AI plán tréninku <span class="hint">z tvého cíle a těla</span></h2>
         <div id="planBox"></div>
@@ -701,6 +718,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div id="bodyOverview"></div>
         <div class="hubgrid">
           <button type="button" data-card="#card-bodyhist"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5V8h3.5"/><path d="M12 8v4.2l3 1.8"/></svg><span>Historie</span></button>
+          <button type="button" data-run="stats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Statistiky</span></button>
         </div>
       </div>
       <button class="hubback" type="button"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Rozcestník</button>
@@ -779,9 +797,12 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div class="page-sub">Rychlé akce</div>
         <div id="foodWeek"></div>
         <div class="hubgrid">
+          <button type="button" data-card="#card-foodlog"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/></svg><span>Talíř</span></button>
           <button type="button" data-card="#card-recipes"><svg viewBox="0 0 24 24"><path d="M3 11h18M4 11a8 8 0 0 0 16 0"/><path d="M8.5 11c0-2 1.3-3.5 3.5-3.5s3.5 1.5 3.5 3.5"/></svg><span>Recepty</span></button>
           <button type="button" data-card="#card-favfoods"><svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.6 6.1.6-4.6 4.1 1.4 6L12 16.9 6.1 19.8l1.4-6-4.6-4.1 6.1-.6z"/></svg><span>Oblíbené</span></button>
           <button type="button" data-card="#card-today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 12V3.5"/><path d="M12 12l7.4 4.3"/></svg><span>Dnešní makro</span></button>
+          <button type="button" data-card="#card-foodhist"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5V8h3.5"/><path d="M12 8v4.2l3 1.8"/></svg><span>Historie</span></button>
+          <button type="button" data-run="stats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Statistiky</span></button>
         </div>
       </div>
       <button class="hubback" type="button"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Rozcestník</button>
@@ -790,11 +811,10 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="card hero" id="calHero" style="display:none"></div>
 
       <div class="card" id="card-foodlog">
-        <h2>Přidat jídlo</h2>
+        <h2>Talíř <span class="hint">slož jídlo a sněz ho</span></h2>
         <button class="btn" id="foodPickBtn" type="button" style="margin-bottom:12px">Vybrat z databáze / historie</button>
-        <div id="recentFoods" class="recent-row"></div>
         <form id="formFood">
-          <label class="field"><span>Jídlo</span><input type="text" name="name" placeholder="např. Kuřecí prsa 150 g s rýží" required></label>
+          <label class="field"><span>Jídlo</span><textarea name="name" rows="2" placeholder="např. Kuřecí prsa 150 g s rýží" required></textarea></label>
           <div class="macro-steps">
             <div class="mrow"><span class="lb">Kalorie</span><div class="ctrl"><button class="rb" type="button" data-d="-10">−</button><input class="mv" name="kcal" type="number" min="0" inputmode="numeric" placeholder="0" required><button class="rb" type="button" data-d="10">＋</button></div></div>
             <div class="mrow p"><span class="lb">Bílkoviny</span><div class="ctrl"><button class="rb" type="button" data-d="-1">−</button><input class="mv" name="protein" type="number" min="0" step="0.1" inputmode="decimal" placeholder="0"><button class="rb" type="button" data-d="1">＋</button></div></div>
@@ -817,12 +837,12 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
             <div class="set-slide"><button type="button" class="sc" data-qd="-0.25">−</button><input type="range" id="qtyRange" class="set-rng" min="0" max="10" step="0.25" value="1"><button type="button" class="sc" data-qd="0.25">＋</button></div>
           </div>
           <input type="hidden" name="qty" value="1">
-          <button class="btn" type="submit" id="addFoodBtn" style="margin-top:12px">Přidat jídlo</button>
-          <button class="btn secondary" type="button" id="toBatchBtn" style="margin-top:9px">Do dávky ↓</button>
+          <button class="btn" type="submit" id="addFoodBtn" style="margin-top:12px">Sníst</button>
+          <button class="btn secondary" type="button" id="toBatchBtn" style="margin-top:9px">Přidat jako ingredienci ↓</button>
         </form>
         <div id="calorieSummary" style="margin-top:14px"></div>
         <div id="batchWrap" style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px">
-          <div class="group-label" style="margin:0 4px 6px">Dávka (více porcí)</div>
+          <div class="group-label" style="margin:0 4px 6px">Ingredience na talíři</div>
           <div id="batchBox"></div>
         </div>
       </div>
@@ -849,6 +869,11 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="card" id="card-favfoods">
         <h2>Oblíbená jídla <span class="hint">rychlé přidání do deníku</span></h2>
         <div id="favFoodsBox"></div>
+      </div>
+
+      <div class="card" id="card-foodhist">
+        <h2>Historie jídel <span class="hint" id="foodHistCount"></span></h2>
+        <div id="foodHistList"></div>
       </div>
     </section>
 
@@ -1054,7 +1079,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         </div>
         <div class="btn-row">
           <button class="btn secondary small" id="demoBtn">Načíst ukázková data</button>
-          <button class="btn danger small" id="wipeBtn">Smazat vše</button>
+          <button class="btn danger small" id="wipeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 4.5h4a1 1 0 0 1 1 1V7H9V5.5a1 1 0 0 1 1-1z"/><path d="M6 7l1 12.2a1.5 1.5 0 0 0 1.5 1.3h7a1.5 1.5 0 0 0 1.5-1.3L18 7"/><path d="M10 11v6M14 11v6"/></svg>Smazat vše</button>
         </div>
       </div>
     </section>
@@ -1079,7 +1104,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
     <p id="modalText"></p>
     <div class="btn-row">
       <button class="btn secondary" id="modalCancel" style="flex:1">Zrušit</button>
-      <button class="btn danger" id="modalOk" style="flex:1">Smazat</button>
+      <button class="btn danger" id="modalOk" style="flex:1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 4.5h4a1 1 0 0 1 1 1V7H9V5.5a1 1 0 0 1 1-1z"/><path d="M6 7l1 12.2a1.5 1.5 0 0 0 1.5 1.3h7a1.5 1.5 0 0 0 1.5-1.3L18 7"/><path d="M10 11v6M14 11v6"/></svg>Smazat</button>
     </div>
   </div>
 </div>
@@ -1145,7 +1170,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
     <img id="photoModalImg" alt="Fotka progresu">
     <div class="btn-row">
       <button class="btn secondary" id="photoModalClose" style="flex:1">Zavřít</button>
-      <button class="btn danger" id="photoModalDel" style="flex:1">Smazat</button>
+      <button class="btn danger" id="photoModalDel" style="flex:1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 4.5h4a1 1 0 0 1 1 1V7H9V5.5a1 1 0 0 1 1-1z"/><path d="M6 7l1 12.2a1.5 1.5 0 0 0 1.5 1.3h7a1.5 1.5 0 0 0 1.5-1.3L18 7"/><path d="M10 11v6M14 11v6"/></svg>Smazat</button>
     </div>
   </div>
 </div>
@@ -1159,6 +1184,10 @@ let memStore={};
 function lsGet(k){try{return localStorage.getItem(k)}catch(e){return memStore[k]??null}}
 function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){memStore[k]=v}}
 function uid(){try{return crypto.randomUUID()}catch(e){return Date.now()+"-"+Math.round(Math.random()*1e6)}}
+const ICON_TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 4.5h4a1 1 0 0 1 1 1V7H9V5.5a1 1 0 0 1 1-1z"/><path d="M6 7l1 12.2a1.5 1.5 0 0 0 1.5 1.3h7a1.5 1.5 0 0 0 1.5-1.3L18 7"/><path d="M10 11v6M14 11v6"/></svg>';
+function confirmDel(title,text,cb){openModal(title,text,cb)}
+const LIQUID_RE=/(ml[eé]k[oa]|ml[eé]ku|n[aá]poj|dž[uů]s|šť[aá]v|voda|vody|vodka|cola|kola|limon[aá]d|tonik|pivo|v[ií]no|prosecco|whisk|k[aá]va|cappuccino|latte|espresso|kakao|smoothie|kef[ií]r|podm[aá]sl[ií]|shake|sirup|olej|smetana|čaj)/i;
+function foodUnit(n){return LIQUID_RE.test(String(n||""))?"ml":"g"}
 const DEFAULT={version:3,sessions:[],body:[],foods:[],steps:{},templates:[],customExercises:[],foodDb:[],recipes:[],favorites:[],
   profile:{sex:"m",age:30,height:180,weight:80,activity:1.55,goal:"maintain",targetKcal:null,targetProtein:null,targetWeight:null,stepGoal:10000,addStepsToGoal:false,addWorkoutToGoal:false,apiKey:"",aiModel:"",daysPerWeek:3,experience:"pokrocily",equipment:"posilovna",plan:null}};
 function clone(o){return JSON.parse(JSON.stringify(o))}
@@ -1340,6 +1369,7 @@ function setSeg(name,val){const seg=$(`.seg[data-seg="${name}"]`);if(!seg)return
 const HUBTABS=new Set(["trenink","telo","kalorie","data"]);
 function clearModes(sec){sec.classList.remove("hubon","soloon");sec.querySelectorAll(".solocard").forEach(c=>c.classList.remove("solocard"));}
 function switchTab(name,mode){
+  if(typeof statsRestore==="function")statsRestore();
   $$("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===name));
   $$("section").forEach(s=>{if(s.id!=="tab-"+name)clearModes(s);s.classList.toggle("active",s.id==="tab-"+name);});
   const sec=document.getElementById("tab-"+name),wantHub=HUBTABS.has(name)&&mode!=="body";
@@ -1351,6 +1381,7 @@ function switchTab(name,mode){
 }
 $$("nav button").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
 function showSolo(sec,cardSel,focus){
+  if(typeof statsRestore==="function")statsRestore();
   const el=cardSel?sec.querySelector(cardSel):null,card=el?(el.closest(".card")||el):null;
   clearModes(sec);
   if(card)card.classList.add("solocard");
@@ -1360,10 +1391,45 @@ function showSolo(sec,cardSel,focus){
   if(focus==="addex"){const b=document.getElementById("addExBtn");if(b)b.click();}
   requestAnimationFrame(()=>{try{window.dispatchEvent(new Event("resize"));}catch(e){}});
 }
-function showHub(sec){clearModes(sec);const _nm=sec.id.replace("tab-","");if(sec.querySelector(":scope > .hub")){sec.classList.add("hubon");if(typeof renderHubExtras==="function")renderHubExtras(_nm);}else renderTab(_nm);window.scrollTo(0,0);}
-function hubAction(a){
+function showHub(sec){if(typeof statsRestore==="function")statsRestore();clearModes(sec);const _nm=sec.id.replace("tab-","");if(sec.querySelector(":scope > .hub")){sec.classList.add("hubon");if(typeof renderHubExtras==="function")renderHubExtras(_nm);}else renderTab(_nm);window.scrollTo(0,0);}
+function hubAction(a,tab){
   if(a==="scan"){if(typeof startScan==="function")startScan();}
   else if(a==="foodpick"){if(typeof openFoodPick==="function")openFoodPick();}
+  else if(a==="stats"){showStats(tab);}
+}
+/* ---- Statistiky přímo v dané sekci (karty se sem přesunou z Progresu) ---- */
+const STATS_CARDS={
+  trenink:["#card-strength","#card-pr","#card-volume","#card-heat"],
+  telo:["#card-weightbig","#card-measurepos","#card-feel"],
+  kalorie:["#card-calchart"]
+};
+function statsSlots(){
+  Object.keys(STATS_CARDS).forEach(t=>STATS_CARDS[t].forEach(sel=>{
+    const el=document.querySelector(sel);if(!el||el.dataset.slotted)return;
+    const s=document.createElement("div");s.hidden=true;s.dataset.statsSlot=sel;
+    el.parentNode.insertBefore(s,el);el.dataset.slotted="1";}));
+}
+function statsRestore(){
+  document.querySelectorAll("[data-stats-slot]").forEach(s=>{
+    const el=document.querySelector(s.dataset.statsSlot);
+    if(el&&el.previousSibling!==s)s.parentNode.insertBefore(el,s.nextSibling);
+    if(el)el.classList.remove("solocard");});
+}
+function renderStatsFor(tab){
+  if(tab==="trenink"){chartStrength();renderPrTable();chartVolume();renderHeatmap()}
+  else if(tab==="telo"){chartWeightBig();renderMeasurePos();chartFeel()}
+  else if(tab==="kalorie"){chartCalBig();chartSteps()}
+}
+function showStats(tab){
+  statsSlots();statsRestore();
+  const sec=document.getElementById("tab-"+tab);if(!sec)return;
+  clearModes(sec);
+  (STATS_CARDS[tab]||[]).forEach(sel=>{const el=document.querySelector(sel);if(!el)return;
+    sec.appendChild(el);el.classList.add("solocard")});
+  sec.classList.add("soloon");
+  window.scrollTo(0,0);
+  renderStatsFor(tab);
+  requestAnimationFrame(()=>{try{window.dispatchEvent(new Event("resize"))}catch(e){}});
 }
 function renderTplList(){
   var box=document.getElementById("tplList");if(!box)return;
@@ -1371,19 +1437,21 @@ function renderTplList(){
   box.innerHTML=state.templates.map(function(t){
     var cnt=(t.exercises||[]).length;
     var sub=[(t.muscles&&t.muscles.length?t.muscles.join(" · "):""),(t.type||""),cnt+" cviků"].filter(Boolean).join(" · ");
-    return '<div class="tplitem"><button class="tplpick" type="button" data-id="'+t.id+'"><span class="nm">'+esc(t.name)+'</span><span class="sb">'+esc(sub)+'</span></button><button class="tpldel" type="button" data-del="'+t.id+'" aria-label="Smazat">×</button></div>';
+    return '<div class="tplitem"><button class="tplpick" type="button" data-id="'+t.id+'"><span class="nm">'+esc(t.name)+'</span><span class="sb">'+esc(sub)+'</span></button><button class="tpldel trash" type="button" data-del="'+t.id+'" aria-label="Smazat" title="Smazat">'+ICON_TRASH+'</button></div>';
   }).join("");
 }
 document.addEventListener("click",e=>{
   const _pk=e.target.closest(".tplpick");
   if(_pk){const t=state.templates.find(x=>x.id===_pk.dataset.id);if(t){if(typeof fillSessionForm==="function")fillSessionForm(t);showSolo(document.getElementById("tab-trenink"),"#card-newworkout");toast("Šablona načtena: "+t.name);}return;}
   const _dl=e.target.closest(".tpldel");
-  if(_dl){state.templates=state.templates.filter(x=>x.id!==_dl.dataset.del);save();renderTplList();if(typeof renderTplRow==="function")renderTplRow();toast("Šablona smazána");return;}
+  if(_dl){const _id=_dl.dataset.del,_t=state.templates.find(x=>x.id===_id);
+    confirmDel("Smazat šablonu?",(_t?"„"+_t.name+"“":"Šablona")+" se smaže. Uložené tréninky zůstanou.",()=>{
+      state.templates=state.templates.filter(x=>x.id!==_id);save();renderTplList();if(typeof renderTplRow==="function")renderTplRow();toast("Šablona smazána")});return;}
   const tile=e.target.closest(".hub-main,.hubgrid button");
   if(tile&&tile.closest(".hub")){
     const sec=tile.closest("section"),own=sec.id.replace("tab-","");
     const goto=tile.dataset.goto,card=tile.dataset.card,run=tile.dataset.run;
-    if(run){hubAction(run);return;}
+    if(run){hubAction(run,own);return;}
     if(goto&&goto!==own){
       $$("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===goto));
       $$("section").forEach(s=>{if(s.id!=="tab-"+goto)clearModes(s);s.classList.toggle("active",s.id==="tab-"+goto);});
@@ -1910,7 +1978,7 @@ function bestBefore(name,beforeId){let bm=0,be=0;const nl=name.toLowerCase();
       if(exUnit(e)==="kg"){const v=exBestE1RM(e);if(v>be)be=v}}}
   return{bm,be}}
 function renderSessions(){
-  fillExDb();renderPlanBox();
+  fillExDb();renderPlanBox();renderTplRow();renderTplList();renderStepsCard();
   const tsub=$("#treninkSub");if(tsub)tsub.textContent=czLongDate();
   const list=$("#sessList");
   const ss=[...state.sessions].sort((a,b)=>b.date.localeCompare(a.date));
@@ -1923,14 +1991,15 @@ function renderSessions(){
       <div class="hd"><div class="dt">${fmtDateFull(s.date)}</div>
         <div class="acts">
           <button data-copy="${s.id}" title="Použít jako předlohu">⧉</button>
-          <button data-del-sess="${s.id}" title="Smazat">×</button>
+          <button class="trash" data-del-sess="${s.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button>
         </div></div>
       <div class="muscles">${s.muscles.map(m=>`<span class="mtag">${esc(m)}</span>`).join("")}<span class="mtag type">${esc(s.type)}</span>${vol?`<span class="mtag type">${vol.toLocaleString("cs")} kg</span>`:""}<span class="mtag type">${estDur(s)} min · ≈ ${workoutKcal(s)} kcal</span></div>
       ${s.exercises.map(e=>`<div class="ex"><span class="nm">${e.pr?'<span class="pr-badge">PR </span>':""}${esc(e.n)}</span><span class="dt2">${exValStr(e)||"—"}</span></div>`).join("")}
       ${s.notes?`<div class="small muted" style="margin-top:6px">${esc(s.notes)}</div>`:""}
     </div>`}).join("");
-  $$("[data-del-sess]",list).forEach(b=>b.onclick=()=>{
-    state.sessions=state.sessions.filter(x=>x.id!==b.dataset.delSess);save();renderSessions();toast("Trénink smazán")});
+  $$("[data-del-sess]",list).forEach(b=>b.onclick=()=>{const id=b.dataset.delSess,s=state.sessions.find(x=>x.id===id);
+    confirmDel("Smazat trénink?",(s?fmtDateFull(s.date)+" — ":"")+"záznam se nevratně smaže.",()=>{
+      state.sessions=state.sessions.filter(x=>x.id!==id);save();renderSessions();toast("Trénink smazán")})});
   $$("[data-copy]",list).forEach(b=>b.onclick=()=>{
     const s=state.sessions.find(x=>x.id===b.dataset.copy);if(!s)return;
     fillSessionForm(s);window.scrollTo({top:0,behavior:"smooth"});toast("Předvyplněno podle "+fmtDate(s.date))});
@@ -1947,7 +2016,8 @@ $("#tplUse").addEventListener("click",()=>{
   fillSessionForm(t);toast("Šablona načtena: "+t.name)});
 $("#tplDel").addEventListener("click",()=>{
   const t=state.templates.find(x=>x.id===$("#tplSelect").value);if(!t)return;
-  state.templates=state.templates.filter(x=>x.id!==t.id);save();renderTplRow();toast("Šablona smazána")});
+  confirmDel("Smazat šablonu?","„"+t.name+"“ se smaže. Uložené tréninky zůstanou.",()=>{
+    state.templates=state.templates.filter(x=>x.id!==t.id);save();renderTplRow();renderTplList();toast("Šablona smazána")})});
 $("#saveTplBtn").addEventListener("click",()=>{
   const f=$("#formSession");
   if(curType()!=="Fitko"){const act=selectedMuscles()[0];if(!act){toast("Vyber aktivitu");return}
@@ -2048,10 +2118,11 @@ function renderBody(){
   if(!rows.length){list.innerHTML=`<div class="empty"><div class="big">${EMPTY_SVG}</div>Zatím žádné měření.<br>Přidej první výše.</div>`;return}
   list.innerHTML=rows.map(r=>{
     const m=[r.weight!=null?r.weight+" kg":"",r.waist?"pas "+r.waist:"",r.biceps?"biceps "+r.biceps:"",r.chest?"hrudník "+r.chest:""].filter(Boolean).join(" · ");
-    return `<div class="item"><div class="tag">${FEEL[r.feeling]||"🙂"}</div><div class="body"><div class="t1">${fmtDateFull(r.date)}</div><div class="t2">${m||"bez měr"}${r.notes?" — "+esc(r.notes):""}</div></div><button class="del" data-del-body="${r.id}">×</button></div>`;
+    return `<div class="item"><div class="tag">${FEEL[r.feeling]||"🙂"}</div><div class="body"><div class="t1">${fmtDateFull(r.date)}</div><div class="t2">${m||"bez měr"}${r.notes?" — "+esc(r.notes):""}</div></div><button class="del trash" data-del-body="${r.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div>`;
   }).join("");
-  $$("[data-del-body]",list).forEach(b=>b.onclick=()=>{
-    state.body=state.body.filter(x=>x.id!==b.dataset.delBody);save();renderBody();toast("Smazáno")});
+  $$("[data-del-body]",list).forEach(b=>b.onclick=()=>{const id=b.dataset.delBody,r=state.body.find(x=>x.id===id);
+    confirmDel("Smazat záznam těla?",(r?fmtDateFull(r.date)+" — ":"")+"váha, míry i pocit k tomuto dni se smažou.",()=>{
+      state.body=state.body.filter(x=>x.id!==id);save();renderBody();toast("Smazáno")})});
 }
 $("#formBody").addEventListener("submit",e=>{
   e.preventDefault();const f=e.target;
@@ -2107,9 +2178,10 @@ function renderPhotos(){
 }
 $("#photoModalClose").addEventListener("click",()=>$("#photoModalBg").classList.remove("show"));
 $("#photoModalBg").addEventListener("click",e=>{if(e.target===$("#photoModalBg"))$("#photoModalBg").classList.remove("show")});
-$("#photoModalDel").addEventListener("click",async()=>{
-  if(photoModalId){await phDel(photoModalId);await refreshPhotos();renderPhotos();toast("Fotka smazána")}
-  $("#photoModalBg").classList.remove("show")});
+$("#photoModalDel").addEventListener("click",()=>{
+  const id=photoModalId;$("#photoModalBg").classList.remove("show");if(!id)return;
+  confirmDel("Smazat fotku?","Fotka progresu se nevratně smaže z tohoto zařízení.",async()=>{
+    await phDel(id);await refreshPhotos();renderPhotos();toast("Fotka smazána")})});
 /* ================== KALORIE ================== */
 function calc(){
   const f=$("#formCalc");const p={sex:f.sex.value,age:+f.age.value||30,height:+f.height.value||180,weight:+f.weight.value||80,activity:+f.activity.value,goal:f.goal.value};
@@ -2136,7 +2208,7 @@ $("#saveGoal").addEventListener("click",()=>{
 (function(){const sb=$("#saveStepsBtn");if(!sb)return;sb.addEventListener("click",()=>{
   const v=$("#stepsInput").value;
   if(v!=="")state.steps[todayISO()]=Math.max(0,+v||0);
-  save();renderCalories();toast("Kroky uloženy")})})();
+  save();renderStepsCard();renderCalories();toast("Kroky uloženy")})})();
 $("#saveStepGoalBtn").addEventListener("click",()=>{
   const g=$("#stepGoalInput").value;
   if(g!=="")state.profile.stepGoal=Math.max(0,+g||0);
@@ -2198,7 +2270,7 @@ async function aiCall(content,maxTokens){
   const j=await r.json();return (j.content||[]).map(c=>c.text||"").join("").trim();
 }
 function aiJson(txt){
-  txt=String(txt).replace(/^```json?/i,"").replace(/```\s*$/,"").trim();
+  txt=String(txt).replace(/```[a-z]*/gi,"").replace(/```/g,"").trim();
   try{return JSON.parse(txt)}catch(e){}
   const start=txt.search(/[\{\[]/);
   let js=start>=0?txt.slice(start):txt;
@@ -2218,7 +2290,26 @@ function aiJson(txt){
   fix=fix.replace(/:\s*$/,":null");
   for(let i=open.length-1;i>=0;i--)fix+=(open[i]==="{"?"}":"]");
   fix=fix.replace(/,(\s*[}\]])/g,"$1");
-  try{return JSON.parse(fix)}catch(e){throw new Error("AI vrátila neúplná data — zkus to prosím znovu.")}
+  try{return JSON.parse(fix)}catch(e){}
+  /* poslední záchrana: zahoď useknutý konec a uzavři, co je celé */
+  const lim=Math.max(0,js.length-6000);
+  for(let cut=js.length-1;cut>lim;cut--){
+    const ch0=js[cut];if(ch0!=="}"&&ch0!=="]")continue;
+    const t=js.slice(0,cut+1);
+    let ins=false,e2=false;const op=[];
+    for(let i=0;i<t.length;i++){const ch=t[i];
+      if(e2){e2=false;continue}
+      if(ch==="\\"){e2=true;continue}
+      if(ch==='"'){ins=!ins;continue}
+      if(ins)continue;
+      if(ch==="{"||ch==="[")op.push(ch);else if(ch==="}"||ch==="]")op.pop();}
+    if(ins)continue;
+    let f2=t.replace(/[,\s]*$/,"");
+    for(let i=op.length-1;i>=0;i--)f2+=(op[i]==="{"?"}":"]");
+    f2=f2.replace(/,(\s*[}\]])/g,"$1");
+    try{return JSON.parse(f2)}catch(e){}
+  }
+  throw new Error("AI vrátila neúplná data — zkus to prosím znovu.")
 }
 async function aiAnalyzeFood(imgs,desc){
   const content=imgs.map(b64=>({type:"image",source:{type:"base64",media_type:"image/jpeg",data:b64}}));
@@ -2243,29 +2334,55 @@ async function barcodeLookup(code){
 }
 /* ---- Skener čárového kódu (ZXing / html5-qrcode) ---- */
 let scanner=null,scanBusy=false;
+function scanMsg(html,bad){const el=$("#scanStatus");if(!el)return;
+  el.innerHTML=bad?`<span style="color:var(--bad)">${html}</span>`:html}
 async function startScan(){
-  if(typeof Html5Qrcode==="undefined"){toast("Skener se nenačetl — zadej kód ručně");return}
-  scanBusy=false;$("#scanStatus").textContent="Spouštím kameru…";$("#scanRegion").innerHTML="";
-  $("#scanBg").classList.add("show");
-  const fmts=[Html5QrcodeSupportedFormats.EAN_13,Html5QrcodeSupportedFormats.EAN_8,Html5QrcodeSupportedFormats.UPC_A,Html5QrcodeSupportedFormats.UPC_E,Html5QrcodeSupportedFormats.CODE_128];
-  scanner=new Html5Qrcode("scanRegion",{formatsToSupport:fmts,verbose:false});
-  const config={fps:10,qrbox:(w,h)=>{const width=Math.max(160,Math.min(w-24,320));return{width,height:Math.max(110,Math.round(width*0.55))}},aspectRatio:1.3};
-  const onHit=async(text)=>{
-    if(scanBusy)return;scanBusy=true;
+  try{
+    if(typeof Html5Qrcode==="undefined"){toast("Skener se nenačetl — zadej kód ručně");return}
     await stopScan();
-    $("#barcodeInput").value=text;const st=$("#barcodeStatus");
-    st.innerHTML='<span class="spin"></span> Hledám kód '+esc(text)+'…';
-    try{const food=await barcodeLookup(text);st.innerHTML=`Nalezeno: <b>${esc(food.n)}</b> (${food.per100.kcal} kcal/100 g)`;openPortion(food)}
-    catch(err){st.innerHTML=`<span style="color:var(--bad)">${esc(err.message)}</span> — zkus to znovu nebo zadej ručně.`}
-  };
-  try{await scanner.start({facingMode:"environment"},config,onHit,()=>{});
-    $("#scanStatus").textContent="Namiř kód do rámečku…";}
-  catch(err){$("#scanStatus").innerHTML=`<span style="color:var(--bad)">Kameru se nepodařilo spustit (${esc(String(err&&err.message||err))}). Povol přístup ke kameře, nebo zadej kód ručně.</span>`;
-    if(scanner){try{scanner.clear()}catch(e){}scanner=null}}
+    scanBusy=false;
+    const reg=$("#scanRegion");if(reg)reg.innerHTML="";
+    $("#scanBg").classList.add("show");
+    scanMsg("Spouštím kameru…");
+    if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){
+      scanMsg("Tenhle prohlížeč kameru nepustí. Zadej kód ručně níže.",true);return}
+    if(window.isSecureContext===false&&location.protocol!=="file:"){
+      scanMsg("Kamera potřebuje https. Otevři appku přes https, nebo zadej kód ručně.",true);return}
+    const opts={verbose:false,experimentalFeatures:{useBarCodeDetectorIfSupported:true}};
+    try{if(typeof Html5QrcodeSupportedFormats!=="undefined"&&Html5QrcodeSupportedFormats)
+      opts.formatsToSupport=[Html5QrcodeSupportedFormats.EAN_13,Html5QrcodeSupportedFormats.EAN_8,Html5QrcodeSupportedFormats.UPC_A,Html5QrcodeSupportedFormats.UPC_E,Html5QrcodeSupportedFormats.CODE_128];
+    }catch(e){}
+    try{scanner=new Html5Qrcode("scanRegion",opts)}
+    catch(e){scanner=null;scanMsg("Skener se nepodařilo připravit — zadej kód ručně.",true);return}
+    const config={fps:10,qrbox:(w,h)=>{const width=Math.max(160,Math.min((w||300)-24,320));return{width,height:Math.max(110,Math.round(width*0.55))}},aspectRatio:1.3};
+    const onHit=(text)=>{
+      if(scanBusy)return;scanBusy=true;
+      Promise.resolve(stopScan()).catch(()=>{}).then(async()=>{
+        const bi=$("#barcodeInput");if(bi)bi.value=text;
+        const st=$("#barcodeStatus");
+        if(st)st.innerHTML='<span class="spin"></span> Hledám kód '+esc(text)+'…';
+        try{const food=await barcodeLookup(text);
+          if(st)st.innerHTML=`Nalezeno: <b>${esc(food.n)}</b> (${food.per100.kcal} kcal/100 ${foodUnit(food.n)})`;
+          openPortion(food)}
+        catch(err){if(st)st.innerHTML=`<span style="color:var(--bad)">${esc(String(err&&err.message||err))}</span> — zkus to znovu nebo zadej ručně.`;
+          toast("Kód se nepodařilo najít")}
+      }).catch(()=>{});
+    };
+    try{await scanner.start({facingMode:"environment"},config,onHit,()=>{});
+      scanMsg("Namiř kód do rámečku…");}
+    catch(err){
+      scanMsg(`Kameru se nepodařilo spustit (${esc(String(err&&err.message||err))}). Povol přístup ke kameře, nebo zadej kód ručně.`,true);
+      const s=scanner;scanner=null;if(s){try{await s.clear()}catch(e){}}
+    }
+  }catch(err){
+    scanMsg(`Skener selhal (${esc(String(err&&err.message||err))}). Zadej kód ručně.`,true);
+    const s=scanner;scanner=null;if(s){try{s.clear()}catch(e){}}
+  }
 }
 async function stopScan(){
-  $("#scanBg").classList.remove("show");
-  if(scanner){try{await scanner.stop()}catch(e){}try{scanner.clear()}catch(e){}scanner=null}
+  const bg=$("#scanBg");if(bg)bg.classList.remove("show");
+  const s=scanner;scanner=null;
+  if(s){try{await s.stop()}catch(e){}try{s.clear()}catch(e){}}
 }
 function renderApiKeyBox(){
   const box=$("#apiKeyBox");if(!box)return;const key=state.profile.apiKey;
@@ -2327,12 +2444,12 @@ function renderAiBox(){
       st.innerHTML=`<div class="ai-est">Odhad: <b>${esc(res.nazev||"?")}</b>${pocet>1?` × ${pocet} ks`:""} ≈ ${Math.round(res.kcal||0)} kcal · B ${Math.round(res.bilkoviny_g||0)} · S ${Math.round(res.sacharidy_g||0)} · T ${Math.round(res.tuky_g||0)}${res.poznamka?`<br><span class="muted">${esc(res.poznamka)}</span>`:""}</div>
         <div class="ai-add"><span class="ai-add-l">Porce do deníku</span><div class="stepper" style="width:132px;flex:none"><button type="button" data-d="-0.5" tabindex="-1">−</button><input type="number" id="aiPortions" min="0.5" step="0.5" value="${pocet}" inputmode="decimal"><button type="button" data-d="0.5" tabindex="-1">＋</button></div></div>
         <button class="btn" id="aiAddDiary" type="button" style="margin-top:10px">＋ Přidat do deníku</button>
-        <button class="btn secondary" id="aiEditForm" type="button" style="margin-top:9px">✎ Upravit ve formuláři</button>
+        <button class="btn secondary" id="aiEditForm" type="button" style="margin-top:9px">✎ Na talíř</button>
         <div class="small muted" style="margin-top:7px">Nic se nepřidá samo — přidej si to sám tlačítkem výše.</div>`;
       const addBtn=$("#aiAddDiary");if(addBtn)addBtn.onclick=()=>{const q=Math.max(0.5,+$("#aiPortions").value||1);
         addFood({name:(res.nazev||"Jídlo z fotky")+(Math.abs(q-1)>0.001?" × "+fmtNum(q):""),kcal:Math.round(perK*q),protein:+(perP*q).toFixed(1),carbs:+(perC*q).toFixed(1),fat:+(perF*q).toFixed(1)});
         toast("Přidáno do deníku ✓")};
-      const edBtn=$("#aiEditForm");if(edBtn)edBtn.onclick=()=>{prefillFood(res.nazev||"Jídlo z fotky",res.kcal,res.bilkoviny_g,res.sacharidy_g,res.tuky_g,pocet);toast("Předvyplněno ve formuláři")};
+      const edBtn=$("#aiEditForm");if(edBtn)edBtn.onclick=()=>{prefillFood(res.nazev||"Jídlo z fotky",res.kcal,res.bilkoviny_g,res.sacharidy_g,res.tuky_g,pocet);toast("🍽️ Na talíři — uprav a sněz ⤵")};
       imgs=[];renderThumbs();$("#aiDesc").value="";toast("Odhad hotový — rozhodni se, jestli přidat");}
     catch(err){st.innerHTML=`<span style="color:var(--bad)">Nepovedlo se: ${esc(err.message)}</span>`}
     btn.disabled=false;btn.textContent="Analyzovat";};
@@ -2340,7 +2457,7 @@ function renderAiBox(){
   $("#barcodeGo").onclick=async()=>{
     const code=$("#barcodeInput").value.trim();if(!code){toast("Zadej čárový kód");return}
     const btn=$("#barcodeGo"),st=$("#barcodeStatus");btn.disabled=true;btn.innerHTML='<span class="spin"></span>';st.textContent="";
-    try{const food=await barcodeLookup(code);st.innerHTML=`Nalezeno: <b>${esc(food.n)}</b> (${food.per100.kcal} kcal/100 g)`;openPortion(food)}
+    try{const food=await barcodeLookup(code);st.innerHTML=`Nalezeno: <b>${esc(food.n)}</b> (${food.per100.kcal} kcal/100 ${foodUnit(food.n)})`;openPortion(food)}
     catch(err){st.innerHTML=`<span style="color:var(--bad)">${esc(err.message)}</span>`}
     btn.disabled=false;btn.textContent="Najít";};
 }
@@ -2354,8 +2471,10 @@ function setQty(v){v=Math.max(0,Math.round(v*10000)/10000);const inp=$("#formFoo
   updateAddBtn()}
 function updateAddBtn(){const btn=$("#addFoodBtn");if(!btn)return;const f=$("#formFood");
   const kcal=+f.kcal.value||0;const q=Math.max(0.01,+f.qty.value||1);const tot=Math.round(kcal*q);
-  btn.textContent=tot>0?("Přidat · "+nbsp(tot)+" kcal"):"Přidat jídlo"}
-function prefillFood(name,kcal,p,c,f,count){const F=$("#formFood");
+  btn.textContent=tot>0?("Sníst · "+nbsp(tot)+" kcal"):"Sníst"}
+function growFoodName(){const ta=$("#formFood [name=name]");if(!ta||ta.tagName!=="TEXTAREA")return;
+  ta.style.height="auto";ta.style.height=Math.min(170,Math.max(48,ta.scrollHeight+2))+"px"}
+function prefillFood(name,kcal,p,c,f,count){const F=$("#formFood");setTimeout(growFoodName,0);
   const n=(count&&count>1)?count:1;
   F.name.value=name||"";F.kcal.value=Math.round((kcal||0)/n);
   F.protein.value=p!=null?Math.round(p/n):"";F.carbs.value=c!=null?Math.round(c/n):"";F.fat.value=f!=null?Math.round(f/n):"";
@@ -2371,9 +2490,9 @@ function batchTotals(){return batch.reduce((a,it)=>({kcal:a.kcal+(+it.kcal||0),p
 function addToBatch(o){batch.push({name:o.name||"Ingredience",kcal:+o.kcal||0,protein:+o.protein||0,carbs:+o.carbs||0,fat:+o.fat||0});renderBatch()}
 function plurPolozka(n){return n===1?"položka":(n>=2&&n<=4)?"položky":"položek"}
 function renderBatch(){const box=$("#batchBox");if(!box)return;
-  if(!batch.length){box.innerHTML=`<div class="small muted">Zatím prázdné. Klepni <b>„Do dávky ↓"</b> u jídla výše a slož várku z ingrediencí.</div>`;renderRecipes();return}
+  if(!batch.length){box.innerHTML=`<div class="small muted">Zatím prázdné. Klepni <b>„Přidat jako ingredienci ↓"</b> u jídla výše a slož talíř z ingrediencí.</div>`;renderRecipes();return}
   box.innerHTML=
-    batch.map((it,i)=>`<div class="item"><div class="tag" style="min-width:52px">${Math.round(it.kcal)}<br><span style="font-size:10px;font-weight:600">kcal</span></div><div class="body"><div class="t1">${esc(it.name)}</div><div class="t2">B ${Math.round(it.protein)} · S ${Math.round(it.carbs)} · T ${Math.round(it.fat)}</div></div><button class="del" data-rmbatch="${i}">×</button></div>`).join("")
+    batch.map((it,i)=>`<div class="item"><div class="tag" style="min-width:52px">${Math.round(it.kcal)}<br><span style="font-size:10px;font-weight:600">kcal</span></div><div class="body"><div class="t1">${esc(it.name)}</div><div class="t2">B ${Math.round(it.protein)} · S ${Math.round(it.carbs)} · T ${Math.round(it.fat)}</div></div><button class="del trash" data-rmbatch="${i}" title="Odebrat" aria-label="Odebrat">${ICON_TRASH}</button></div>`).join("")
     +`<div class="setrow" style="margin-top:10px"><div class="lb">Počet porcí z dávky<span class="sub2">Na kolik porcí ji rozdělíš.</span></div>
         <div class="stepper" style="max-width:140px;flex:none"><button type="button" data-d="-1">−</button><input type="number" id="batchServInput" min="1" step="1" value="${Math.max(1,batchServings)}" inputmode="numeric"><button type="button" data-d="1">＋</button></div></div>
       <div class="macro" id="batchPer" style="margin-top:8px"></div>
@@ -2381,8 +2500,8 @@ function renderBatch(){const box=$("#batchBox");if(!box)return;
       <div style="display:flex;gap:8px;margin-top:12px"><input type="text" id="recipeName" placeholder="Název receptu (např. Smoothie)" autocomplete="off" style="flex:1" value="${esc(batchName)}"><button class="btn small secondary" id="recipeSaveBtn" type="button" style="flex:none">💾 Uložit recept</button></div>
       <label class="field" style="margin-top:12px"><span>Kolik porcí sníš (přidá do deníku)</span><div class="stepper" style="max-width:140px"><button type="button" data-d="-0.5">−</button><input type="number" id="batchAddPortions" min="0.5" step="0.5" value="1" inputmode="decimal"><button type="button" data-d="0.5">＋</button></div></label>
       <div class="btn-row" style="margin-top:4px">
-        <button class="btn" id="batchAddBtn" type="button" style="flex:2">Přidat do deníku</button>
-        <button class="btn secondary" id="batchClearBtn" type="button" style="flex:1">Vymazat</button>
+        <button class="btn" id="batchAddBtn" type="button" style="flex:2">Sníst</button>
+        <button class="btn danger" id="batchClearBtn" type="button" style="flex:1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 4.5h4a1 1 0 0 1 1 1V7H9V5.5a1 1 0 0 1 1-1z"/><path d="M6 7l1 12.2a1.5 1.5 0 0 0 1.5 1.3h7a1.5 1.5 0 0 0 1.5-1.3L18 7"/><path d="M10 11v6M14 11v6"/></svg>Vysypat</button>
       </div>`;
   $$("#batchBox [data-rmbatch]").forEach(b=>b.onclick=()=>{batch.splice(+b.dataset.rmbatch,1);renderBatch()});
   const upd=()=>{const t=batchTotals();const sv=Math.max(1,+$("#batchServInput").value||1);batchServings=sv;
@@ -2390,7 +2509,9 @@ function renderBatch(){const box=$("#batchBox");if(!box)return;
     $("#batchPer").innerHTML=`<div class="m"><div class="n">${per('kcal')}</div><div class="l">kcal / porce</div></div><div class="m"><div class="n">${per('p')} g</div><div class="l">Bílkoviny</div></div><div class="m"><div class="n">${per('c')} g</div><div class="l">Sacharidy</div></div>`;
     $("#batchTotal").textContent=`Celá dávka: ${nbsp(Math.round(t.kcal))} kcal · B ${Math.round(t.p)} · S ${Math.round(t.c)} · T ${Math.round(t.f)} · ${batch.length} ${plurPolozka(batch.length)}`};
   $("#batchServInput").addEventListener("input",upd);upd();
-  $("#batchClearBtn").onclick=()=>{batch=[];batchServings=2;batchName="";renderBatch();toast("Dávka vymazána")};
+  $("#batchClearBtn").onclick=()=>{if(!batch.length){renderBatch();return}
+    confirmDel("Vysypat talíř?","Všech "+batch.length+" "+plurPolozka(batch.length)+" z talíře se odebere. Uložené recepty zůstanou.",()=>{
+      batch=[];batchServings=2;batchName="";renderBatch();toast("Talíř vysypán")})};
   $("#recipeSaveBtn").onclick=()=>{const nm=$("#recipeName").value.trim();
     if(!nm){toast("Pojmenuj recept");$("#recipeName").focus();return}
     const sv=Math.max(1,+$("#batchServInput").value||1);
@@ -2410,13 +2531,13 @@ function recipeTotals(r){return (r.items||[]).reduce((a,it)=>({kcal:a.kcal+(+it.
 function plurPorce(n){return n===1?"porce":(n>=2&&n<=4)?"porce":"porcí"}
 function sortedRecipes(){return [...(state.recipes||[])].sort((a,b)=>(b.fav?1:0)-(a.fav?1:0)||a.name.localeCompare(b.name,"cs"))}
 function renderRecipes(){const box=$("#recipeBox");if(!box)return;const rs=sortedRecipes();
-  if(!rs.length){box.innerHTML=`<div class="empty" style="padding:22px 12px"><div class="big">🍳</div>Zatím žádné recepty.<br><span class="muted">Slož jídlo přes „Do dávky ↓" u formuláře Přidat jídlo, rozděl na porce a ulož jako recept — objeví se tady.</span></div>`;return}
+  if(!rs.length){box.innerHTML=`<div class="empty" style="padding:22px 12px"><div class="big">🍳</div>Zatím žádné recepty.<br><span class="muted">Slož jídlo přes „Přidat jako ingredienci ↓" na Talíři, rozděl na porce a ulož jako recept — objeví se tady.</span></div>`;return}
   box.innerHTML=rs.map(r=>{const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
     const ing=(r.items||[]).map(it=>`<div class="ingr-row"><span>${esc(it.name)}</span><span>${macroLine(it.protein,it.carbs,it.fat,it.kcal)}</span></div>`).join("");
-    return `<div class="fav-card"><div class="fav-hd"><button class="favb${r.fav?" on":""}" data-fav="${r.id}" title="Oblíbený">${r.fav?"★":"☆"}</button><div class="fav-b"><div class="t1">${esc(r.name)}</div><div class="t2">${Math.round(t.kcal/sv)} kcal/porce · ${r.items.length} ${plurPolozka(r.items.length)} · ${sv} ${plurPorce(sv)}</div></div><button class="btn small secondary" type="button" data-open="${r.id}">Otevřít</button><button class="del" data-rmrec="${r.id}" title="Smazat">×</button></div><div class="fav-actions"><button class="btn small" type="button" data-addrec="${r.id}">＋ Přidat 1 porci do deníku</button></div><details class="ingr"><summary>Ingredience & makra</summary>${ing||'<div class="small muted">Bez ingrediencí.</div>'}<div class="ingr-tot">Celkem: ${macroLine(t.p,t.c,t.f,t.kcal)}</div></details></div>`}).join("");
+    return `<div class="fav-card"><div class="fav-hd"><button class="favb${r.fav?" on":""}" data-fav="${r.id}" title="Oblíbený">${r.fav?"★":"☆"}</button><div class="fav-b"><div class="t1">${esc(r.name)}</div><div class="t2">${Math.round(t.kcal/sv)} kcal/porce · ${r.items.length} ${plurPolozka(r.items.length)} · ${sv} ${plurPorce(sv)}</div></div><button class="btn small secondary" type="button" data-open="${r.id}">Otevřít</button><button class="del trash" data-rmrec="${r.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div><div class="fav-actions"><button class="btn small" type="button" data-addrec="${r.id}">＋ Přidat 1 porci do deníku</button></div><details class="ingr"><summary>Ingredience & makra</summary>${ing||'<div class="small muted">Bez ingrediencí.</div>'}<div class="ingr-tot">Celkem: ${macroLine(t.p,t.c,t.f,t.kcal)}</div></details></div>`}).join("");
   $$("#recipeBox [data-fav]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.fav);if(r){r.fav=!r.fav;save();renderRecipes();renderFavFoods()}});
   $$("#recipeBox [data-open]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.open);if(!r)return;
-    batch=clone(r.items);batchServings=Math.max(1,+r.servings||1);batchName=r.name;renderBatch();showSolo(document.getElementById("tab-kalorie"),"#card-foodlog");toast("Recept otevřen v Přidat jídlo — uprav nebo přidej do deníku")});
+    batch=clone(r.items);batchServings=Math.max(1,+r.servings||1);batchName=r.name;renderBatch();showSolo(document.getElementById("tab-kalorie"),"#card-foodlog");toast("🍽️ Recept je na talíři — uprav a sněz ⤵")});
   $$("#recipeBox [data-addrec]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.addrec);if(!r)return;const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
     addFood({name:r.name+" — 1 porce",kcal:Math.round(t.kcal/sv),protein:+(t.p/sv).toFixed(1),carbs:+(t.c/sv).toFixed(1),fat:+(t.f/sv).toFixed(1)});toast("Přidáno do deníku ✓")});
   $$("#recipeBox [data-rmrec]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.rmrec);if(!r)return;
@@ -2497,34 +2618,35 @@ function renderFoodPickList(){
   const db=FOODDB.filter(f=>!q||f[0].toLowerCase().includes(q));
   const rcp=sortedRecipes().filter(r=>!q||r.name.toLowerCase().includes(q));
   let html="";
-  if(offResults.length)html+='<div class="pick-h">Online (Open Food Facts)</div>'+offResults.map((f,i)=>`<button type="button" class="pick-i" data-off="${i}">${esc(f.n)}<span class="muted" style="float:right;font-weight:500">${f.per100.kcal}/100g</span></button>`).join("");
+  if(offResults.length)html+='<div class="pick-h">Online (Open Food Facts)</div>'+offResults.map((f,i)=>`<button type="button" class="pick-i" data-off="${i}">${esc(f.n)}<span class="muted" style="float:right;font-weight:500">${f.per100.kcal}/100 ${foodUnit(f.n)}</span></button>`).join("");
   if(rcp.length)html+=`<div class="pick-h">Moje recepty (1 porce)</div>`+rcp.map((r,i)=>{const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);return `<div class="pick-row"><button type="button" class="pick-i" data-recipe="${i}">${esc(r.name)}<span class="muted" style="float:right;font-weight:500">${Math.round(t.kcal/sv)} kcal</span></button><button type="button" class="pick-fav${r.fav?" on":""}" data-favrcp="${i}" title="Oblíbený">${r.fav?"★":"☆"}</button></div>`}).join("");
   if(rec.length)html+=`<div class="pick-h">Nedávná jídla (kopírovat)</div>`+rec.map((f,i)=>{const cn=f.name.replace(/\s*×\s*\d+$/,"");return `<div class="pick-row"><button type="button" class="pick-i" data-recent="${i}">${esc(f.name)}<span class="muted" style="float:right;font-weight:500">${f.kcal} kcal</span></button><button type="button" class="pick-fav${isFavFood(cn)?" on":""}" data-favrec="${i}" title="Oblíbený">${isFavFood(cn)?"★":"☆"}</button></div>`}).join("");
-  if(custom.length)html+=`<div class="pick-h">Moje jídla (na 100 g)</div>`+custom.map((f,i)=>`<button type="button" class="pick-i" data-custom="${i}">${esc(f.n)}<span class="muted" style="float:right;font-weight:500">${f.kcal}/100 g</span></button>`).join("");
-  html+=`<div class="pick-h">Databáze (na 100 g)</div>`+db.map((f,i)=>`<button type="button" class="pick-i" data-db="${i}">${esc(f[0])}<span class="muted" style="float:right;font-weight:500">${f[1]}/100 g</span></button>`).join("");
+  if(custom.length)html+=`<div class="pick-h">Moje jídla (na 100 g)</div>`+custom.map((f,i)=>`<button type="button" class="pick-i" data-custom="${i}">${esc(f.n)}<span class="muted" style="float:right;font-weight:500">${f.kcal}/100 ${foodUnit(f.n)}</span></button>`).join("");
+  html+=`<div class="pick-h">Databáze (na 100 g)</div>`+db.map((f,i)=>`<button type="button" class="pick-i" data-db="${i}">${esc(f[0])}<span class="muted" style="float:right;font-weight:500">${f[1]}/100 ${foodUnit(f[0])}</span></button>`).join("");
   $("#foodPickList").innerHTML=html;
   $$("#foodPickList [data-off]").forEach(b=>b.onclick=()=>openPortion(offResults[+b.dataset.off]));
   $$("#foodPickList [data-recent]").forEach(b=>b.onclick=()=>{const f=rec[+b.dataset.recent];
-    closeFoodPick();prefillFood(f.name.replace(/\s*×\s*\d+$/,""),f.kcal,f.protein,f.carbs,f.fat);toast("Předvyplněno — uprav a přidej ⤵")});
+    closeFoodPick();prefillFood(f.name.replace(/\s*×\s*\d+$/,""),f.kcal,f.protein,f.carbs,f.fat);toast("🍽️ Na talíři — uprav a sněz ⤵")});
   $$("#foodPickList [data-recipe]").forEach(b=>b.onclick=()=>{const r=rcp[+b.dataset.recipe];const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
-    closeFoodPick();prefillFood(r.name+" — 1 porce",Math.round(t.kcal/sv),+(t.p/sv).toFixed(1),+(t.c/sv).toFixed(1),+(t.f/sv).toFixed(1));toast("Předvyplněno — porce uprav přes chipy ⤵")});
+    closeFoodPick();prefillFood(r.name+" — 1 porce",Math.round(t.kcal/sv),+(t.p/sv).toFixed(1),+(t.c/sv).toFixed(1),+(t.f/sv).toFixed(1));toast("🍽️ Na talíři — porce uprav přes chipy ⤵")});
   $$("#foodPickList [data-custom]").forEach(b=>b.onclick=()=>{const f=custom[+b.dataset.custom];openPortion({n:f.n,per100:{kcal:f.kcal,p:f.p,c:f.c,f:f.f}})});
   $$("#foodPickList [data-db]").forEach(b=>b.onclick=()=>{const f=db[+b.dataset.db];openPortion({n:f[0],per100:{kcal:f[1],p:f[2],c:f[3],f:f[4]}})});
   $$("#foodPickList [data-favrcp]").forEach(b=>b.onclick=()=>{const r=rcp[+b.dataset.favrcp];const rr=(state.recipes||[]).find(x=>x.id===r.id);if(rr){rr.fav=!rr.fav;save();renderFoodPickList();toast(rr.fav?"★ Přidáno do oblíbených":"Odebráno z oblíbených")}});
   $$("#foodPickList [data-favrec]").forEach(b=>b.onclick=()=>{const f=rec[+b.dataset.favrec];const cn=f.name.replace(/\s*×\s*\d+$/,"");toggleFavFood({name:cn,kcal:f.kcal,protein:f.protein,carbs:f.carbs,fat:f.fat});renderFoodPickList()});
 }
 function openPortion(food){
-  curPortion={food:{n:food.n,per100:{kcal:+food.per100.kcal||0,p:+food.per100.p||0,c:+food.per100.c||0,f:+food.per100.f||0}},grams:food.grams||100,count:1,src:food.src||""};
-  $("#foodPickBg").classList.add("show");renderPortion();$("#portionPanel").scrollIntoView({block:"nearest"})}
+  curPortion={food:{n:food.n,per100:{kcal:+food.per100.kcal||0,p:+food.per100.p||0,c:+food.per100.c||0,f:+food.per100.f||0}},grams:food.grams||100,count:1,src:food.src||"",unit:food.unit||foodUnit(food.n)};
+  $("#foodPickBg").classList.add("show");renderPortion()}
 function renderPortion(){const pp=$("#portionPanel");
   if(!curPortion){pp.innerHTML="";return}
-  const f=curPortion.food.per100;
+  const f=curPortion.food.per100;const U=curPortion.unit||"g";
   pp.innerHTML=`<div class="portion"><div style="font-weight:700;margin-bottom:8px">${esc(curPortion.food.n)}</div>
     <div class="row">
-      <label class="mini-f"><span>Velikost porce (g)${curPortion.src?' · z balení':''}</span><div class="stepper"><button type="button" data-d="-10">−</button><input type="number" id="portionG" min="0" step="10" value="${curPortion.grams}" inputmode="numeric"><button type="button" data-d="10">＋</button></div></label>
+      <label class="mini-f"><span>Velikost porce (${U})${curPortion.src?' · z balení':''}</span><div class="stepper"><button type="button" data-d="-10">−</button><input type="number" id="portionG" min="0" step="10" value="${curPortion.grams}" inputmode="numeric"><button type="button" data-d="10">＋</button></div></label>
       <label class="mini-f"><span>Počet (ks/porcí)</span><div class="stepper"><button type="button" data-d="-0.5">−</button><input type="number" id="portionCount" min="0.5" step="0.5" value="${curPortion.count}" inputmode="decimal"><button type="button" data-d="0.5">＋</button></div></label>
     </div>
-    <div class="small muted" style="margin:9px 0 4px">Hodnoty na 100 g${curPortion.src?" ("+esc(curPortion.src)+" — uprav, pokud nesedí s obalem)":" (uprav dle potřeby)"}:</div>
+    <div class="seg mini" style="margin-top:9px"><button type="button" data-pu="g"${U==="g"?' class="on"':''}>gramy</button><button type="button" data-pu="ml"${U==="ml"?' class="on"':''}>mililitry</button></div>
+    <div class="small muted" style="margin:9px 0 4px">Hodnoty na 100 ${U}${curPortion.src?" ("+esc(curPortion.src)+" — uprav, pokud nesedí s obalem)":" (uprav dle potřeby)"}:</div>
     <div class="row-4">
       <label class="field"><span>kcal</span><input type="number" class="p100" data-k="kcal" min="0" inputmode="numeric" value="${f.kcal}"></label>
       <label class="field"><span>Bílk.</span><input type="number" class="p100" data-k="p" min="0" step="0.1" inputmode="decimal" value="${f.p}"></label>
@@ -2536,22 +2658,39 @@ function renderPortion(){const pp=$("#portionPanel");
   const tot=x=>{const g=+$("#portionG").value||0,c=+$("#portionCount").value||1;return Math.round((+f[x]||0)*g/100*c)};
   const recompute=()=>{
     $("#portionTotals").innerHTML=`<div class="m"><div class="n">${tot("kcal")}</div><div class="l">kcal</div></div><div class="m"><div class="n">${tot("p")} g</div><div class="l">Bílk.</div></div><div class="m"><div class="n">${tot("c")} g</div><div class="l">Sach.</div></div>`;
-    $("#portionAdd").textContent="Předvyplnit "+tot("kcal")+" kcal ⤵";};
+    $("#portionAdd").textContent="🍽️ Na talíř · "+tot("kcal")+" kcal ⤵";};
+  pp.querySelectorAll("[data-pu]").forEach(b=>b.onclick=()=>{curPortion.unit=b.dataset.pu;renderPortion()});
   $("#portionG").addEventListener("input",()=>{curPortion.grams=+$("#portionG").value||0;recompute()});
   $("#portionCount").addEventListener("input",()=>{curPortion.count=+$("#portionCount").value||1;recompute()});
   pp.querySelectorAll(".p100").forEach(inp=>inp.addEventListener("input",()=>{f[inp.dataset.k]=+inp.value||0;recompute()}));
   recompute();
   $("#portionAdd").onclick=()=>{const g=+$("#portionG").value||0,c=+$("#portionCount").value||1;
-    if(!g){toast("Zadej gramáž");return}
-    const nm=curPortion.food.n+" "+g+" g"+(c>1?" × "+c:"");
+    if(!g){toast(U==="ml"?"Zadej objem v ml":"Zadej gramáž");return}
+    const nm=curPortion.food.n+" "+g+" "+U+(c>1?" × "+c:"");
     const vk=tot("kcal"),vp=tot("p"),vc=tot("c"),vf=tot("f");
-    closeFoodPick();prefillFood(nm,vk,vp,vc,vf);toast("Předvyplněno — uprav a přidej ⤵")};
+    closeFoodPick();prefillFood(nm,vk,vp,vc,vf);toast("🍽️ Na talíři — uprav a sněz ⤵")};
+}
+function renderFoodHist(){const box=$("#foodHistList");if(!box)return;
+  const cnt=$("#foodHistCount");if(cnt)cnt.textContent=state.foods.length?state.foods.length+" záznamů":"";
+  if(!state.foods.length){box.innerHTML=`<div class="empty" style="padding:22px 12px"><div class="big">🍽️</div>Zatím žádná jídla.<br><span class="muted">Co sníš, najdeš tady i po dnešku.</span></div>`;return}
+  const byDay={};state.foods.forEach(f=>(byDay[f.date]=byDay[f.date]||[]).push(f));
+  const days=Object.keys(byDay).sort((a,b)=>b.localeCompare(a)).slice(0,60);
+  box.innerHTML=days.map(d=>{const it=byDay[d];const kc=it.reduce((s,x)=>s+(+x.kcal||0),0);
+    return `<div class="group-label" style="margin:16px 4px 4px;display:flex;justify-content:space-between;gap:8px"><span>${fmtDateFull(d)}${d===todayISO()?" · dnes":""}</span><span class="muted">${nbsp(kc)} kcal</span></div>`
+      +it.map(x=>{const mac=[x.protein?`B ${Math.round(x.protein)}`:"",x.carbs?`S ${Math.round(x.carbs)}`:"",x.fat?`T ${Math.round(x.fat)}`:""].filter(Boolean).join(" · ");
+        return `<div class="item"><div class="tag" style="min-width:56px">${x.kcal}<br><span style="font-size:10px;font-weight:600">kcal</span></div><div class="body"><div class="t1">${esc(x.name)}</div><div class="t2">${mac||"bez maker"}</div></div><button class="del" data-copyh="${x.id}" title="Na talíř">⧉</button><button class="del trash" data-delh="${x.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div>`}).join("")}).join("");
+  $$("#foodHistList [data-delh]").forEach(b=>b.onclick=()=>{const id=b.dataset.delh,x=state.foods.find(f=>f.id===id);
+    confirmDel("Smazat jídlo?",(x?"„"+x.name+"“":"Záznam")+" se nevratně smaže z historie.",()=>{
+      state.foods=state.foods.filter(f=>f.id!==id);save();renderCalories();toast("Smazáno")})});
+  $$("#foodHistList [data-copyh]").forEach(b=>b.onclick=()=>{const x=state.foods.find(f=>f.id===b.dataset.copyh);if(!x)return;
+    prefillFood(x.name.replace(/\s*×\s*\d+$/,""),x.kcal,x.protein,x.carbs,x.fat);
+    showSolo(document.getElementById("tab-kalorie"),"#card-foodlog");toast("🍽️ Na talíři — uprav a sněz ⤵")});
 }
 function renderRecentChips(){const el=$("#recentFoods");if(!el)return;
   const rec=recentFoodEntries().slice(0,6);
   el.innerHTML=rec.map((f,i)=>`<button class="foodchip" type="button" data-rec="${i}">${esc(f.name.length>22?f.name.slice(0,22)+"…":f.name)} · ${f.kcal}</button>`).join("");
   $$("#recentFoods [data-rec]").forEach(b=>b.onclick=()=>{const f=rec[+b.dataset.rec];
-    prefillFood(f.name.replace(/\s*×\s*\d+$/,""),f.kcal,f.protein,f.carbs,f.fat);toast("Předvyplněno — uprav a přidej ⤵")});
+    prefillFood(f.name.replace(/\s*×\s*\d+$/,""),f.kcal,f.protein,f.carbs,f.fat);toast("🍽️ Na talíři — uprav a sněz ⤵")});
 }
 
 /* ---- AI plánování tréninku ---- */
@@ -2591,7 +2730,7 @@ function renderPlanBox(){
     btn.disabled=false;btn.textContent="Vygenerovat znovu";};
   renderPlan();
 }
-async function generatePlan(focus,usePhoto){
+function planContent(focus,usePhoto,compact){
   const p=state.profile;
   const bw=[...state.body].filter(b=>b.weight!=null).sort((a,b)=>b.date.localeCompare(a.date))[0];
   const lastM=[...state.body].sort((a,b)=>b.date.localeCompare(a.date))[0]||{};
@@ -2603,8 +2742,33 @@ async function generatePlan(focus,usePhoto){
     +(focus?` Poznámka: ${focus}.`:"");
   const content=[];
   if(usePhoto&&photos.length)content.push({type:"image",source:{type:"base64",media_type:"image/jpeg",data:photos[photos.length-1].img.split(",")[1]}});
-  content.push({type:"text",text:`Jsi zkušený osobní trenér. Navrhni týdenní tréninkový plán na míru. ${ctx}\nVrať POUZE platný JSON bez dalšího textu ve tvaru:\n{"shrnuti":"2-3 věty proč je plán takto sestavený","dny":[{"nazev":"Den 1 – Hrudník + Triceps","partie":["Hrudník","Triceps"],"cviky":[{"nazev":"Bench press","partie":"Hrudník","jednotka":"kg","serie":4,"opakovani":8,"sekundy":0,"poznamka":""}]}],"tipy":["krátký tip","..."]}\nPočet dnů = ${p.daysPerWeek}. jednotka je "kg" (s činkou), "reps" (vlastní váha na počet opakování) nebo "time" (výdrž — vyplň pole sekundy). Partie z: Hrudník, Záda, Nohy, Ramena, Biceps, Triceps, Břicho, Kardio. Názvy cviků česky, drž se běžných cviků. Maximálně 5 cviků na den, poznámka stručná (max 6 slov) nebo prázdná. Odpověz kompaktně, jen samotný JSON.`});
-  return aiJson(await aiCall(content,4000));
+  content.push({type:"text",text:`Jsi zkušený osobní trenér. Navrhni týdenní tréninkový plán na míru. ${ctx}\nVrať POUZE platný JSON bez dalšího textu ve tvaru:\n{"shrnuti":"2-3 věty proč je plán takto sestavený","dny":[{"nazev":"Den 1 – Hrudník + Triceps","partie":["Hrudník","Triceps"],"cviky":[{"nazev":"Bench press","partie":"Hrudník","jednotka":"kg","serie":4,"opakovani":8,"sekundy":0,"poznamka":""}]}],"tipy":["krátký tip","..."]}\nPočet dnů = ${p.daysPerWeek}. jednotka je "kg" (s činkou), "reps" (vlastní váha na počet opakování) nebo "time" (výdrž — vyplň pole sekundy). Partie z: Hrudník, Záda, Nohy, Ramena, Biceps, Triceps, Břicho, Kardio. Názvy cviků česky, drž se běžných cviků. Maximálně 5 cviků na den, "poznamka" vždy prázdná (""). Piš maximálně kompaktně, bez zbytečných mezer a nových řádků. Vrať jen samotný JSON — žádný text před ani za, žádné markdown bloky — a JSON MUSÍ být celý uzavřený.${compact?' Buď ještě úspornější: maximálně 4 cviky na den, "shrnuti" nech prázdné ("") a "tipy" jako prázdné pole [].':''}`});
+  return content;
+}
+function salvagePlan(plan){
+  if(!plan||typeof plan!=="object")return null;
+  let dny=Array.isArray(plan.dny)?plan.dny:(Array.isArray(plan.days)?plan.days:null);
+  if(!dny)return null;
+  dny=dny.map(d=>Object.assign({},d,{cviky:(Array.isArray(d&&d.cviky)?d.cviky:[]).filter(c=>c&&c.nazev)}))
+         .filter(d=>d.cviky.length);
+  if(!dny.length)return null;
+  return {shrnuti:typeof plan.shrnuti==="string"?plan.shrnuti:"",dny,
+    tipy:Array.isArray(plan.tipy)?plan.tipy.filter(t=>typeof t==="string"&&t):[]};
+}
+async function generatePlan(focus,usePhoto){
+  let last=null;
+  for(let att=0;att<3;att++){
+    try{
+      const plan=aiJson(await aiCall(planContent(focus,usePhoto&&att===0,att>0),att===0?8000:6000));
+      const ok=salvagePlan(plan);
+      if(ok)return ok;
+      last=new Error("AI vrátila neúplný plán.");
+    }catch(e){
+      last=e;
+      if(/401|klíč|Síťová chyba|API chyba 4[0-9][0-9]/i.test(String(e&&e.message))&&!/AI vrátila/.test(String(e&&e.message)))throw e;
+    }
+  }
+  throw new Error((last&&last.message?last.message+" ":"")+"Zkus to prosím znovu (někdy pomůže méně dnů v týdnu).");
 }
 function renderPlan(){const out=$("#planOut");if(!out)return;const plan=state.profile.plan;
   if(!plan||!Array.isArray(plan.dny)){out.innerHTML="";return}
@@ -2625,18 +2789,22 @@ function savePlanDay(d){if(!d)return;
   state.templates.push({id:uid(),name:(d.nazev||"Plán")+" · "+exercises.length+" cviků",muscles,type:"Síla",exercises});
   save();fillExDb()}
 
+/* Kroky — karta v Tréninku */
+function renderStepsCard(){
+  const p=state.profile,twk=todayWorkoutKcal();
+  const st=+state.steps[todayISO()]||0,sk=stepKcal(st);
+  const stInp=$("#stepsInput");if(stInp&&document.activeElement!==stInp)stInp.value=st||"";
+  const gh=$("#stepsGoalHint");if(gh)gh.textContent=p.stepGoal?("cíl "+nbsp(p.stepGoal)+" kroků"):"";
+  const stInfo=$("#stepsInfo");
+  if(stInfo)stInfo.innerHTML=(st?`Dnes <b>${nbsp(st)}</b> kroků ≈ <b>${sk} kcal</b>${p.stepGoal?` · ${Math.min(100,Math.round(st/p.stepGoal*100))} % cíle`:""}.`:`<span class="muted">Zapiš dnešní kroky (najdeš je v appce Zdraví na iPhonu).</span>`)
+    +(twk?`<br>Dnešní tréninky ≈ <b>${twk} kcal</b> výdej.`:"");
+}
 function renderCalories(){
   const p=state.profile;
   const twk=todayWorkoutKcal();
-  // kroky (rychlý zápis na obrazovce Jídlo; cíl a přepínače jsou v Nastavení)
-  const st=+state.steps[todayISO()]||0;
-  const stInp=$("#stepsInput");if(stInp)stInp.value=st||"";
-  const sk=stepKcal(st);
-  const gh=$("#stepsGoalHint");if(gh)gh.textContent=p.stepGoal?("cíl "+nbsp(p.stepGoal)):"";
-  const stInfo=$("#stepsInfo");if(stInfo)stInfo.innerHTML=(st?`Dnes <b>${nbsp(st)}</b> kroků ≈ <b>${sk} kcal</b>${p.stepGoal?` · ${Math.min(100,Math.round(st/p.stepGoal*100))} % cíle`:""}.`:`<span class="muted">Zapiš dnešní kroky (najdeš je v appce Zdraví na iPhonu).</span>`)
-    +(twk?`<br>Dnešní tréninky ≈ <b>${twk} kcal</b> výdej.`:"");
+  renderStepsCard();
   renderAiBox();
-  renderRecentChips();
+  renderFoodHist();
   renderBatch();
   renderFavFoods();
   renderMacroPie();
@@ -2674,21 +2842,22 @@ function renderCalories(){
   if(!today.length){list.innerHTML=`<div class="empty" style="padding:18px"><div class="big">${EMPTY_SVG}</div>Dnes zatím nic. Přidej první jídlo.</div>`;return}
   list.innerHTML=today.map(x=>{
     const mac=[x.protein?`B ${Math.round(x.protein)}`:"",x.carbs?`S ${Math.round(x.carbs)}`:"",x.fat?`T ${Math.round(x.fat)}`:""].filter(Boolean).join(" · ");
-    return `<div class="item"><div class="tag" style="min-width:56px">${x.kcal}<br><span style="font-size:10px;font-weight:600">kcal</span></div><div class="body"><div class="t1">${esc(x.name)}</div><div class="t2">${mac||"bez maker"}</div></div><button class="del" data-copy-food="${x.id}" title="Zkopírovat">⧉</button><button class="del" data-del-food="${x.id}">×</button></div>`}).join("");
-  $$("[data-del-food]",list).forEach(b=>b.onclick=()=>{
-    state.foods=state.foods.filter(x=>x.id!==b.dataset.delFood);save();renderCalories();toast("Smazáno")});
+    return `<div class="item"><div class="tag" style="min-width:56px">${x.kcal}<br><span style="font-size:10px;font-weight:600">kcal</span></div><div class="body"><div class="t1">${esc(x.name)}</div><div class="t2">${mac||"bez maker"}</div></div><button class="del" data-copy-food="${x.id}" title="Zkopírovat">⧉</button><button class="del trash" data-del-food="${x.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div>`}).join("");
+  $$("[data-del-food]",list).forEach(b=>b.onclick=()=>{const id=b.dataset.delFood,x=state.foods.find(f=>f.id===id);
+    confirmDel("Smazat jídlo?",(x?"„"+x.name+"“":"Záznam")+" se smaže z dnešního deníku.",()=>{
+      state.foods=state.foods.filter(f=>f.id!==id);save();renderCalories();toast("Smazáno")})});
   $$("[data-copy-food]",list).forEach(b=>b.onclick=()=>{
     const x=state.foods.find(f=>f.id===b.dataset.copyFood);if(!x)return;
     prefillFood(x.name.replace(/\s*×\s*\d+$/,""),x.kcal,x.protein,x.carbs,x.fat);
-    toast("Předvyplněno — uprav a přidej ⤵")});
+    toast("🍽️ Na talíři — uprav a sněz ⤵")});
 }
 $("#formFood").addEventListener("submit",e=>{
   e.preventDefault();const f=e.target;const q=Math.max(0.01,+f.qty.value||1);
   const nm=f.name.value.trim()+(Math.abs(q-1)>0.001?" × "+fmtNum(q):"");
   state.foods.push({id:uid(),date:todayISO(),name:nm,kcal:Math.round((+f.kcal.value||0)*q),
     protein:f.protein.value?+(+f.protein.value*q).toFixed(1):null,carbs:f.carbs.value?+(+f.carbs.value*q).toFixed(1):null,fat:f.fat.value?+(+f.fat.value*q).toFixed(1):null});
-  save();f.name.value="";f.kcal.value="";f.protein.value="";f.carbs.value="";f.fat.value="";setQty(1);
-  renderCalories();toast("Jídlo přidáno")});
+  save();f.name.value="";f.kcal.value="";f.protein.value="";f.carbs.value="";f.fat.value="";setQty(1);growFoodName();
+  renderCalories();toast("Snědeno — zapsáno do deníku ✓")});
 /* zlomkové chipy množství + tlačítko Do dávky */
 $$("#qtyChips button").forEach(b=>b.addEventListener("click",()=>setQty(+b.dataset.q)));
 (function(){const qN=$("#qtyNum"),qR=$("#qtyRange");
@@ -2697,12 +2866,16 @@ $$("#qtyChips button").forEach(b=>b.addEventListener("click",()=>setQty(+b.datas
   $$(".port-slider .sc[data-qd]").forEach(b=>b.addEventListener("click",()=>setQty((+($("#formFood [name=qty]").value)||0)+(+b.dataset.qd))));
   setQty(+($("#formFood [name=qty]").value)||1);})();
 $("#formFood [name=kcal]").addEventListener("input",updateAddBtn);
+(function(){const ta=$("#formFood [name=name]");if(!ta)return;
+  ta.addEventListener("input",growFoodName);
+  ta.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();ta.blur()}});
+  growFoodName();})();
 $("#toBatchBtn").addEventListener("click",()=>{const f=$("#formFood");
   const q=Math.max(0.01,+f.qty.value||1);
   if(!f.name.value.trim()||f.kcal.value===""){toast("Vyplň aspoň název a kcal");return}
   addToBatch({name:f.name.value.trim(),kcal:(+f.kcal.value||0)*q,protein:(+f.protein.value||0)*q,carbs:(+f.carbs.value||0)*q,fat:(+f.fat.value||0)*q});
-  f.name.value="";f.kcal.value="";f.protein.value="";f.carbs.value="";f.fat.value="";setQty(1);
-  toast("Přidáno do dávky ↓")});
+  f.name.value="";f.kcal.value="";f.protein.value="";f.carbs.value="";f.fat.value="";setQty(1);growFoodName();
+  toast("🍽️ Přidáno na talíř jako ingredience ↓")});
 
 /* ================== DATA & GRAFY ================== */
 function chartWeightBig(){
