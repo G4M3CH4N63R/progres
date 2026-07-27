@@ -208,6 +208,13 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .trash:active{background:color-mix(in srgb,var(--bad) 15%,transparent)}
   .trash svg{display:block;width:19px;height:19px}
   .item .del.trash,.sess .acts button.trash,.fav-hd .del.trash{color:var(--bad)}
+  .aiitem{display:flex;align-items:center;gap:10px;padding:10px 11px;border:1px solid var(--line);border-radius:13px;background:var(--plane);margin-bottom:7px}
+  .aiitem.off{opacity:.42}
+  .aiitem .ck{flex:none;width:26px;height:26px;border-radius:50%;border:1.6px solid var(--hairline);background:transparent;color:#fff;font-size:14px;font-weight:800;cursor:pointer;padding:0;display:grid;place-items:center}
+  .aiitem.on .ck{background:var(--accent);border-color:var(--accent)}
+  .aiitem .ib{flex:1;min-width:0;cursor:pointer}
+  .aiitem .ib .t1{font-weight:700;font-size:14.5px;line-height:1.25}
+  .aiitem .ib .t2{font-size:12.5px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
   .exr-top .rm.trash{color:var(--bad);padding:5px 6px;font-size:0}
   .card .swipe{margin:10px -18px 6px;padding:2px 18px 4px}
   .card .swipe-card{background:var(--plane);box-shadow:none;border:1px solid var(--line);padding:14px;min-height:0}
@@ -866,7 +873,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       </div>
 
       <div class="card" id="card-ai">
-        <h2>Přidat jídlo fotkou <span class="hint">AI odhad — experimentální</span></h2>
+        <h2>Přidat jídlo fotkou <span class="hint">AI rozpozná i jednotlivé ingredience</span></h2>
         <div id="aiBox"></div>
       </div>
 
@@ -2367,8 +2374,8 @@ function aiJson(txt){
 }
 async function aiAnalyzeFood(imgs,desc){
   const content=imgs.map(b64=>({type:"image",source:{type:"base64",media_type:"image/jpeg",data:b64}}));
-  content.push({type:"text",text:"Jsi nutriční asistent. Fotek může být víc (jídlo z různých úhlů, etiketa, složení) — ber je jako JEDNO jídlo a nesčítej porce vícekrát. Odhadni jídlo a jeho nutriční hodnoty pro CELÉ zobrazené množství."+(desc?" Popis od uživatele: "+desc+".":"")+" Pokud je na obalu tabulka na 100 g, přepočítej ji na odhadovanou gramáž. Pokud jde o počitatelné kusy (vejce, plátky, housky…), vyplň \"pocet\" počtem kusů na fotce a název dej pro JEDEN kus bez čísla (např. \"Vejce\"); hodnoty kcal/makra ať jsou za VŠECHNY kusy dohromady. Jinak pocet=1. V \"popis\" napiš 2–3 věty česky: co přesně na fotce vidíš, jak jsi odhadl gramáž a způsob úpravy (smažené/pečené/vařené, olej, dressing). V \"polozky\" rozepiš jednotlivé složky jídla s odhadem množství a kalorií. Odpověz POUZE platným JSON: {\"nazev\":\"krátký český název\",\"pocet\":číslo,\"kcal\":číslo,\"bilkoviny_g\":číslo,\"sacharidy_g\":číslo,\"tuky_g\":číslo,\"popis\":\"2–3 věty\",\"polozky\":[{\"nazev\":\"kuřecí prsa\",\"mnozstvi\":\"150 g\",\"kcal\":248}],\"presnost\":\"vysoká|střední|nízká\",\"poznamka\":\"nejistoty, max 1 věta\"}"});
-  return aiJson(await aiCall(content,1100));
+  content.push({type:"text",text:"Jsi nutriční asistent. Fotek může být víc (jídlo z různých úhlů, etiketa, složení) — ber je jako JEDNO jídlo a nesčítej porce vícekrát. Odhadni jídlo a jeho nutriční hodnoty pro CELÉ zobrazené množství."+(desc?" Popis od uživatele: "+desc+".":"")+" Pokud je na obalu tabulka na 100 g, přepočítej ji na odhadovanou gramáž. Pokud jde o počitatelné kusy (vejce, plátky, housky…), vyplň \"pocet\" počtem kusů na fotce a název dej pro JEDEN kus bez čísla (např. \"Vejce\"); hodnoty kcal/makra ať jsou za VŠECHNY kusy dohromady. Jinak pocet=1. V \"popis\" napiš 2–3 věty česky: co přesně na fotce vidíš, jak jsi odhadl gramáž a způsob úpravy (smažené/pečené/vařené, olej, dressing). V \"polozky\" rozepiš KAŽDOU jednotlivou složku jídla zvlášť (i nápoj, olej, dressing, pečivo, příloha…) s odhadem množství, kalorií a maker — součet položek musí odpovídat celkovým hodnotám. Buď konkrétní: raději víc krátkých položek než jedna obecná. Odpověz POUZE platným JSON: {\"nazev\":\"krátký český název\",\"pocet\":číslo,\"kcal\":číslo,\"bilkoviny_g\":číslo,\"sacharidy_g\":číslo,\"tuky_g\":číslo,\"popis\":\"2–3 věty\",\"polozky\":[{\"nazev\":\"kuřecí prsa\",\"mnozstvi\":\"150 g\",\"kcal\":248,\"bilkoviny_g\":46,\"sacharidy_g\":0,\"tuky_g\":5}],\"presnost\":\"vysoká|střední|nízká\",\"poznamka\":\"nejistoty, max 1 věta\"}"});
+  return aiJson(await aiCall(content,1600));
 }
 async function barcodeLookup(code){
   let r;try{r=await fetch("https://world.openfoodfacts.org/api/v2/product/"+encodeURIComponent(code)+"?fields=product_name,product_name_cs,brands,nutriments,quantity,product_quantity")}
@@ -2502,21 +2509,56 @@ function renderAiBox(){
     try{const res=await aiAnalyzeFood(imgs,$("#aiDesc").value.trim());
       const pocet=Math.max(1,Math.round(+res.pocet||1));
       const perK=(+res.kcal||0)/pocet,perP=(+res.bilkoviny_g||0)/pocet,perC=(+res.sacharidy_g||0)/pocet,perF=(+res.tuky_g||0)/pocet;
-      const _pol=(Array.isArray(res.polozky)?res.polozky:[]).filter(x=>x&&x.nazev);
-      const _polH=_pol.length?`<div class="dfoods" style="margin-top:10px">`+_pol.map(it=>`<div class="dfood"><span>${esc(it.nazev)}${it.mnozstvi?" · "+esc(String(it.mnozstvi)):""}</span><b>${Math.round(+it.kcal||0)} kcal</b></div>`).join("")+`</div>`:"";
+      const pol=(Array.isArray(res.polozky)?res.polozky:[]).filter(x=>x&&x.nazev).map(it=>({
+        name:String(it.nazev),
+        amount:it.mnozstvi?String(it.mnozstvi):((+it.gramy>0)?Math.round(+it.gramy)+" g":""),
+        kcal:Math.round(+it.kcal||0),
+        p:Math.round((+it.bilkoviny_g||0)*10)/10,c:Math.round((+it.sacharidy_g||0)*10)/10,f:Math.round((+it.tuky_g||0)*10)/10,
+        on:true}));
       const _pres=res.presnost?`<div class="small muted" style="margin-top:8px">Jistota odhadu: <b>${esc(res.presnost)}</b></div>`:"";
       st.innerHTML=`<div class="ai-est"><div style="font-size:16px;font-weight:800">${esc(res.nazev||"?")}${pocet>1?` × ${pocet} ks`:""}</div>
         <div style="margin-top:4px">${Math.round(res.kcal||0)} kcal · B ${Math.round(res.bilkoviny_g||0)} g · S ${Math.round(res.sacharidy_g||0)} g · T ${Math.round(res.tuky_g||0)} g</div>
         ${res.popis?`<div style="margin-top:9px;line-height:1.45;text-wrap:pretty">${esc(res.popis)}</div>`:""}
-        ${_polH}${_pres}${res.poznamka?`<div class="small muted" style="margin-top:6px">⚠︎ ${esc(res.poznamka)}</div>`:""}</div>
+        ${_pres}${res.poznamka?`<div class="small muted" style="margin-top:6px">⚠︎ ${esc(res.poznamka)}</div>`:""}</div>
+        ${pol.length?`<div class="group-label" style="margin:16px 4px 8px;display:flex;justify-content:space-between;gap:8px"><span>Nalezené ingredience</span><span class="muted" style="font-weight:500">klepnutím odškrtneš</span></div>
+        <div id="aiPolList"></div>
+        <div class="small muted" id="aiPolSum" style="margin:4px 4px 11px"></div>
+        <button class="btn" id="aiPolPlate" type="button">🍽️ Vložit vybrané na talíř ↓</button>
+        <button class="btn secondary" id="aiPolEat" type="button" style="margin-top:9px">Sníst vybrané jako jedno jídlo</button>
+        <div style="border-top:1px solid var(--line);margin:17px 0 12px"></div>
+        <span class="flabel">Nebo celé jídlo najednou</span>`:""}
         <div class="ai-add"><span class="ai-add-l">Porce do deníku</span><div class="stepper" style="width:132px;flex:none"><button type="button" data-d="-0.5" tabindex="-1">−</button><input type="number" id="aiPortions" min="0.5" step="0.5" value="${pocet}" inputmode="decimal"><button type="button" data-d="0.5" tabindex="-1">＋</button></div></div>
-        <button class="btn" id="aiAddDiary" type="button" style="margin-top:10px">＋ Přidat do deníku</button>
-        <button class="btn secondary" id="aiEditForm" type="button" style="margin-top:9px">✎ Na talíř</button>
-        <div class="small muted" style="margin-top:7px">Nic se nepřidá samo — přidej si to sám tlačítkem výše.</div>`;
+        <button class="btn${pol.length?" secondary":""}" id="aiAddDiary" type="button" style="margin-top:10px">Sníst celé jídlo</button>
+        <button class="btn secondary" id="aiEditForm" type="button" style="margin-top:9px">✎ Celé jídlo na talíř</button>
+        <div class="small muted" style="margin-top:7px">Nic se nepřidá samo — vyber si tlačítko.</div>`;
+      function polSel(){return pol.filter(x=>x.on)}
+      function polTot(){return polSel().reduce((a,x)=>({k:a.k+x.kcal,p:a.p+x.p,c:a.c+x.c,f:a.f+x.f}),{k:0,p:0,c:0,f:0})}
+      function paintPol(){
+        const box=$("#aiPolList");if(!box)return;
+        box.innerHTML=pol.map((it,i)=>`<div class="aiitem ${it.on?"on":"off"}"><button type="button" class="ck" data-polck="${i}" aria-label="Vybrat">${it.on?"✓":""}</button><div class="ib" data-polck="${i}"><div class="t1">${esc(it.name)}${it.amount?` <span class="muted" style="font-weight:600">· ${esc(it.amount)}</span>`:""}</div><div class="t2">${it.kcal} kcal · B ${fmtNum(it.p)} · S ${fmtNum(it.c)} · T ${fmtNum(it.f)}</div></div><button type="button" class="trash" data-polrm="${i}" aria-label="Odebrat" title="Odebrat">${ICON_TRASH}</button></div>`).join("");
+        const on=polSel(),t=polTot();
+        const sum=$("#aiPolSum");
+        if(sum)sum.innerHTML=on.length?`Vybráno <b>${on.length}</b> z ${pol.length} · <b>${nbsp(Math.round(t.k))} kcal</b> · B ${Math.round(t.p)} · S ${Math.round(t.c)} · T ${Math.round(t.f)}`:"Nic nevybráno.";
+        const pb=$("#aiPolPlate"),eb=$("#aiPolEat");
+        if(pb){pb.disabled=!on.length;pb.textContent=on.length?("🍽️ Vložit "+on.length+" na talíř ↓"):"🍽️ Vložit vybrané na talíř ↓"}
+        if(eb)eb.disabled=!on.length;
+        box.querySelectorAll("[data-polck]").forEach(b=>b.onclick=()=>{const i=+b.dataset.polck;pol[i].on=!pol[i].on;paintPol()});
+        box.querySelectorAll("[data-polrm]").forEach(b=>b.onclick=()=>{pol.splice(+b.dataset.polrm,1);paintPol()});
+      }
+      paintPol();
+      const pb=$("#aiPolPlate");if(pb)pb.onclick=()=>{const on=polSel();if(!on.length){toast("Vyber aspoň jednu ingredienci");return}
+        on.forEach(x=>addToBatch({name:x.name+(x.amount?" "+x.amount:""),kcal:x.kcal,protein:x.p,carbs:x.c,fat:x.f}));
+        if(!batchName)batchName=res.nazev||"";
+        renderBatch();showSolo(document.getElementById("tab-kalorie"),"#card-foodlog");
+        toast("🍽️ "+on.length+" ingr. na talíři — uprav a sněz ⤵")};
+      const eb=$("#aiPolEat");if(eb)eb.onclick=()=>{const on=polSel();if(!on.length){toast("Vyber aspoň jednu ingredienci");return}
+        const t=polTot();
+        addFood({name:(res.nazev||"Jídlo z fotky")+(on.length<pol.length?" ("+on.length+" z "+pol.length+" ingr.)":""),kcal:Math.round(t.k),protein:+t.p.toFixed(1),carbs:+t.c.toFixed(1),fat:+t.f.toFixed(1)});
+        renderCalories();toast("Snědeno — zapsáno do deníku ✓")};
       const addBtn=$("#aiAddDiary");if(addBtn)addBtn.onclick=()=>{const q=Math.max(0.5,+$("#aiPortions").value||1);
         addFood({name:(res.nazev||"Jídlo z fotky")+(Math.abs(q-1)>0.001?" × "+fmtNum(q):""),kcal:Math.round(perK*q),protein:+(perP*q).toFixed(1),carbs:+(perC*q).toFixed(1),fat:+(perF*q).toFixed(1)});
-        toast("Přidáno do deníku ✓")};
-      const edBtn=$("#aiEditForm");if(edBtn)edBtn.onclick=()=>{prefillFood(res.nazev||"Jídlo z fotky",res.kcal,res.bilkoviny_g,res.sacharidy_g,res.tuky_g,pocet);toast("🍽️ Na talíři — uprav a sněz ⤵")};
+        renderCalories();toast("Snědeno — zapsáno do deníku ✓")};
+      const edBtn=$("#aiEditForm");if(edBtn)edBtn.onclick=()=>{prefillFood(res.nazev||"Jídlo z fotky",res.kcal,res.bilkoviny_g,res.sacharidy_g,res.tuky_g,pocet);showSolo(document.getElementById("tab-kalorie"),"#card-foodlog");toast("🍽️ Na talíři — uprav a sněz ⤵")};
       imgs=[];renderThumbs();$("#aiDesc").value="";toast("Odhad hotový — rozhodni se, jestli přidat");}
     catch(err){st.innerHTML=`<span style="color:var(--bad)">Nepovedlo se: ${esc(err.message)}</span>`}
     btn.disabled=false;btn.textContent="Analyzovat";};
@@ -2822,7 +2864,7 @@ function planContent(focus,usePhoto,compact){
     +(focus?` Poznámka: ${focus}.`:"");
   const content=[];
   if(usePhoto&&photos.length)content.push({type:"image",source:{type:"base64",media_type:"image/jpeg",data:photos[photos.length-1].img.split(",")[1]}});
-  content.push({type:"text",text:`Jsi zkušený osobní trenér. Navrhni týdenní tréninkový plán na míru. ${ctx}\nVrať POUZE platný JSON bez dalšího textu ve tvaru:\n{"shrnuti":"2-3 věty proč je plán takto sestavený","dny":[{"nazev":"Den 1 – Hrudník + Triceps","partie":["Hrudník","Triceps"],"cviky":[{"nazev":"Bench press","partie":"Hrudník","jednotka":"kg","serie":4,"opakovani":8,"sekundy":0,"poznamka":""}]}],"tipy":["krátký tip","..."]}\nPočet dnů = ${p.daysPerWeek}. jednotka je "kg" (s činkou), "reps" (vlastní váha na počet opakování) nebo "time" (výdrž — vyplň pole sekundy). Partie z: Hrudník, Záda, Nohy, Ramena, Biceps, Triceps, Břicho, Kardio. Názvy cviků česky, drž se běžných cviků. Přesně ${Math.max(3,Math.min(7,+p.exPerDay||5))} cviků na den (nikdy víc), "poznamka" vždy prázdná (""). Piš maximálně kompaktně, bez zbytečných mezer a nových řádků. Vrať jen samotný JSON — žádný text před ani za, žádné markdown bloky — a JSON MUSÍ být celý uzavřený.${compact?' Buď ještě úspornější: maximálně ${Math.max(3,(+p.exPerDay||5)-1)} cviky na den, "shrnuti" nech prázdné ("") a "tipy" jako prázdné pole [].':''}`});
+  content.push({type:"text",text:`Jsi zkušený osobní trenér. Navrhni týdenní tréninkový plán na míru. ${ctx}\nVrať POUZE platný JSON bez dalšího textu ve tvaru:\n{"shrnuti":"2-3 věty proč je plán takto sestavený","dny":[{"nazev":"Den 1 – Hrudník + Triceps","partie":["Hrudník","Triceps"],"cviky":[{"nazev":"Bench press","partie":"Hrudník","jednotka":"kg","serie":4,"opakovani":8,"sekundy":0,"poznamka":""}]}],"tipy":["krátký tip","..."]}\nPočet dnů = ${p.daysPerWeek}. jednotka je "kg" (s činkou), "reps" (vlastní váha na počet opakování) nebo "time" (výdrž — vyplň pole sekundy). Partie z: Hrudník, Záda, Nohy, Ramena, Biceps, Triceps, Břicho, Kardio. Názvy cviků česky, drž se běžných cviků. Přesně ${Math.max(3,Math.min(7,+p.exPerDay||5))} cviků na den (nikdy víc), "poznamka" vždy prázdná (""). Piš maximálně kompaktně, bez zbytečných mezer a nových řádků. Vrať jen samotný JSON — žádný text před ani za, žádné markdown bloky — a JSON MUSÍ být celý uzavřený.${compact?` Buď ještě úspornější: maximálně ${Math.max(3,(+p.exPerDay||5)-1)} cviky na den, "shrnuti" nech prázdné ("") a "tipy" jako prázdné pole [].`:''}`});
   return content;
 }
 function salvagePlan(plan){
