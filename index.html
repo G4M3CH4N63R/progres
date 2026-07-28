@@ -1099,12 +1099,12 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="card">
         <h2>Záloha &amp; export</h2>
         <div id="backupStatus"></div>
-        <p class="small muted" style="margin-top:0">Data (včetně fotek) jsou jen v tomto zařízení. Občas si stáhni zálohu — stejný soubor půjde načíst i do budoucí nativní appky. API klíč se do zálohy nikdy nezapisuje, takže se soubor dá bezpečně sdílet.</p>
+        <p class="small muted" style="margin-top:0">Data (včetně fotek) jsou jen v tomto zařízení. Občas si stáhni zálohu — stejný soubor půjde načíst i do budoucí nativní appky. API klíč se do zálohy nikdy nezapisuje, takže se soubor dá bezpečně sdílet. Na iPhonu se nabídne jako .txt (sdílení .json iOS nedovolí) — obsah je stejný a Import ho vezme.</p>
         <div class="btn-row" style="margin-bottom:10px">
           <button class="btn secondary small" id="exportBtn">Záloha (JSON)</button>
           <button class="btn secondary small" id="importBtn">Import</button>
           <button class="btn secondary small" id="icsBtn">Kalendář (.ics)</button>
-          <input type="file" id="importFile" accept="application/json" hidden>
+          <input type="file" id="importFile" accept="application/json,text/plain,.json,.txt" hidden>
         </div>
         <p class="small muted" style="margin:0 0 12px">Soubor .ics naimportuješ do Google Kalendáře (Nastavení → Import) nebo otevřeš na iPhonu a přidáš do Kalendáře.</p>
         <span class="flabel">Export tabulek pro Excel (CSV)</span>
@@ -1597,6 +1597,7 @@ function toggleTheme(){applyTheme(darkOn()?"light":"dark");
 let _prevTab="prehled";
 function settingsOpen(){return $("#tab-nastaveni").classList.contains("active")}
 function openSettings(){if(settingsOpen())return;_prevTab=currentTab();
+  refreshPhotos().catch(()=>{});   /* ať je záloha aktuální bez await v doBackup() — viz doBackup */
   $$("section").forEach(s=>s.classList.remove("active"));
   $("#tab-nastaveni").classList.add("active");
   $$("nav button").forEach(b=>b.classList.remove("on"));
@@ -3311,27 +3312,38 @@ function renderBackupNudge(){const el=$("#backupNudge");if(!el)return;
     <button class="btn small" id="nudgeBackup" type="button">Zálohovat teď</button></div>`;
   const b=$("#nudgeBackup");if(b)b.onclick=doBackup}
 function markBackup(){state.lastBackup=todayISO();save();renderBackupStatus();renderBackupNudge()}
+/* Sdílecí nabídka bere jen vyjmenované typy souborů a .json mezi nimi NENÍ
+   (iOS ho odmítne, canShare vrátí false). Zkusíme tedy JSON a pak .txt —
+   obsah je v obou případech stejný, liší se jen přípona. */
+function backupCandidates(text){
+  const base="progres-zaloha-"+todayISO();
+  return [[base+".json","application/json"],[base+".txt","text/plain"]]
+    .map(p=>{try{return new File([text],p[0],{type:p[1]})}catch(e){return null}}).filter(Boolean)}
+function shareableBackup(text){
+  if(!(navigator.share&&navigator.canShare))return null;
+  for(const f of backupCandidates(text)){
+    try{if(navigator.canShare({files:[f]}))return f}catch(e){}
+  }
+  return null}
 /* Na iPhonu nabídne sdílecí nabídku (iCloud Drive, Soubory, AirDrop…),
-   jinde spadne na klasické stažení do zařízení. */
-async function doBackup(){
-  await refreshPhotos();
+   jinde spadne na klasické stažení do zařízení.
+   POZOR: sdílení musí odejít přímo z ťuknutí — po jakémkoli await ho iOS
+   odmítne (NotAllowedError). Proto tu není žádné await před navigator.share;
+   pole photos drží aktuální refreshPhotos() při startu, po změně fotky
+   a při otevření Nastavení. */
+function doBackup(){
   const prev=state.lastBackup;
   state.lastBackup=todayISO();   /* ať soubor nese datum svého vzniku */
   const name=backupName(), text=backupText();
-  let shared=false;
-  if(navigator.share&&navigator.canShare){
-    try{
-      const file=new File([text],name,{type:"application/json"});
-      if(navigator.canShare({files:[file]})){
-        await navigator.share({files:[file],title:"Záloha Progres"});
-        shared=true}
-    }catch(err){
+  const stahni=()=>{download(name,text,"application/json");markBackup();toast("Záloha stažena ⬇︎")};
+  const file=shareableBackup(text);
+  let p=null;
+  if(file){try{p=navigator.share({files:[file],title:"Záloha Progres"})}catch(e){}}
+  if(!p||!p.then){stahni();return}
+  p.then(()=>{markBackup();toast("Záloha uložena ✅")})
+   .catch(err=>{
       if(err&&err.name==="AbortError"){state.lastBackup=prev;toast("Záloha zrušena");return}
-    }
-  }
-  if(!shared)download(name,text,"application/json");
-  markBackup();
-  toast(shared?"Záloha uložena ✅":"Záloha stažena ⬇︎")}
+      stahni()})}
 $("#exportBtn").addEventListener("click",doBackup);
 $("#importBtn").addEventListener("click",()=>$("#importFile").click());
 $("#importFile").addEventListener("change",e=>{
