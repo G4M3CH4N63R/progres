@@ -1099,7 +1099,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="card">
         <h2>Záloha &amp; export</h2>
         <div id="backupStatus"></div>
-        <p class="small muted" style="margin-top:0">Data (včetně fotek) jsou jen v tomto zařízení. Občas si stáhni zálohu — stejný soubor půjde načíst i do budoucí nativní appky.</p>
+        <p class="small muted" style="margin-top:0">Data (včetně fotek) jsou jen v tomto zařízení. Občas si stáhni zálohu — stejný soubor půjde načíst i do budoucí nativní appky. API klíč se do zálohy nikdy nezapisuje, takže se soubor dá bezpečně sdílet.</p>
         <div class="btn-row" style="margin-bottom:10px">
           <button class="btn secondary small" id="exportBtn">Záloha (JSON)</button>
           <button class="btn secondary small" id="importBtn">Import</button>
@@ -3288,8 +3288,10 @@ function download(name,text,mime){const blob=new Blob([text],{type:mime});
 /* ---- stav zálohy ---- */
 const BACKUP_WARN_DAYS=14;
 function backupName(){return "progres-zaloha-"+todayISO()+".json"}
-/* jediné místo, kde vzniká obsah zálohy */
-function backupText(){return JSON.stringify({app:"progres",version:3,data:state,photos},null,1)}
+/* jediné místo, kde vzniká obsah zálohy.
+   API klíč do souboru nikdy nejde — klíč patří zařízení, ne záloze. */
+function backupText(){const s={...state,profile:{...state.profile,apiKey:""}};
+  return JSON.stringify({app:"progres",version:3,data:s,photos},null,1)}
 function backupAge(){if(!state.lastBackup)return null;
   const a=new Date(state.lastBackup+"T00:00:00"), b=new Date(todayISO()+"T00:00:00");
   const d=Math.round((b-a)/86400000);return d>=0?d:0}
@@ -3335,11 +3337,14 @@ $("#importBtn").addEventListener("click",()=>$("#importFile").click());
 $("#importFile").addEventListener("change",e=>{
   const file=e.target.files[0];if(!file)return;const r=new FileReader();
   r.onload=async()=>{try{const d=JSON.parse(r.result);
+    /* klíč patří zařízení, ne záloze — po importu zůstane ten zdejší */
+    const keepKey=state.profile.apiKey, keepModel=state.profile.aiModel;
     if(d&&d.app==="progres"&&d.data){state=mergeState(d.data);
       if(Array.isArray(d.photos)){await phClear();for(const p of d.photos)await phPut(p);await refreshPhotos()}}
     else if(d&&Array.isArray(d.sessions)){state=mergeState(d)}
     else if(d&&Array.isArray(d.workouts)){state=migrateV1(d)}
     else throw new Error("bad");
+    if(!state.profile.apiKey&&keepKey){state.profile.apiKey=keepKey;state.profile.aiModel=keepModel}
     save();renderTab(currentTab());toast("Data načtena ✅")}
   catch(err){toast("Soubor se nepodařilo načíst")}};
   r.readAsText(file);e.target.value=""});
@@ -3537,20 +3542,23 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
     finally { if (hid) p.apiKey = SENT }
   };
 
-  /* ---- 3) download(): sentinel se nedostane ani do JSON zálohy ---- */
+  /* Pojistka: v žádném exportovaném JSONu nesmí zůstat klíč — ani sentinel,
+     ani skutečný sk-ant-… . Zdroj si to sice hlídá sám v backupText(), tohle
+     drží záruku i kdyby ho příští export z Claude Design přepsal. */
+  function scrub(t) { return t.replace(/("apiKey"\s*:\s*)"[^"]*"/g, '$1""') }
+
+  /* ---- 3) download(): klíč se nedostane do stažené JSON zálohy ---- */
   var _dl = window.download;
   window.download = function (name, text, mime) {
-    if (typeof text === "string" && /json/i.test(mime || ""))
-      text = text.replace(/("apiKey"\s*:\s*)"__proxy__"/g, '$1""');
+    if (typeof text === "string" && /json/i.test(mime || "")) text = scrub(text);
     return _dl.call(this, name, text, mime);
   };
 
-  /* ---- 3b) backupText(): sentinel se nedostane ani do zálohy poslané přes
+  /* ---- 3b) backupText(): klíč se nedostane ani do zálohy poslané přes
         sdílecí nabídku iOS (ta obchází download()) ---- */
   var _bt = window.backupText;
   if (typeof _bt === "function") window.backupText = function () {
-    return String(_bt.apply(this, arguments))
-      .replace(/("apiKey"\s*:\s*)"__proxy__"/g, '$1""');
+    return scrub(String(_bt.apply(this, arguments)));
   };
 
   /* ---- 4) Nastavení: banner „AI je zapnutá" + skrytý vstup pro vlastní klíč ---- */
