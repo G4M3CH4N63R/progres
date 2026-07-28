@@ -600,11 +600,40 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .detbox>summary::-webkit-details-marker{display:none}
   .detbox>summary::after{content:"›";margin-left:auto;font-size:16px;transition:transform .2s}
   .detbox[open]>summary::after{transform:rotate(90deg)}
+  /* v46: AI asistent (chat) */
+  .chat-btn{position:fixed;top:calc(var(--safe-top) + 14px);right:calc(50% - 280px + 62px);z-index:25;width:38px;height:38px;border-radius:50%;border:none;background:var(--accent);box-shadow:var(--shadow);color:#fff;display:grid;place-items:center;cursor:pointer}
+  @media(max-width:576px){.chat-btn{right:62px}}
+  .chat-btn:active{transform:scale(.94)}
+  .chat-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .chat-log{display:flex;flex-direction:column;gap:10px;padding:4px 0 8px}
+  .cmsg{max-width:86%;padding:11px 13px;border-radius:17px;font-size:15px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;text-wrap:pretty}
+  .cmsg.u{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:6px}
+  .cmsg.a{align-self:flex-start;background:var(--card);color:var(--ink);box-shadow:var(--shadow);border-bottom-left-radius:6px}
+  .cact{align-self:stretch;display:flex;gap:8px;align-items:flex-start;background:var(--accent-weak);color:var(--accent);border-radius:12px;padding:8px 11px;font-size:12.5px;font-weight:700;line-height:1.4}
+  .cact.warn{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+  .cstatus{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;font-weight:600;padding:2px 2px 6px}
+  .chat-sug{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .chat-sug::-webkit-scrollbar{display:none}
+  .chat-sug button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 13px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+  .chat-sug button:active{background:var(--accent-weak);border-color:var(--accent)}
+  .chat-bar{position:sticky;bottom:calc(8px + var(--safe-bottom));z-index:12;background:var(--plane);padding-top:6px}
+  .chat-in{display:flex;align-items:flex-end;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:6px 6px 6px 8px;box-shadow:var(--shadow)}
+  .chat-in textarea{flex:1;min-width:0;border:none;background:transparent;color:var(--ink);font:inherit;font-size:15.5px;line-height:1.4;padding:9px 2px;max-height:132px;resize:none;outline:none}
+  .cbtn{flex:none;width:38px;height:38px;border-radius:50%;border:none;background:var(--surface);color:var(--ink);font-size:17px;display:grid;place-items:center;cursor:pointer}
+  .cbtn.send{background:var(--accent);color:#fff;font-size:19px;font-weight:700}
+  .cbtn:disabled{opacity:.45}
+  .cbtn.rec{background:var(--bad);color:#fff;animation:nfPulse 1.4s ease-in-out infinite}
+  .chat-imgs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+  .chat-imgs .thumb{position:relative;width:56px;height:56px;border-radius:12px;overflow:hidden}
+  .chat-imgs .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .chat-imgs .thumb .x{position:absolute;top:2px;right:2px;width:19px;height:19px;border:none;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:12px;line-height:1;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="app">
   <button class="gear-btn" id="settingsBtn" title="Nastavení" aria-label="Nastavení"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+
+  <button class="chat-btn" id="asstBtn" type="button" title="AI asistent" aria-label="AI asistent"><svg viewBox="0 0 24 24"><path d="M20.5 12c0 4.1-3.8 7.4-8.5 7.4-1 0-2-.15-2.9-.42L4.5 20.5l1.2-3.4C4.2 15.8 3.5 14 3.5 12 3.5 7.9 7.3 4.6 12 4.6s8.5 3.3 8.5 7.4z"/><path d="M9 11.5h6M9 14h3.5"/></svg></button>
 
   <main>
     <!-- ============ PŘEHLED ============ -->
@@ -1136,6 +1165,29 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         </div>
       </div>
     </section>
+
+    <!-- ============ AI ASISTENT ============ -->
+    <section id="tab-asistent">
+      <div style="padding-right:108px">
+        <div class="page-title" style="padding-right:0">Asistent</div>
+        <div class="page-sub" id="asstSub" style="margin-bottom:6px">trenér, který zapisuje i radí</div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin:-6px 0 6px"><button class="link-btn" id="asstClear" type="button">Vymazat chat</button></div>
+      <div id="asstNoKey"></div>
+      <div class="chat-log" id="chatLog"></div>
+      <div class="cstatus" id="chatStatus" style="display:none"></div>
+      <div class="chat-sug" id="chatSug"></div>
+      <div class="chat-bar">
+        <div class="chat-imgs" id="chatImgs"></div>
+        <div class="chat-in">
+          <button class="cbtn" id="chatPhoto" type="button" title="Fotka jídla" aria-label="Fotka jídla">📷</button>
+          <button class="cbtn" id="chatMic" type="button" title="Diktovat" aria-label="Diktovat" style="display:none">🎤</button>
+          <textarea id="chatInput" rows="1" placeholder="Napiš, co potřebuješ…"></textarea>
+          <button class="cbtn send" id="chatSend" type="button" title="Poslat" aria-label="Poslat">↑</button>
+        </div>
+      </div>
+      <input type="file" id="chatFile" accept="image/*" multiple hidden>
+    </section>
   </main>
 
   <nav>
@@ -1457,7 +1509,7 @@ function clearModes(sec){sec.classList.remove("hubon","soloon");sec.querySelecto
 /* v45: velké „+" jen když je otevřená karta, ne na rozcestníku */
 function syncFab(){const f=document.getElementById("fab");if(!f)return;
   const act=document.querySelector("section.active");
-  const on=!!act&&act.id!=="tab-nastaveni"&&!act.classList.contains("soloon");
+  const on=!!act&&act.id!=="tab-nastaveni"&&act.id!=="tab-asistent"&&!act.classList.contains("soloon");
   f.style.display=on?"grid":"none";
   if(!on&&typeof closeFab==="function")closeFab()}
 function switchTab(name,mode){
@@ -1586,7 +1638,8 @@ function fabGo(tab,card,run,focus,type){closeFab();switchTab(tab);
   if(run==="foodpick"){if(typeof openFoodPick==="function")openFoodPick();return;}
   if(card){const sec=document.getElementById("tab-"+tab);if(sec)showSolo(sec,card,focus);}
   if(type){const ts=$("#formSession [name=type]");if(ts){ts.value=type;ts.dispatchEvent(new Event("change",{bubbles:true}));}}}
-function buildFabMenu(){const items=FABMENU[currentTab()]||FABMENU.prehled;const sheet=$("#fabSheet");if(!sheet)return;
+function buildFabMenu(){const items=[{t:"AI asistent",e:"💬",bg:"var(--accent)",go:()=>{closeFab();if(typeof openAsst==="function")openAsst()}}]
+    .concat(FABMENU[currentTab()]||FABMENU.prehled);const sheet=$("#fabSheet");if(!sheet)return;
   sheet.innerHTML='<h3>Rychlé přidání</h3><div class="fab-grid">'+items.map((it,i)=>`<button class="fab-tile" type="button" data-fi="${i}"><span class="fi" style="background:${it.bg}">${it.e}</span>${it.t}</button>`).join("")+'</div>';
   $$("#fabSheet [data-fi]").forEach(b=>b.onclick=()=>items[+b.dataset.fi].go());}
 function openFab(){buildFabMenu();$("#fabBg").classList.add("show")}
@@ -3621,6 +3674,325 @@ $("#cfSave").addEventListener("click",()=>{const n=$("#cfName").value.trim();con
   state.foodDb.push({n,kcal,p:+$("#cfP").value||0,c:+$("#cfC").value||0,f:+$("#cfF").value||0});save();
   $("#customFoodForm").style.display="none";["cfName","cfKcal","cfP","cfC","cfF"].forEach(id=>$("#"+id).value="");
   renderFoodPickList();toast("✅ Jídlo uloženo do databáze")});
+
+/* ================== v46: AI ASISTENT (chat + ovládání appky) ================== */
+const CHATKEY="progres_chat_v1";
+let chatView=[], chatPend=[], chatBusy=false, chatRec=null;
+function chatLoad(){try{const j=JSON.parse(lsGet(CHATKEY)||"[]");chatView=Array.isArray(j)?j.slice(-80):[]}catch(e){chatView=[]}}
+function chatSave(){try{lsSet(CHATKEY,JSON.stringify(chatView.slice(-80)))}catch(e){}}
+function asstOpen(){return $("#tab-asistent").classList.contains("active")}
+function openAsst(){if(asstOpen())return;_prevTab=currentTab();
+  $$("section").forEach(s=>s.classList.remove("active"));
+  $("#tab-asistent").classList.add("active");
+  $$("nav button").forEach(b=>b.classList.remove("on"));
+  syncFab();renderChat();window.scrollTo(0,document.body.scrollHeight)}
+function closeAsst(){switchTab(_prevTab||"prehled")}
+
+/* ---- kontext: co asistent o tobě ví ---- */
+function setStr(e){const u=exUnit(e);return exSets(e).map(s=>u==="kg"?((+s.w||0)+"x"+(+s.r||0)):u==="reps"?String(+s.r||0):(Math.round((+s.sec||0))+"s")).join(",")}
+function asstSessions(days,max){const cut=isoNdaysAgo(days);
+  return [...state.sessions].filter(s=>s.date>=cut).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,max||90)
+    .map(s=>s.date+" "+s.type+" ["+(s.muscles||[]).join(",")+"] "+estDur(s)+"min "+Math.round(sessionVolKg(s))+"kg id:"+s.id+" | "
+      +(s.exercises||[]).map(e=>e.n+" "+setStr(e)).join(" ; ")+(s.notes?" | pozn: "+s.notes:"")).join("\n")}
+function asstFoodDays(days){const cut=isoNdaysAgo(days),m={};
+  state.foods.filter(f=>f.date>=cut).forEach(f=>{const d=m[f.date]=m[f.date]||{k:0,p:0,c:0,t:0,n:0};
+    d.k+=+f.kcal||0;d.p+=+f.protein||0;d.c+=+f.carbs||0;d.t+=+f.fat||0;d.n++});
+  return Object.keys(m).sort().reverse().map(d=>d+": "+Math.round(m[d].k)+"kcal B"+Math.round(m[d].p)+" S"+Math.round(m[d].c)+" T"+Math.round(m[d].t)+" ("+m[d].n+" zápisů)").join("\n")}
+function asstFoodItems(days){const cut=isoNdaysAgo(days);
+  return state.foods.filter(f=>f.date>=cut).sort((a,b)=>b.date.localeCompare(a.date))
+    .map(f=>f.date+" "+f.name+" "+Math.round(+f.kcal||0)+"kcal B"+Math.round(+f.protein||0)+" S"+Math.round(+f.carbs||0)+" T"+Math.round(+f.fat||0)+" id:"+f.id).join("\n")}
+function asstBody(max){return [...state.body].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,max||30)
+  .map(r=>r.date+" "+[r.weight!=null?r.weight+"kg":"",r.waist?"pas"+r.waist:"",r.biceps?"biceps"+r.biceps:"",r.chest?"hrudník"+r.chest:"",r.hips?"boky"+r.hips:"",r.thigh?"stehno"+r.thigh:"",r.calf?"lýtko"+r.calf:""].filter(Boolean).join(" ")+" pocit"+(r.feeling||"-")+" id:"+r.id).join("\n")}
+function asstPrs(){const best={};
+  state.sessions.forEach(s=>(s.exercises||[]).forEach(e=>{if(exUnit(e)!=="kg")return;
+    const v=exBestE1RM(e);const w=Math.max(0,...exSets(e).map(x=>+x.w||0));
+    const b=best[e.n]||(best[e.n]={e1:0,w:0,d:""});if(v>b.e1){b.e1=v;b.d=s.date}if(w>b.w)b.w=w}));
+  return Object.keys(best).sort((a,b)=>best[b].e1-best[a].e1).slice(0,25)
+    .map(n=>n+": nejtěžší "+Math.round(best[n].w)+"kg, e1RM ~"+Math.round(best[n].e1)+"kg ("+best[n].d+")").join("\n")}
+function asstSystem(){const p=state.profile,tgt=effTarget();
+  const today=state.foods.filter(x=>x.date===todayISO());
+  const tk=today.reduce((a,x)=>a+(+x.kcal||0),0),tp=today.reduce((a,x)=>a+(+x.protein||0),0);
+  const steps=Object.keys(state.steps||{}).sort().reverse().slice(0,30).map(d=>d+":"+state.steps[d]).join(", ");
+  const cat={};allExercises().forEach(x=>(cat[x[1]]=cat[x[1]]||[]).push(x[0]));
+  return [
+"Jsi AI trenér a asistent uvnitř české fitness appky Progres. Uživatel je Karel. Mluvíš česky, věcně a krátce jako trenér — bez omáček, bez markdown formátování (žádné **, #, tabulky). Odpověď max 6 řádků; delší rozpisy piš krátkými řádky s pomlčkou.",
+"Máš nástroje, kterými PŘÍMO zapisuješ do appky. Když uživatel řekne, co snědl, odtrénoval, kolik váží nebo nachodil, ROVNOU to zapiš odpovídajícím nástrojem a pak jednou větou potvrď co jsi zapsal. Nikdy se neptej na svolení k zápisu, neopakuj celý obsah. Doptáváš se jen když chybí něco klíčového (např. váha u série).",
+"Když uživatel jen mluví o jídle bez množství, odhadni běžnou porci a zapiš to (do názvu dej odhad, např. 'Pivo 12° 0,5 l').",
+"Na dotazy o statistikách a historii odpovídej z dat níže; když je potřeba starší nebo detailnější výřez, použij nástroj dotaz_data. Když chceš aktuální nutriční hodnoty produktu nebo informaci mimo appku, použij web_search.",
+"Když navrhuješ trénink, vycházej z historie (partie, poslední váhy, objem, dny odpočinku) a ber v potaz katalog cviků appky. Návrh rovnou ulož nástrojem uloz_sablonu, ať ho má uživatel v Šablonách, a napiš, že šablona je uložená. Odtrénovaný trénink zapisuj až když ho uživatel skutečně udělal.",
+"Datum bez určení = dnes. Dnes je "+todayISO()+" ("+czLongDate()+"). Včera = "+isoNdaysAgo(1)+".",
+"",
+"=== PROFIL A CÍLE ===",
+"pohlaví "+p.sex+", věk "+p.age+", výška "+p.height+" cm, aktuální váha z profilu "+p.weight+" kg, aktivita "+p.activity+", cíl "+p.goal+
+  ", cílová váha "+(p.targetWeight??"nenastavena")+", denní cíl kcal "+(p.targetKcal??"nenastaven")+(tgt&&tgt!==p.targetKcal?" (dnes efektivně "+tgt+")":"")+
+  ", cíl bílkovin "+(p.targetProtein??"nenastaven")+" g, cíl kroků "+(p.stepGoal||"-")+", tréninků/týdeň "+(p.daysPerWeek||"-")+", zkušenost "+(p.experience||"-")+", vybavení "+(p.equipment||"-"),
+"Dnes zatím sněděno: "+Math.round(tk)+" kcal, bílkoviny "+Math.round(tp)+" g"+(tgt?" (zbývá "+(tgt-Math.round(tk))+" kcal)":""),
+"",
+"=== TRÉNINKY (posledních 120 dní; formát: datum typ [partie] délka objem id | cvik kg x opakování, ...) ===",
+asstSessions(120,90)||"žádné",
+"",
+"=== OSOBNÍ REKORDY ===",asstPrs()||"žádné",
+"",
+"=== JÍDLO: denní součty (90 dní) ===",asstFoodDays(90)||"žádné",
+"",
+"=== JÍDLO: jednotlivé záznamy (21 dní, s id pro mazání) ===",asstFoodItems(21)||"žádné",
+"",
+"=== TĚLO (poslední měření) ===",asstBody(30)||"žádné",
+"",
+"=== KROKY (30 dní) ===",steps||"žádné",
+"",
+"=== ŠABLONY ===",(state.templates||[]).map(t=>t.name+" ["+(t.muscles||[]).join(",")+"] "+(t.exercises||[]).length+" cviků id:"+t.id).join("\n")||"žádné",
+"=== RECEPTY ===",(state.recipes||[]).map(r=>{const t=recipeTotals(r),sv=Math.max(1,+r.servings||1);return r.name+" "+Math.round(t.kcal/sv)+"kcal/porce, "+sv+" porcí"+(r.fav?" (oblíbený)":"")}).join("\n")||"žádné",
+"=== OBLÍBENÁ JÍDLA ===",(state.favorites||[]).map(f=>f.name+" "+Math.round(+f.kcal||0)+"kcal").join("; ")||"žádná",
+"",
+"=== KATALOG CVIKŮ V APPCE (používej tyto názvy) ===",
+Object.keys(cat).map(m=>m+": "+cat[m].join(", ")).join("\n"),
+"Partie pro Fitko: "+CHIPSETS["Fitko"].join(", ")+". Aktivity pro Kardio: "+CHIPSETS["Kardio"].join(", ")+"."
+].join("\n")}
+
+/* ---- nástroje ---- */
+const ASST_TOOLS=[
+{name:"zapis_jidlo",description:"Zapíše jídlo do deníku kalorií.",input_schema:{type:"object",properties:{
+  nazev:{type:"string"},kcal:{type:"number"},bilkoviny:{type:"number"},sacharidy:{type:"number"},tuky:{type:"number"},
+  datum:{type:"string",description:"YYYY-MM-DD, výchozí dnes"}},required:["nazev","kcal"]}},
+{name:"smaz_jidlo",description:"Smaže záznam jídla (jde do archivu na 14 dní). Podle id, nebo podle názvu a data.",input_schema:{type:"object",properties:{
+  id:{type:"string"},nazev:{type:"string"},datum:{type:"string"}}}},
+{name:"zapis_trenink",description:"Uloží odtrénovaný trénink.",input_schema:{type:"object",properties:{
+  datum:{type:"string"},typ:{type:"string",enum:["Fitko","Kardio","Jiné"]},partie:{type:"array",items:{type:"string"}},
+  delka_min:{type:"number"},poznamka:{type:"string"},
+  cviky:{type:"array",items:{type:"object",properties:{
+    nazev:{type:"string"},jednotka:{type:"string",enum:["kg","reps","time"]},pauza_s:{type:"number"},
+    serie:{type:"array",items:{type:"object",properties:{kg:{type:"number"},opakovani:{type:"number"},sekundy:{type:"number"}}}}},required:["nazev"]}}},required:["cviky"]}},
+{name:"uprav_trenink",description:"Upraví existující trénink podle id. Uvedená pole přepíše.",input_schema:{type:"object",properties:{
+  id:{type:"string"},datum:{type:"string"},typ:{type:"string"},partie:{type:"array",items:{type:"string"}},delka_min:{type:"number"},poznamka:{type:"string"},
+  cviky:{type:"array",items:{type:"object",properties:{nazev:{type:"string"},jednotka:{type:"string"},pauza_s:{type:"number"},
+    serie:{type:"array",items:{type:"object",properties:{kg:{type:"number"},opakovani:{type:"number"},sekundy:{type:"number"}}}}},required:["nazev"]}}},required:["id"]}},
+{name:"smaz_trenink",description:"Smaže trénink podle id (jde do archivu na 14 dní).",input_schema:{type:"object",properties:{id:{type:"string"}},required:["id"]}},
+{name:"uloz_sablonu",description:"Uloží šablonu tréninku (návrh) do Šablon.",input_schema:{type:"object",properties:{
+  nazev:{type:"string"},typ:{type:"string"},partie:{type:"array",items:{type:"string"}},
+  cviky:{type:"array",items:{type:"object",properties:{nazev:{type:"string"},jednotka:{type:"string"},pauza_s:{type:"number"},
+    serie:{type:"array",items:{type:"object",properties:{kg:{type:"number"},opakovani:{type:"number"},sekundy:{type:"number"}}}}},required:["nazev"]}}},required:["nazev","cviky"]}},
+{name:"uloz_recept",description:"Uloží recept složený z ingrediencí.",input_schema:{type:"object",properties:{
+  nazev:{type:"string"},porce:{type:"number"},oblibeny:{type:"boolean"},
+  ingredience:{type:"array",items:{type:"object",properties:{nazev:{type:"string"},kcal:{type:"number"},bilkoviny:{type:"number"},sacharidy:{type:"number"},tuky:{type:"number"}},required:["nazev","kcal"]}}},required:["nazev","ingredience"]}},
+{name:"pridej_oblibene",description:"Přidá jídlo do oblíbených pro rychlé zapsání.",input_schema:{type:"object",properties:{
+  nazev:{type:"string"},kcal:{type:"number"},bilkoviny:{type:"number"},sacharidy:{type:"number"},tuky:{type:"number"}},required:["nazev","kcal"]}},
+{name:"zapis_telo",description:"Zapíše váhu a míry těla (cm).",input_schema:{type:"object",properties:{
+  datum:{type:"string"},vaha:{type:"number"},pas:{type:"number"},biceps:{type:"number"},hrudnik:{type:"number"},boky:{type:"number"},stehno:{type:"number"},lytko:{type:"number"},
+  pocit:{type:"number",description:"1-5"},poznamka:{type:"string"}}}},
+{name:"zapis_kroky",description:"Zapíše počet kroků za den.",input_schema:{type:"object",properties:{datum:{type:"string"},kroky:{type:"number"}},required:["kroky"]}},
+{name:"nastav_cile",description:"Nastaví cíle v profilu.",input_schema:{type:"object",properties:{
+  kcal:{type:"number"},bilkoviny:{type:"number"},cilova_vaha:{type:"number"},kroky:{type:"number"},treninku_tydne:{type:"number"}}}},
+{name:"dotaz_data",description:"Vrátí surová data z appky pro starší nebo detailnější dotazy.",input_schema:{type:"object",properties:{
+  co:{type:"string",enum:["treninky","jidla","telo","kroky","sablony","recepty","oblibene","profil","cvik"]},
+  od:{type:"string"},do:{type:"string"},cvik:{type:"string"},limit:{type:"number"}},required:["co"]}}
+];
+function asstDate(d){return (typeof d==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(d))?d:todayISO()}
+function asstEx(list){return (list||[]).map(e=>{
+  const nm=String(e.nazev||e.name||"").trim();if(!nm)return null;
+  const def=exDef(nm);
+  const sets=(e.serie||e.sets||[]).map(s=>{const o={done:true};
+    if(s.kg!=null)o.w=+s.kg||0;if(s.opakovani!=null)o.r=Math.round(+s.opakovani)||0;
+    if(s.sekundy!=null)o.sec=Math.round(+s.sekundy)||0;return o});
+  let unit=e.jednotka||e.unit||(def?def.unit:null);
+  if(!unit)unit=sets.some(s=>s.w)?"kg":sets.some(s=>s.sec)?"time":"reps";
+  return {n:nm,unit:unit,rest:e.pauza_s!=null?Math.round(+e.pauza_s):90,sets:sets.length?sets:[{done:true}]}}).filter(Boolean)}
+function asstMuscles(ms,ex){const out=(ms||[]).map(String).filter(Boolean);
+  if(out.length)return out;const s=new Set();(ex||[]).forEach(e=>{const d=exDef(e.n);if(d&&d.muscle)s.add(d.muscle)});
+  return [...s]}
+async function runAsstTool(name,a){
+  const D=asstDate(a.datum);
+  if(name==="zapis_jidlo"){const it={id:uid(),date:D,name:String(a.nazev),kcal:Math.round(+a.kcal||0),
+      protein:a.bilkoviny!=null?+a.bilkoviny:null,carbs:a.sacharidy!=null?+a.sacharidy:null,fat:a.tuky!=null?+a.tuky:null};
+    state.foods.push(it);save();
+    return {ok:true,id:it.id,_act:"🍽️ Zapsáno: "+it.name+" · "+it.kcal+" kcal"+(D===todayISO()?" (dnes)":" ("+fmtDateFull(D)+")")}}
+  if(name==="smaz_jidlo"){let x=a.id?state.foods.find(f=>f.id===a.id):null;
+    if(!x&&a.nazev){const nm=String(a.nazev).toLowerCase();
+      x=[...state.foods].reverse().find(f=>f.name.toLowerCase().includes(nm)&&(!a.datum||f.date===a.datum))}
+    if(!x)return{ok:false,error:"Záznam nenalezen"};
+    trashPush("food",x);state.foods=state.foods.filter(f=>f.id!==x.id);save();
+    return {ok:true,_act:"🗑️ Smazáno: "+x.name+" ("+fmtDateFull(x.date)+") — v archivu 14 dní"}}
+  if(name==="zapis_trenink"){const ex=asstEx(a.cviky);if(!ex.length)return{ok:false,error:"Chybí cviky"};
+    const s={id:uid(),date:D,type:normalizeType(a.typ||"Fitko"),muscles:asstMuscles(a.partie,ex),
+      dur:a.delka_min!=null?Math.round(+a.delka_min):null,notes:a.poznamka?String(a.poznamka):"",exercises:ex};
+    state.sessions.push(s);save();
+    return {ok:true,id:s.id,_act:"🏋️ Zapsán trénink: "+(s.muscles.join(" + ")||s.type)+" · "+ex.length+" cviků · "+Math.round(sessionVolKg(s))+" kg ("+fmtDateFull(D)+")"}}
+  if(name==="uprav_trenink"){const s=state.sessions.find(x=>x.id===a.id);if(!s)return{ok:false,error:"Trénink s tímto id neexistuje"};
+    if(a.datum)s.date=asstDate(a.datum);
+    if(a.typ)s.type=normalizeType(a.typ);
+    if(a.cviky){const ex=asstEx(a.cviky);if(ex.length)s.exercises=ex}
+    if(a.partie)s.muscles=asstMuscles(a.partie,s.exercises);
+    if(a.delka_min!=null)s.dur=Math.round(+a.delka_min);
+    if(a.poznamka!=null)s.notes=String(a.poznamka);
+    save();return {ok:true,_act:"✏️ Upraven trénink "+fmtDateFull(s.date)+" · "+(s.exercises||[]).length+" cviků"}}
+  if(name==="smaz_trenink"){const s=state.sessions.find(x=>x.id===a.id);if(!s)return{ok:false,error:"Trénink nenalezen"};
+    trashPush("session",s);state.sessions=state.sessions.filter(x=>x.id!==s.id);save();
+    return {ok:true,_act:"🗑️ Smazán trénink "+fmtDateFull(s.date)+" — v archivu 14 dní"}}
+  if(name==="uloz_sablonu"){const ex=asstEx(a.cviky);if(!ex.length)return{ok:false,error:"Chybí cviky"};
+    const t={id:uid(),name:String(a.nazev),muscles:asstMuscles(a.partie,ex),type:normalizeType(a.typ||"Fitko"),exercises:ex};
+    state.templates.push(t);save();
+    return {ok:true,id:t.id,_act:"📋 Uložena šablona: "+t.name+" · "+ex.length+" cviků"}}
+  if(name==="uloz_recept"){const items=(a.ingredience||[]).map(i=>({name:String(i.nazev),kcal:+i.kcal||0,
+      protein:+i.bilkoviny||0,carbs:+i.sacharidy||0,fat:+i.tuky||0}));
+    if(!items.length)return{ok:false,error:"Chybí ingredience"};
+    state.recipes=state.recipes||[];
+    const r={id:uid(),name:String(a.nazev),fav:!!a.oblibeny,items:items,servings:Math.max(1,Math.round(+a.porce||1))};
+    state.recipes.push(r);save();
+    const t=recipeTotals(r);
+    return {ok:true,id:r.id,_act:"📖 Uložen recept: "+r.name+" · "+Math.round(t.kcal/r.servings)+" kcal/porce"}}
+  if(name==="pridej_oblibene"){state.favorites=state.favorites||[];
+    const f={id:uid(),name:String(a.nazev),kcal:Math.round(+a.kcal||0),
+      protein:a.bilkoviny!=null?+a.bilkoviny:null,carbs:a.sacharidy!=null?+a.sacharidy:null,fat:a.tuky!=null?+a.tuky:null};
+    state.favorites.push(f);save();return {ok:true,_act:"★ Do oblíbených: "+f.name+" · "+f.kcal+" kcal"}}
+  if(name==="zapis_telo"){const n=v=>v!=null?+v:null;
+    const ex=state.body.find(b=>b.date===D);
+    const rec=ex||{id:uid(),date:D,weight:null,biceps:null,chest:null,waist:null,hips:null,thigh:null,calf:null,feeling:3,notes:""};
+    if(a.vaha!=null)rec.weight=n(a.vaha);if(a.pas!=null)rec.waist=n(a.pas);if(a.biceps!=null)rec.biceps=n(a.biceps);
+    if(a.hrudnik!=null)rec.chest=n(a.hrudnik);if(a.boky!=null)rec.hips=n(a.boky);if(a.stehno!=null)rec.thigh=n(a.stehno);
+    if(a.lytko!=null)rec.calf=n(a.lytko);if(a.pocit!=null)rec.feeling=Math.max(1,Math.min(5,Math.round(+a.pocit)));
+    if(a.poznamka)rec.notes=String(a.poznamka);
+    if(!ex)state.body.push(rec);
+    if(rec.weight!=null)state.profile.weight=rec.weight;
+    save();return {ok:true,_act:"⚖️ Zapsáno tělo "+fmtDateFull(D)+": "+[rec.weight!=null?rec.weight+" kg":"",rec.waist?"pas "+rec.waist:"",rec.biceps?"biceps "+rec.biceps:""].filter(Boolean).join(" · ")}}
+  if(name==="zapis_kroky"){state.steps[D]=Math.max(0,Math.round(+a.kroky||0));save();
+    return {ok:true,_act:"👟 Kroky "+fmtDateFull(D)+": "+nbsp(state.steps[D])}}
+  if(name==="nastav_cile"){const p=state.profile,ch=[];
+    if(a.kcal!=null){p.targetKcal=Math.round(+a.kcal);ch.push("kcal "+p.targetKcal)}
+    if(a.bilkoviny!=null){p.targetProtein=Math.round(+a.bilkoviny);ch.push("bílkoviny "+p.targetProtein+" g")}
+    if(a.cilova_vaha!=null){p.targetWeight=+a.cilova_vaha;ch.push("cílová váha "+p.targetWeight+" kg")}
+    if(a.kroky!=null){p.stepGoal=Math.round(+a.kroky);ch.push("kroky "+p.stepGoal)}
+    if(a.treninku_tydne!=null){p.daysPerWeek=Math.max(1,Math.min(7,Math.round(+a.treninku_tydne)));ch.push("tréninků/týden "+p.daysPerWeek)}
+    save();return {ok:true,_act:"🎯 Cíle: "+(ch.join(" · ")||"bez změny")}}
+  if(name==="dotaz_data"){const lim=Math.max(1,Math.min(400,Math.round(+a.limit||150)));
+    const od=a.od||"0000-00-00",dodo=a.do||"9999-99-99";
+    if(a.co==="treninky")return {data:[...state.sessions].filter(s=>s.date>=od&&s.date<=dodo).sort((x,y)=>y.date.localeCompare(x.date)).slice(0,lim)
+      .map(s=>({id:s.id,date:s.date,type:s.type,muscles:s.muscles,dur:estDur(s),objem_kg:Math.round(sessionVolKg(s)),cviky:(s.exercises||[]).map(e=>e.n+" "+setStr(e))}))};
+    if(a.co==="jidla")return {data:state.foods.filter(f=>f.date>=od&&f.date<=dodo).slice(-lim)
+      .map(f=>({id:f.id,date:f.date,name:f.name,kcal:f.kcal,b:f.protein,s:f.carbs,t:f.fat}))};
+    if(a.co==="telo")return {data:[...state.body].filter(b=>b.date>=od&&b.date<=dodo).sort((x,y)=>y.date.localeCompare(x.date)).slice(0,lim)};
+    if(a.co==="kroky")return {data:Object.keys(state.steps||{}).filter(d=>d>=od&&d<=dodo).sort().reverse().slice(0,lim).map(d=>({date:d,kroky:state.steps[d]}))};
+    if(a.co==="sablony")return {data:(state.templates||[]).map(t=>({id:t.id,name:t.name,muscles:t.muscles,type:t.type,cviky:(t.exercises||[]).map(e=>e.n+" "+setStr(e))}))};
+    if(a.co==="recepty")return {data:(state.recipes||[]).map(r=>({id:r.id,name:r.name,porce:r.servings,fav:!!r.fav,items:r.items}))};
+    if(a.co==="oblibene")return {data:state.favorites||[]};
+    /* v34 (vlastní oprava): profil se posílá BEZ apiKey — asistent ho nepotřebuje
+       a nemá důvod tahat klíč do konverzace. Kdyby to Design vrátil, opravit znovu. */
+    if(a.co==="profil"){const p=Object.assign({},state.profile);delete p.apiKey;
+      return {data:p,dnesni_cil_kcal:effTarget()}}
+    if(a.co==="cvik"){const nm=String(a.cvik||"").toLowerCase();const out=[];
+      state.sessions.forEach(s=>(s.exercises||[]).forEach(e=>{if(!nm||e.n.toLowerCase().includes(nm))
+        out.push({date:s.date,cvik:e.n,serie:setStr(e),objem_kg:Math.round(exVolumeKg(e)),e1rm:Math.round(exBestE1RM(e))})}));
+      return {data:out.sort((x,y)=>y.date.localeCompare(x.date)).slice(0,lim)}}
+    return {ok:false,error:"Neznámý dotaz"}}
+  return {ok:false,error:"Neznámý nástroj"}}
+
+/* ---- komunikace ---- */
+function chatMsgsFromView(){const out=[];
+  chatView.slice(-30).forEach(m=>{if(m.r!=="u"&&m.r!=="a")return;const t=String(m.t||"").trim();if(!t)return;
+    const role=m.r==="u"?"user":"assistant";
+    if(out.length&&out[out.length-1].role===role)out[out.length-1].content[0].text+="\n"+t;
+    else out.push({role:role,content:[{type:"text",text:t}]})});
+  while(out.length&&out[0].role!=="user")out.shift();
+  return out}
+async function asstApi(msgs){
+  const body={model:state.profile.aiModel||"claude-sonnet-4-5",max_tokens:2500,system:asstSystem(),
+    tools:ASST_TOOLS.concat([{type:"web_search_20250305",name:"web_search",max_uses:5}]),messages:msgs};
+  let r;
+  try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body)})}
+  catch(e){throw new Error("Síťová chyba — zkus to znovu.")}
+  if(r.status===401)throw new Error("Neplatný API klíč (401).");
+  if(!r.ok){let d="";try{d=(await r.json()).error?.message||""}catch(e){}throw new Error("API chyba "+r.status+(d?": "+d:""))}
+  return r.json()}
+async function asstSend(text){
+  if(chatBusy)return;
+  if(!state.profile.apiKey){toast("Nejdřív vlož API klíč v Nastavení");return}
+  const txt=String(text||"").trim();const imgs=chatPend.slice();
+  if(!txt&&!imgs.length)return;
+  chatPend=[];renderChatImgs();
+  chatView.push({r:"u",t:txt||"(fotka)",img:imgs.length||0});chatSave();renderChat();chatEnd();
+  chatBusy=true;chatStatus("Přemýšlím…");
+  const msgs=chatMsgsFromView().slice(0,-1);
+  const content=[];
+  imgs.forEach(b=>content.push({type:"image",source:{type:"base64",media_type:"image/jpeg",data:b}}));
+  content.push({type:"text",text:txt||"Na fotce je jídlo. Odhadni porci a makra a zapiš ho do deníku."});
+  msgs.push({role:"user",content:content});
+  try{
+    for(let round=0;round<8;round++){
+      const j=await asstApi(msgs);
+      const blocks=j.content||[];
+      const txtOut=blocks.filter(b=>b.type==="text").map(b=>b.text||"").join("\n").trim();
+      const uses=blocks.filter(b=>b.type==="tool_use");
+      msgs.push({role:"assistant",content:blocks});
+      if(txtOut){chatView.push({r:"a",t:txtOut});chatSave();renderChat();chatEnd()}
+      if(j.stop_reason!=="tool_use"||!uses.length)break;
+      const results=[];
+      for(const u of uses){
+        chatStatus(String(u.name||"").replace(/_/g," ")+"…");
+        let out;try{out=await runAsstTool(u.name,u.input||{})}catch(e){out={ok:false,error:String(e&&e.message||e)}}
+        if(out&&out._act){chatView.push({r:"act",t:out._act});chatSave();renderChat();chatEnd();delete out._act}
+        results.push({type:"tool_result",tool_use_id:u.id,content:JSON.stringify(out).slice(0,12000)});
+      }
+      msgs.push({role:"user",content:results});
+    }
+  }catch(e){chatView.push({r:"warn",t:String(e&&e.message||e)});chatSave()}
+  chatBusy=false;chatStatus("");renderChat();chatEnd();
+  save();try{renderTab(currentTab())}catch(e){}}
+
+/* ---- UI ---- */
+function chatEnd(){if(typeof asstOpen==="function"&&asstOpen())window.scrollTo(0,document.body.scrollHeight)}
+function chatStatus(t){const el=$("#chatStatus");if(!el)return;
+  el.style.display=t?"flex":"none";el.innerHTML=t?'<span class="spin"></span> '+esc(t):"";
+  $("#chatSend").disabled=!!t;if(t)window.scrollTo(0,document.body.scrollHeight)}
+const CHAT_SUG=["Navrhni dnešní trénink","Kolik mi zbývá bílkovin?","Jak jsem na tom s objemem za měsíc?","Zapiš 2 pizzy a pivo","Zhodnoť můj progres"];
+function renderChat(){const log=$("#chatLog");if(!log)return;
+  const nk=$("#asstNoKey");
+  if(nk)nk.innerHTML=state.profile.apiKey?"":'<div class="card"><p class="small muted" style="margin:0">Asistent potřebuje AI klíč. Vlož ho v <a href="#" id="asstToSet" style="color:var(--accent);font-weight:600">Nastavení</a>.</p></div>';
+  const l=$("#asstToSet");if(l)l.onclick=e=>{e.preventDefault();openSettings()};
+  if(!chatView.length){log.innerHTML='<div class="cmsg a">Ahoj Karle. Zapíšu ti jídlo, trénink, váhu i kroky — stačí napsat, co bylo. Umím taky navrhnout trénink podle tvojí historie a odpovědět na dotazy k číslům.</div>'}
+  else log.innerHTML=chatView.map(m=>{
+    if(m.r==="u")return '<div class="cmsg u">'+esc(m.t)+(m.img?'<div class="small" style="opacity:.8;margin-top:4px">📷 '+m.img+'× fotka</div>':'')+'</div>';
+    if(m.r==="a")return '<div class="cmsg a">'+esc(m.t)+'</div>';
+    if(m.r==="warn")return '<div class="cact warn">⚠ '+esc(m.t)+'</div>';
+    return '<div class="cact">'+esc(m.t)+'</div>'}).join("");
+  const sug=$("#chatSug");
+  if(sug){sug.innerHTML=CHAT_SUG.map((s,i)=>'<button type="button" data-sug="'+i+'">'+esc(s)+'</button>').join("");
+    $$("#chatSug [data-sug]").forEach(b=>b.onclick=()=>{const t=CHAT_SUG[+b.dataset.sug];$("#chatInput").value=t;asstSend(t);$("#chatInput").value=""})}
+  renderChatImgs()}
+function renderChatImgs(){const box=$("#chatImgs");if(!box)return;
+  box.innerHTML=chatPend.map((b,i)=>'<div class="thumb"><img src="data:image/jpeg;base64,'+b+'"><button class="x" type="button" data-rmc="'+i+'">×</button></div>').join("");
+  $$("#chatImgs [data-rmc]").forEach(b=>b.onclick=()=>{chatPend.splice(+b.dataset.rmc,1);renderChatImgs()})}
+(function initAsst(){
+  chatLoad();
+  const ab=$("#asstBtn");if(ab)ab.addEventListener("click",()=>asstOpen()?closeAsst():openAsst());
+  const inp=$("#chatInput"),send=$("#chatSend");
+  function grow(){inp.style.height="auto";inp.style.height=Math.min(132,inp.scrollHeight)+"px"}
+  if(inp){inp.addEventListener("input",grow);
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();go()}})}
+  function go(){const t=inp.value.trim();if(!t&&!chatPend.length)return;inp.value="";grow();asstSend(t)}
+  if(send)send.addEventListener("click",go);
+  const ph=$("#chatPhoto"),file=$("#chatFile");
+  if(ph&&file){ph.addEventListener("click",()=>file.click());
+    file.addEventListener("change",async e=>{const fs=Array.from(e.target.files||[]);e.target.value="";
+      for(const f of fs.slice(0,Math.max(0,3-chatPend.length))){
+        try{const url=await resizeImage(f,1024,0.8);chatPend.push(url.split(",")[1])}catch(err){}}
+      renderChatImgs();if(chatPend.length)toast("Fotka připravená — napiš co to je, nebo pošli prázdné")})}
+  const mic=$("#chatMic");
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(mic&&SR){mic.style.display="grid";
+    mic.addEventListener("click",()=>{
+      if(chatRec){try{chatRec.stop()}catch(e){}chatRec=null;mic.classList.remove("rec");return}
+      const r=new SR();r.lang="cs-CZ";r.interimResults=true;r.continuous=false;
+      let base=inp.value?inp.value+" ":"";
+      r.onresult=ev=>{let s="";for(let i=ev.resultIndex;i<ev.results.length;i++)s+=ev.results[i][0].transcript;
+        inp.value=base+s;inp.dispatchEvent(new Event("input"))};
+      r.onend=()=>{chatRec=null;mic.classList.remove("rec")};
+      r.onerror=()=>{chatRec=null;mic.classList.remove("rec");toast("Diktování nejde — zkontroluj mikrofon")};
+      try{r.start();chatRec=r;mic.classList.add("rec")}catch(e){toast("Diktování není dostupné")}})}
+  const cl=$("#asstClear");
+  if(cl)cl.addEventListener("click",()=>confirmDel("Vymazat chat?","Historie konverzace se smaže. Zapsaná data v appce zůstanou.",()=>{
+    chatView=[];chatSave();renderChat();toast("Chat vymazán")}));
+  renderChat();
+})();
+
 renderDashboard();
 refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(currentTab()==="telo")renderPhotos()});
 </script>
@@ -3743,6 +4115,33 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
       function (e) { vrat(); throw e });
   };
 
+  /* ---- 3d) asstApi(): AI asistent (chat s nástroji). Stejný případ jako
+        aiFoodSearch — volá Anthropic napřímo, takže by ve sdíleném režimu
+        poslal sentinel jako x-api-key → 401 a asistent by vůbec nefungoval.
+        Tělo (system, tools, messages) posíláme beze změny, Worker ho forwarduje. ---- */
+  var _asst = window.asstApi;
+  if (typeof _asst === "function") window.asstApi = function (msgs) {
+    if (own(state.profile.apiKey)) return _asst.call(this, msgs);
+
+    var real = window.fetch;
+    window.fetch = function (u, o) {
+      if (typeof u === "string" && u.indexOf("api.anthropic.com") >= 0)
+        return real.call(this, PROXY, {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-app-token": TOKEN },
+          body: o && o.body
+        });
+      return real.apply(this, arguments);
+    };
+    var vrat = function () { window.fetch = real };
+
+    var p;
+    try { p = _asst.call(this, msgs) } catch (e) { vrat(); throw e }
+    return Promise.resolve(p).then(
+      function (r) { vrat(); return r },
+      function (e) { vrat(); throw e });
+  };
+
   /* ---- 4) Nastavení: banner „AI je zapnutá" + skrytý vstup pro vlastní klíč ---- */
   /* nadpis karty v Nastavení — bez klíče už „AI klíč" nesedí */
   function heading(txt, hint) {
@@ -3803,7 +4202,7 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
   };
 
   /* ---- 5) ostatní bloky jen pojistíme sentinelem ---- */
-  ["renderAiBox", "renderPlanBox"].forEach(function (n) {
+  ["renderAiBox", "renderPlanBox", "renderChat"].forEach(function (n) {
     var o = window[n];
     if (typeof o !== "function") return;
     window[n] = function () { ensure(); return o.apply(this, arguments) };
@@ -3811,7 +4210,8 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
 
   /* ---- 6) start: zapnout hned a překreslit, co už bylo vykresleno ---- */
   ensure();
-  ["#apiKeyBox:renderApiKeyBox", "#aiBox:renderAiBox", "#planBox:renderPlanBox"].forEach(function (pair) {
+  ["#apiKeyBox:renderApiKeyBox", "#aiBox:renderAiBox", "#planBox:renderPlanBox",
+   "#chatLog:renderChat"].forEach(function (pair) {
     var s = pair.split(":");
     try { if (document.querySelector(s[0])) window[s[1]]() } catch (e) {}
   });
