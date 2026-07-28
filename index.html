@@ -138,6 +138,13 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .tile .mini-bar>i{display:block;height:100%;border-radius:3px;background:var(--accent)}
   .tile .mini-bar>i.g{background:var(--good)}
   .delta.up{color:var(--good)} .delta.down{color:var(--bad)} .delta.flat{color:var(--muted)}
+  .nudge{background:color-mix(in srgb,var(--warn) 11%,var(--plane));border:1px solid color-mix(in srgb,var(--warn) 36%,var(--line));border-radius:16px;padding:13px 14px;margin:0 0 12px}
+  .nudge-t{font-weight:750;font-size:14.5px;margin-bottom:3px}
+  .nudge-s{font-size:12.5px;color:var(--muted);line-height:1.45;margin-bottom:10px}
+  .bkp{display:flex;align-items:center;gap:7px;font-size:13px;margin:0 0 9px}
+  .bkp i{width:8px;height:8px;border-radius:50%;flex:none;background:var(--good)}
+  .bkp.stale i{background:var(--warn)}
+  .bkp b{font-weight:650}
   .swipe{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:2px -16px 8px;padding:2px 16px 4px}
   .swipe::-webkit-scrollbar{display:none}
   .swipe-card{scroll-snap-align:center;flex:0 0 calc(100% - 42px);box-sizing:border-box;background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:18px;min-height:152px}
@@ -596,6 +603,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
     <section id="tab-prehled" class="active">
       <div class="page-title" id="greet">Přehled</div>
       <div class="page-sub" id="greetSub"></div>
+      <div id="backupNudge"></div>
       <div class="swipe" id="statSwipe"></div>
       <div class="swipe-dots" id="statDots"></div>
       <div class="card">
@@ -1090,6 +1098,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
 
       <div class="card">
         <h2>Záloha &amp; export</h2>
+        <div id="backupStatus"></div>
         <p class="small muted" style="margin-top:0">Data (včetně fotek) jsou jen v tomto zařízení. Občas si stáhni zálohu — stejný soubor půjde načíst i do budoucí nativní appky.</p>
         <div class="btn-row" style="margin-bottom:10px">
           <button class="btn secondary small" id="exportBtn">Záloha (JSON)</button>
@@ -1218,12 +1227,13 @@ const ICON_TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 function confirmDel(title,text,cb){openModal(title,text,cb)}
 const LIQUID_RE=/(ml[eé]k[oa]|ml[eé]ku|n[aá]poj|dž[uů]s|šť[aá]v|voda|vody|vodka|cola|kola|limon[aá]d|tonik|pivo|v[ií]no|prosecco|whisk|k[aá]va|cappuccino|latte|espresso|kakao|smoothie|kef[ií]r|podm[aá]sl[ií]|shake|sirup|olej|smetana|čaj)/i;
 function foodUnit(n){return LIQUID_RE.test(String(n||""))?"ml":"g"}
-const DEFAULT={version:3,sessions:[],body:[],foods:[],steps:{},templates:[],customExercises:[],foodDb:[],recipes:[],favorites:[],
+const DEFAULT={version:3,sessions:[],body:[],foods:[],steps:{},templates:[],customExercises:[],foodDb:[],recipes:[],favorites:[],lastBackup:null,
   profile:{sex:"m",age:30,height:180,weight:80,activity:1.55,goal:"maintain",targetKcal:null,targetProtein:null,targetWeight:null,stepGoal:10000,exPerDay:5,addStepsToGoal:false,addWorkoutToGoal:false,apiKey:"",aiModel:"",daysPerWeek:3,experience:"pokrocily",equipment:"posilovna",plan:null}};
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function mergeState(d){const s=clone(DEFAULT);
   ["sessions","body","foods","templates","customExercises","foodDb","recipes","favorites"].forEach(k=>{if(Array.isArray(d[k]))s[k]=d[k]});
   if(d.steps&&typeof d.steps==="object"&&!Array.isArray(d.steps))s.steps=d.steps;
+  if(typeof d.lastBackup==="string"&&/^\d{4}-\d\d-\d\d$/.test(d.lastBackup))s.lastBackup=d.lastBackup;
   if(d.profile)s.profile=Object.assign(s.profile,d.profile);
   return s}
 function migrateV1(d){const s=clone(DEFAULT);
@@ -1601,7 +1611,7 @@ function renderSettings(){const p=state.profile;
   $("#stepsToggle").classList.toggle("on",!!p.addStepsToGoal);
   $("#workoutToggle").classList.toggle("on",!!p.addWorkoutToGoal);
   $("#stepsWarn").textContent=((p.addStepsToGoal||p.addWorkoutToGoal)&&p.activity>=1.55)?"⚠️ Aktivita střední a vyšší už výdej započítává — s přepínači se počítá dvakrát. Zvaž nižší aktivitu s přepínači, nebo vyšší bez nich.":"";
-  renderApiKeyBox();}
+  renderApiKeyBox();renderBackupStatus();}
 $("#settingsBtn").addEventListener("click",()=>{settingsOpen()?closeSettings():openSettings()});
 $("#themeToggle").addEventListener("click",toggleTheme);
 function C(){const s=getComputedStyle(document.documentElement);const g=n=>s.getPropertyValue(n).trim();
@@ -1712,7 +1722,7 @@ function renderDashboard(){
   $("#weekSummary").innerHTML = wkSess.length
     ? `Odtrénováno <b>${wkDays}</b> dní · <b>${exCount}</b> cviků · objem <b>${wkVol.toLocaleString("cs")} kg</b> · výdej ≈ <b>${wkKcal.toLocaleString("cs")} kcal</b>.<br><span class="muted">Partie: ${parts.map(p=>p[0]+" ("+p[1]+"×)").join(", ")}</span>`
     : `<span class="muted">Tento týden zatím žádný trénink. Přidej první v sekci Trénink.</span>`;
-  chartWeightSmall();chartCalMini();renderCalendar();
+  chartWeightSmall();chartCalMini();renderCalendar();renderBackupNudge();
 }
 
 /* ---- Kalendář ---- */
@@ -3275,10 +3285,52 @@ $("#exSelect").addEventListener("change",chartStrength);
 function download(name,text,mime){const blob=new Blob([text],{type:mime});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
-$("#exportBtn").addEventListener("click",async()=>{
+/* ---- stav zálohy ---- */
+const BACKUP_WARN_DAYS=14;
+function backupName(){return "progres-zaloha-"+todayISO()+".json"}
+/* jediné místo, kde vzniká obsah zálohy */
+function backupText(){return JSON.stringify({app:"progres",version:3,data:state,photos},null,1)}
+function backupAge(){if(!state.lastBackup)return null;
+  const a=new Date(state.lastBackup+"T00:00:00"), b=new Date(todayISO()+"T00:00:00");
+  const d=Math.round((b-a)/86400000);return d>=0?d:0}
+function backupStale(){const d=backupAge();return d===null||d>=BACKUP_WARN_DAYS}
+function backupAgeText(){const d=backupAge();
+  return d===null?"zatím nikdy":d===0?"dnes":d===1?"včera":"před "+d+" dny"}
+function hasAnyData(){return !!(state.sessions.length||state.body.length||state.foods.length||photos.length||Object.keys(state.steps).length)}
+function renderBackupStatus(){const el=$("#backupStatus");if(!el)return;
+  const stale=backupStale();
+  el.className="bkp"+(stale?" stale":"");
+  el.innerHTML=`<i></i><span><b>Poslední záloha:</b> ${backupAgeText()}</span>`}
+function renderBackupNudge(){const el=$("#backupNudge");if(!el)return;
+  if(!backupStale()||!hasAnyData()){el.innerHTML="";return}
+  const never=backupAge()===null;
+  el.innerHTML=`<div class="nudge"><div class="nudge-t">Zazálohuj si data</div>
+    <div class="nudge-s">${never?"Zálohu sis ještě neuložil.":"Poslední záloha "+backupAgeText()+"."} Tréninky, míry i fotky jsou zatím jen v tomhle zařízení.</div>
+    <button class="btn small" id="nudgeBackup" type="button">Zálohovat teď</button></div>`;
+  const b=$("#nudgeBackup");if(b)b.onclick=doBackup}
+function markBackup(){state.lastBackup=todayISO();save();renderBackupStatus();renderBackupNudge()}
+/* Na iPhonu nabídne sdílecí nabídku (iCloud Drive, Soubory, AirDrop…),
+   jinde spadne na klasické stažení do zařízení. */
+async function doBackup(){
   await refreshPhotos();
-  download("progres-zaloha-"+todayISO()+".json",JSON.stringify({app:"progres",version:3,data:state,photos},null,1),"application/json");
-  toast("Záloha stažena ⬇︎")});
+  const prev=state.lastBackup;
+  state.lastBackup=todayISO();   /* ať soubor nese datum svého vzniku */
+  const name=backupName(), text=backupText();
+  let shared=false;
+  if(navigator.share&&navigator.canShare){
+    try{
+      const file=new File([text],name,{type:"application/json"});
+      if(navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:"Záloha Progres"});
+        shared=true}
+    }catch(err){
+      if(err&&err.name==="AbortError"){state.lastBackup=prev;toast("Záloha zrušena");return}
+    }
+  }
+  if(!shared)download(name,text,"application/json");
+  markBackup();
+  toast(shared?"Záloha uložena ✅":"Záloha stažena ⬇︎")}
+$("#exportBtn").addEventListener("click",doBackup);
 $("#importBtn").addEventListener("click",()=>$("#importFile").click());
 $("#importFile").addEventListener("change",e=>{
   const file=e.target.files[0];if(!file)return;const r=new FileReader();
@@ -3491,6 +3543,14 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
     if (typeof text === "string" && /json/i.test(mime || ""))
       text = text.replace(/("apiKey"\s*:\s*)"__proxy__"/g, '$1""');
     return _dl.call(this, name, text, mime);
+  };
+
+  /* ---- 3b) backupText(): sentinel se nedostane ani do zálohy poslané přes
+        sdílecí nabídku iOS (ta obchází download()) ---- */
+  var _bt = window.backupText;
+  if (typeof _bt === "function") window.backupText = function () {
+    return String(_bt.apply(this, arguments))
+      .replace(/("apiKey"\s*:\s*)"__proxy__"/g, '$1""');
   };
 
   /* ---- 4) Nastavení: banner „AI je zapnutá" + skrytý vstup pro vlastní klíč ---- */
