@@ -638,6 +638,31 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .cbtn.send{background:var(--accent);color:#fff;font-size:19px;font-weight:700}
   .cbtn:disabled{opacity:.45}
   .cbtn.rec{background:var(--bad);color:#fff;animation:nfPulse 1.4s ease-in-out infinite}
+  /* v36: lišta nad chatem + levý panel s historií konverzací */
+  .asst-bar{display:flex;align-items:center;gap:14px;margin:-6px 0 8px}
+  .asst-bar .link-btn{font-size:13.5px;font-weight:600}
+  .asst-bar .sp{flex:1}
+  .dw-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:44;opacity:0;pointer-events:none;transition:opacity .18s}
+  .dw-bg.show{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;left:0;bottom:0;width:min(86vw,330px);background:var(--card);border-right:1px solid var(--line);
+    z-index:45;transform:translateX(-102%);transition:transform .22s ease;display:flex;flex-direction:column;box-shadow:6px 0 26px rgba(0,0,0,.22)}
+  .drawer.show{transform:none}
+  .dw-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(15px + var(--safe-top)) 14px 11px;border-bottom:1px solid var(--line)}
+  .dw-hd h3{margin:0;font-size:16px;font-weight:700}
+  .dw-hd .x{border:none;background:none;color:var(--muted);font-size:21px;line-height:1;cursor:pointer;padding:0 2px}
+  .dw-new{margin:12px 14px 4px}
+  .dw-list{flex:1;overflow:auto;padding:6px 10px calc(18px + var(--safe-bottom));-webkit-overflow-scrolling:touch}
+  .dw-it{display:flex;align-items:center;gap:2px;border-radius:12px;padding:8px 4px 8px 11px;margin-bottom:2px}
+  .dw-it.on{background:var(--accent-weak)}
+  .dw-it .tx{flex:1;min-width:0;text-align:left;background:none;border:none;color:var(--ink);font:inherit;cursor:pointer;padding:0}
+  .dw-it .tt{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dw-it.on .tt{color:var(--accent)}
+  .dw-it .mt{font-size:11.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dw-it .ib{flex:none;width:30px;height:30px;border:none;background:none;color:var(--muted);cursor:pointer;border-radius:9px;display:grid;place-items:center;padding:0}
+  .dw-it .ib svg{width:16px;height:16px;display:block}
+  .dw-it .ib:active{background:var(--surface)}
+  .dw-it .ib.trash:active{color:var(--danger,#e5484d)}
+  .dw-empty{padding:24px 14px;color:var(--muted);font-size:13px;text-align:center}
   .chat-imgs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
   .chat-imgs .thumb{position:relative;width:56px;height:56px;border-radius:12px;overflow:hidden}
   .chat-imgs .thumb img{width:100%;height:100%;object-fit:cover;display:block}
@@ -655,7 +680,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="page-title" id="greet">Přehled</div>
       <div class="page-sub" id="greetSub"></div>
       <div id="backupNudge"></div>
-      <div class="ring-cards" id="progressRings" style="display:none"></div>
+      <!-- v36: dlaždice Váha + Konzistence z Přehledu odstraněny (Karel) -->
       <div class="swipe" id="statSwipe"></div>
       <div class="swipe-dots" id="statDots"></div>
       <div class="card">
@@ -1167,7 +1192,10 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
 
 <div class="card" id="card-archive">
         <h2>Archiv smazaných <span class="hint">vše smazané, 14 dní na obnovu</span></h2>
-        <div id="archiveBox"></div>
+        <details class="archd" id="archAll" style="margin-top:6px;border-top:none;padding-top:0">
+          <summary id="archAllSum">Zobrazit archiv</summary>
+          <div id="archiveBox" style="padding-top:6px"></div>
+        </details>
       </div>
 
       <div class="card">
@@ -1175,7 +1203,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div id="backupStatus"></div>
         <p class="small muted" style="margin-top:0">Data (včetně fotek) jsou jen v tomto zařízení. Občas si stáhni zálohu — stejný soubor půjde načíst i do budoucí nativní appky. API klíč se do zálohy nikdy nezapisuje, takže se soubor dá bezpečně sdílet. Na iPhonu se nabídne jako .txt (sdílení .json iOS nedovolí) — obsah je stejný a Import ho vezme.</p>
         <div class="btn-row" style="margin-bottom:10px">
-          <button class="btn secondary small" id="exportBtn">Záloha (JSON)</button>
+          <button class="btn secondary small" id="exportBtn">Záloha</button>
           <button class="btn secondary small" id="importBtn">Import</button>
           <button class="btn secondary small" id="icsBtn">Kalendář (.ics)</button>
           <input type="file" id="importFile" accept="application/json,text/plain,.json,.txt" hidden>
@@ -1220,7 +1248,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
             <p id="aiRouteNote">Dotazy jdou na tvůj vlastní API klíč, který sis vložil výš — účtuje si je Anthropic přímo tobě a nikdo mezi tím není.</p>
 
             <span class="flabel">Chat s asistentem</span>
-            <p>Historie chatu je jen v tomhle zařízení a do zálohy se nezahrnuje. Smazat ji můžeš tlačítkem <b>Vymazat chat</b> v asistentovi.</p>
+            <p>Historie chatu — včetně starších konverzací v <b>Historii</b> — je jen v tomhle zařízení a do zálohy se nezahrnuje. Otevřenou konverzaci smažeš tlačítkem <b>Vymazat chat</b>, jednotlivé starší chaty košem přímo v Historii.</p>
 
             <span class="flabel">Záloha</span>
             <p>Záloha je obyčejný soubor, který si uložíš, kam chceš — nikam se neodesílá sama. API klíč v ní není.</p>
@@ -1238,7 +1266,12 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div class="page-title" style="padding-right:0">Asistent</div>
         <div class="page-sub" id="asstSub" style="margin-bottom:6px">trenér, který zapisuje i radí</div>
       </div>
-      <div style="display:flex;justify-content:flex-end;margin:-6px 0 6px"><button class="link-btn" id="asstClear" type="button">Vymazat chat</button></div>
+      <div class="asst-bar">
+        <button class="link-btn" id="asstHistBtn" type="button">☰ Historie</button>
+        <div class="sp"></div>
+        <button class="link-btn" id="asstNew" type="button">＋ Nový</button>
+        <button class="link-btn" id="asstClear" type="button">Vymazat chat</button>
+      </div>
       <div id="asstNoKey"></div>
       <div class="chat-log" id="chatLog"></div>
       <div class="cstatus" id="chatStatus" style="display:none"></div>
@@ -1266,6 +1299,17 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   <button class="fab" id="fab" type="button" aria-label="Rychlé přidání">＋</button>
   <div class="fab-bg" id="fabBg"><div class="fab-sheet" id="fabSheet"></div></div>
 </div>
+
+<!-- v36: levý panel s historií konverzací asistenta -->
+<div class="dw-bg" id="dwBg"></div>
+<aside class="drawer" id="chatDrawer" aria-label="Historie chatů">
+  <div class="dw-hd">
+    <h3>Historie chatů</h3>
+    <button class="x" id="dwClose" type="button" title="Zavřít" aria-label="Zavřít">×</button>
+  </div>
+  <div class="dw-new"><button class="btn small" id="dwNew" type="button" style="width:100%">＋ Nový chat</button></div>
+  <div class="dw-list" id="dwList"></div>
+</aside>
 
 <div class="modal-bg" id="promptBg">
   <div class="modal">
@@ -1865,7 +1909,7 @@ function weightTrendInfo(){
   return {perWeek,cur,eta};
 }
 function renderDashboard(){
-  renderProgressRings();renderDataSummary();
+  renderDataSummary();
   const g=$("#greet");const h=new Date().getHours();
   g.textContent="Přehled";
   const gs=$("#greetSub");if(gs)gs.textContent=(h<10?"Dobré ráno":h<18?"Ahoj":"Dobrý večer")+" · "+czLongDate();
@@ -3402,32 +3446,6 @@ function renderPrTable(){
     return `<div class="pr-tile${isTop?" top":""}"><div class="n">${c.m}<small> ${exMetricLabel(c.u)}</small></div><div class="nm" title="${esc(k)}">${esc(k)}${isTop?" · PR":""}</div>${c.u==="kg"&&c.e?`<div class="nm" style="color:var(--accent)">e1RM ${c.e.toFixed(0)} kg</div>`:""}</div>`;
   }).join("")+`</div>`;
 }
-function renderProgressRings(){
-  const el=$("#progressRings");if(!el)return;
-  // Váha
-  const bw=state.body.filter(b=>b.weight!=null).sort((a,b)=>a.date.localeCompare(b.date));
-  const tgtW=state.profile.targetWeight;
-  let wCard;
-  if(bw.length){
-    const cur=bw[bw.length-1].weight;
-    const cut90=isoNdaysAgo(90);
-    const start=(bw.filter(b=>b.date>=cut90)[0]||bw[0]).weight;
-    const chg=+(cur-start).toFixed(1);
-    const chgTxt=`<div class="sub ${chg<0?"good":""}">${chg>0?"+":""}${String(chg).replace(".",",")} kg / 90 dní</div>`;
-    if(tgtW&&start!==tgtW){let pct=(cur-start)/(tgtW-start);pct=Math.max(0,Math.min(1,pct));
-      wCard=`<div class="ring-card">${ringSVG(84,pct,"var(--accent)",Math.round(pct*100)+" %",17,"k cíli "+tgtW+" kg",8)}<div class="cap">Váha ${String(cur).replace(".",",")} kg</div>${chgTxt}</div>`;
-    }else{wCard=`<div class="ring-card">${ringSVG(84,0,"var(--accent)",String(cur).replace(".",","),17,"kg",8)}<div class="cap">Aktuální váha</div>${chgTxt}</div>`;}
-  }else{wCard=`<div class="ring-card">${ringSVG(84,0,"var(--accent)","–",17,"kg",8)}<div class="cap">Váha</div><div class="sub">zatím bez dat</div></div>`;}
-  // Konzistence (12 týdnů)
-  const N=12;const weeksSet=new Set(state.sessions.map(s=>mondayOf(s.date)));
-  const wkNow=mondayOf(todayISO());let trained=0;
-  for(let i=0;i<N;i++){if(weeksSet.has(isoAddDays(wkNow,-7*i)))trained++}
-  const cpct=trained/N;
-  const allWeeks=[...weeksSet].sort();let streak=0,best=0,prev=null;
-  allWeeks.forEach(w=>{if(prev&&isoAddDays(prev,7)===w)streak++;else streak=1;prev=w;if(streak>best)best=streak});
-  const cCard=`<div class="ring-card">${ringSVG(84,cpct,"var(--good)",trained+"/"+N,16,"týdnů",8)}<div class="cap">Konzistence ${Math.round(cpct*100)} %</div><div class="sub">nejdelší streak ${best} tý.</div></div>`;
-  el.style.display="";el.innerHTML=wCard+cCard;
-}
 function chartVolume(){
   const cut=periodCut();
   const byWeek={};
@@ -3589,10 +3607,15 @@ function renderCardArchives(){
   renderArchiveBlock("archFav",["favorite"],"Archiv oblíbených");
   renderArchiveBlock("archRcp",["recipe"],"Archiv receptů");
   renderArchiveBlock("archBody",["body"],"Archiv měření")}
+/* v36: obsah archivu se ukáže až po rozkliknutí — karta zůstane sbalená,
+   v hlavičce jen počet položek. */
 function renderArchive(){const box=$("#archiveBox");if(!box)return;
   if(pruneTrash())save();
   const t=trashOf(TRASH_ALL);
-  if(!t.length){box.innerHTML='<div class="empty" style="padding:22px 12px"><div class="big">'+EMPTY_SVG+'</div>Archiv je prázdný.<br><span class="muted">Smazané záznamy tu počkají 14 dní, než zmizí natrvalo.</span></div>';return}
+  const det=$("#archAll"),sum=$("#archAllSum");
+  if(sum)sum.textContent=t.length?"Zobrazit smazané · "+t.length:"Archiv je prázdný";
+  if(!t.length){if(det)det.open=false;
+    box.innerHTML='<div class="empty" style="padding:22px 12px"><div class="big">'+EMPTY_SVG+'</div>Archiv je prázdný.<br><span class="muted">Smazané záznamy tu počkají 14 dní, než zmizí natrvalo.</span></div>';return}
   box.innerHTML=t.map(archRow).join("");
   wireArch(box)}
 /* ---- v47: grafy a tabulky jídla ---- */
@@ -3693,7 +3716,7 @@ function renderTopFoods(){
    +rows.map(r=>'<tr><td style="text-align:left">'+esc(r.name.length>28?r.name.slice(0,28)+"…":r.name)+'</td><td><b>'+r.n+'</b></td><td>'+Math.round(r.kcal/r.n)+'</td><td>'+Math.round(r.p/r.n)+' g</td><td>'+nbsp(Math.round(r.kcal))+'</td></tr>').join("")
    +'</table>';
 }
-function renderData(){renderProgressRings();renderArchive();renderCardArchives();renderDataSummary()}
+function renderData(){renderArchive();renderCardArchives();renderDataSummary()}
 function renderDataSummary(){
   if(!$("#dataSummary"))return;
   const s=state;
@@ -3721,7 +3744,7 @@ function download(name,text,mime){const blob=new Blob([text],{type:mime});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
 /* ---- stav zálohy ---- */
-const BACKUP_WARN_DAYS=14;
+const BACKUP_WARN_DAYS=5;   /* v36: Karel chce připomínku dřív (bylo 14) */
 function backupName(){return "progres-zaloha-"+todayISO()+".json"}
 /* jediné místo, kde vzniká obsah zálohy.
    API klíč do souboru nikdy nejde — klíč patří zařízení, ne záloze. */
@@ -3929,10 +3952,92 @@ $("#cfSave").addEventListener("click",()=>{const n=$("#cfName").value.trim();con
   renderFoodPickList();toast("✅ Jídlo uloženo do databáze")});
 
 /* ================== v46: AI ASISTENT (chat + ovládání appky) ================== */
-const CHATKEY="progres_chat_v1";
+const CHATKEY="progres_chat_v1";     /* starý formát: jedna jediná konverzace */
+const CHATSKEY="progres_chats_v1";   /* v36: seznam konverzací {v,cur,list} */
+const CHAT_MAX=30;                   /* kolik konverzací se pamatuje */
+const CHAT_MSGS=80;                  /* kolik zpráv v jedné konverzaci */
+const ASST_SUB="trenér, který zapisuje i radí";
 let chatView=[], chatPend=[], chatBusy=false, chatRec=null;
-function chatLoad(){try{const j=JSON.parse(lsGet(CHATKEY)||"[]");chatView=Array.isArray(j)?j.slice(-80):[]}catch(e){chatView=[]}}
-function chatSave(){try{lsSet(CHATKEY,JSON.stringify(chatView.slice(-80)))}catch(e){}}
+let chats=[], curChat="";
+
+/* název konverzace se bere z první uživatelské zprávy, dokud si ho
+   uživatel nepřejmenuje ručně (pak drží příznak renamed) */
+function chatTitleFrom(msgs){const m=(msgs||[]).find(x=>x.r==="u"&&String(x.t||"").trim());
+  if(!m)return "Nový chat";
+  const t=String(m.t).replace(/\s+/g," ").trim();
+  return t.length>42?t.slice(0,42).trim()+"…":t}
+function chatNewThread(msgs){return {id:uid(),title:"Nový chat",ts:Date.now(),msgs:msgs||[]}}
+function chatCur(){return chats.find(c=>c.id===curChat)}
+function chatLoad(){
+  chats=[];curChat="";
+  try{const j=JSON.parse(lsGet(CHATSKEY)||"null");
+    if(j&&Array.isArray(j.list)){chats=j.list.filter(c=>c&&c.id&&Array.isArray(c.msgs));curChat=j.cur||""}}catch(e){}
+  if(!chats.length){   /* migrace: dosavadní jeden chat se stane první konverzací */
+    let old=[];try{const o=JSON.parse(lsGet(CHATKEY)||"[]");if(Array.isArray(o))old=o}catch(e){}
+    if(old.length){const t=chatNewThread(old.slice(-CHAT_MSGS));t.title=chatTitleFrom(t.msgs);chats=[t];curChat=t.id;
+      try{localStorage.removeItem(CHATKEY)}catch(e){}}}
+  if(!chats.length)chats=[chatNewThread()];
+  if(!chatCur())curChat=chats[0].id;
+  chatView=chatCur().msgs}
+/* touch===false → jen ulož, ale nesahej na čas poslední aktivity. Díky tomu
+   se čtení starého chatu (ani přejmenování či mazání jiného) nepřerovná
+   nahoru a datum v Historii zůstane pravdivé. */
+function chatSave(touch){
+  if(chatView.length>CHAT_MSGS)chatView.splice(0,chatView.length-CHAT_MSGS);
+  const c=chatCur();
+  if(c){c.msgs=chatView;if(touch!==false)c.ts=Date.now();if(!c.renamed)c.title=chatTitleFrom(chatView)}
+  /* prázdné konverzace kromě té otevřené se neuchovávají */
+  chats=chats.filter(x=>x.id===curChat||(x.msgs&&x.msgs.length));
+  chats.sort((a,b)=>(+b.ts||0)-(+a.ts||0));
+  if(chats.length>CHAT_MAX)chats=chats.slice(0,CHAT_MAX);
+  try{lsSet(CHATSKEY,JSON.stringify({v:1,cur:curChat,list:chats}))}catch(e){}
+  renderChatList()}
+function chatOpen(id){const t=chats.find(c=>c.id===id);if(!t)return;
+  chatSave(false);curChat=id;chatView=t.msgs;chatSave(false);
+  closeChatDrawer();renderChat();window.scrollTo(0,document.body.scrollHeight)}
+function chatNew(){
+  if(!chatView.length){closeChatDrawer();toast("Tenhle chat je zatím prázdný");return}
+  chatSave(false);
+  const t=chatNewThread();chats.unshift(t);curChat=t.id;chatView=t.msgs;
+  chatSave();closeChatDrawer();renderChat();window.scrollTo(0,0)}
+function chatDelete(id){
+  chats=chats.filter(c=>c.id!==id);
+  if(curChat===id){if(!chats.length)chats=[chatNewThread()];
+    curChat=chats[0].id;chatView=chats[0].msgs}
+  chatSave(false);renderChat()}
+/* „Vymazat chat" v liště: zahodí otevřenou konverzaci a rovnou začne čistou —
+   starší chaty v Historii zůstanou. */
+function chatClear(){
+  chats=chats.filter(c=>c.id!==curChat);
+  const t=chatNewThread();chats.unshift(t);curChat=t.id;chatView=t.msgs;
+  chatSave();renderChat()}
+function chatRename(id){const t=chats.find(c=>c.id===id);if(!t)return;
+  openPrompt("Přejmenovat chat","Název",t.title,v=>{const n=String(v||"").trim();if(!n)return;
+    t.title=n;t.renamed=true;chatSave(false);renderChat();toast("Přejmenováno ✓")})}
+function chatWhen(ts){const d=new Date(+ts||0);if(!ts||isNaN(d))return "";
+  const iso=d.toISOString().slice(0,10),hm=("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+  if(iso===todayISO())return "dnes "+hm;
+  if(iso===isoNdaysAgo(1))return "včera "+hm;
+  return d.getDate()+". "+(d.getMonth()+1)+". "+d.getFullYear()}
+function chatCount(c){return (c.msgs||[]).filter(m=>m.r==="u"||m.r==="a").length}
+function plurZprava(n){return n===1?"zpráva":(n>=2&&n<=4)?"zprávy":"zpráv"}
+function openChatDrawer(){renderChatList();$("#dwBg").classList.add("show");$("#chatDrawer").classList.add("show")}
+function closeChatDrawer(){const b=$("#dwBg"),d=$("#chatDrawer");
+  if(b)b.classList.remove("show");if(d)d.classList.remove("show")}
+function renderChatList(){const box=$("#dwList");if(!box)return;
+  const items=chats.filter(c=>c.id===curChat||(c.msgs&&c.msgs.length));
+  if(!items.length){box.innerHTML='<div class="dw-empty">Zatím tu není žádný chat.</div>';return}
+  box.innerHTML=items.map(c=>{const n=chatCount(c);
+    return '<div class="dw-it'+(c.id===curChat?" on":"")+'">'
+      +'<button class="tx" type="button" data-chat="'+c.id+'">'
+      +'<div class="tt">'+esc(c.title||"Nový chat")+'</div>'
+      +'<div class="mt">'+esc(chatWhen(c.ts))+(n?" · "+n+" "+plurZprava(n):" · prázdný")+'</div></button>'
+      +'<button class="ib" type="button" data-chatren="'+c.id+'" title="Přejmenovat" aria-label="Přejmenovat">'+ICON_PEN+'</button>'
+      +'<button class="ib trash" type="button" data-chatdel="'+c.id+'" title="Smazat" aria-label="Smazat">'+ICON_TRASH+'</button></div>'}).join("");
+  $$("#dwList [data-chat]").forEach(b=>b.onclick=()=>chatOpen(b.dataset.chat));
+  $$("#dwList [data-chatren]").forEach(b=>b.onclick=()=>chatRename(b.dataset.chatren));
+  $$("#dwList [data-chatdel]").forEach(b=>b.onclick=()=>{const id=b.dataset.chatdel;
+    confirmDel("Smazat chat?","Konverzace se smaže. Zapsaná data v appce zůstanou.",()=>{chatDelete(id);toast("Chat smazán")})})}
 function asstOpen(){return $("#tab-asistent").classList.contains("active")}
 function openAsst(){if(asstOpen())return;_prevTab=currentTab();switchTab("asistent")}
 function closeAsst(){switchTab(_prevTab&&_prevTab!=="asistent"?_prevTab:"prehled")}
@@ -4196,6 +4301,10 @@ function renderChat(){const log=$("#chatLog");if(!log)return;
   const nk=$("#asstNoKey");
   if(nk)nk.innerHTML=state.profile.apiKey?"":'<div class="card"><p class="small muted" style="margin:0">Asistent potřebuje AI klíč. Vlož ho v <a href="#" id="asstToSet" style="color:var(--accent);font-weight:600">Nastavení</a>.</p></div>';
   const l=$("#asstToSet");if(l)l.onclick=e=>{e.preventDefault();openSettings()};
+  /* v36: v podtitulku je vidět, ve které konverzaci právě jsem */
+  const sub=$("#asstSub"),cc=chatCur();
+  if(sub)sub.textContent=(cc&&chatView.length&&cc.title&&cc.title!=="Nový chat")?cc.title:ASST_SUB;
+  renderChatList();
   if(!chatView.length){log.innerHTML='<div class="cmsg a">Ahoj Karle. Zapíšu ti jídlo, trénink, váhu i kroky — stačí napsat, co bylo. Umím taky navrhnout trénink podle tvojí historie a odpovědět na dotazy k číslům.</div>'}
   else log.innerHTML=chatView.map(m=>{
     if(m.r==="u")return '<div class="cmsg u">'+esc(m.t)+(m.img?'<div class="small" style="opacity:.8;margin-top:4px">📷 '+m.img+'× fotka</div>':'')+'</div>';
@@ -4238,8 +4347,14 @@ function renderChatImgs(){const box=$("#chatImgs");if(!box)return;
       r.onerror=()=>{chatRec=null;mic.classList.remove("rec");toast("Diktování nejde — zkontroluj mikrofon")};
       try{r.start();chatRec=r;mic.classList.add("rec")}catch(e){toast("Diktování není dostupné")}})}
   const cl=$("#asstClear");
-  if(cl)cl.addEventListener("click",()=>confirmDel("Vymazat chat?","Historie konverzace se smaže. Zapsaná data v appce zůstanou.",()=>{
-    chatView=[];chatSave();renderChat();toast("Chat vymazán")}));
+  if(cl)cl.addEventListener("click",()=>confirmDel("Vymazat chat?","Smaže se otevřená konverzace. Starší chaty v Historii i zapsaná data v appce zůstanou.",()=>{
+    chatClear();toast("Chat vymazán")}));
+  /* v36: levý panel s historií konverzací */
+  const hb=$("#asstHistBtn");if(hb)hb.addEventListener("click",openChatDrawer);
+  const nb=$("#asstNew");if(nb)nb.addEventListener("click",chatNew);
+  const dn=$("#dwNew");if(dn)dn.addEventListener("click",chatNew);
+  const dc=$("#dwClose");if(dc)dc.addEventListener("click",closeChatDrawer);
+  const db=$("#dwBg");if(db)db.addEventListener("click",closeChatDrawer);
   renderChat();
 })();
 
