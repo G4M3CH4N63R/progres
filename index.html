@@ -4063,6 +4063,20 @@ function asstPrs(){const best={};
     const b=best[e.n]||(best[e.n]={e1:0,w:0,d:""});if(v>b.e1){b.e1=v;b.d=s.date}if(w>b.w)b.w=w}));
   return Object.keys(best).sort((a,b)=>best[b].e1-best[a].e1).slice(0,25)
     .map(n=>n+": nejtěžší "+Math.round(best[n].w)+"kg, e1RM ~"+Math.round(best[n].e1)+"kg ("+best[n].d+")").join("\n")}
+/* v37: hotový součet za den — asistent si nikdy nic nesčítá z hlavy.
+   Vrací se v tool_result po každém zápisu/smazání jídla a přes dotaz_data co:"dnes". */
+function asstDayTotals(d){const f=state.foods.filter(x=>x.date===d);
+  const r=(k)=>Math.round(f.reduce((a,x)=>a+(+x[k]||0),0));
+  const k=r("kcal"),b=r("protein");
+  const o={datum:d,pozn:"Hotovy soucet za CELY den uz vcetne teto zmeny. Pouzij tato cisla tak jak jsou, nic k nim nepricitej.",
+    kcal_celkem:k,bilkoviny_celkem:b,sacharidy_celkem:r("carbs"),tuky_celkem:r("fat"),zapisu_za_den:f.length};
+  const bez=f.filter(x=>x.protein==null).length;
+  if(bez)o.zapisu_bez_udaje_bilkovin=bez;
+  const tg=(d===todayISO())?effTarget():(state.profile.targetKcal||null);
+  if(tg){o.cil_kcal=tg;o.zbyva_kcal=tg-k}
+  const tp=state.profile.targetProtein;
+  if(tp){o.cil_bilkovin=tp;o.zbyva_bilkovin=Math.max(0,tp-b)}
+  return o}
 function asstSystem(){const p=state.profile,tgt=effTarget();
   const today=state.foods.filter(x=>x.date===todayISO());
   const tk=today.reduce((a,x)=>a+(+x.kcal||0),0),tp=today.reduce((a,x)=>a+(+x.protein||0),0);
@@ -4071,16 +4085,17 @@ function asstSystem(){const p=state.profile,tgt=effTarget();
   return [
 "Jsi AI trenér a asistent uvnitř české fitness appky Progres. Uživatel je Karel. Mluvíš česky, věcně a krátce jako trenér — bez omáček, bez markdown formátování (žádné **, #, tabulky). Odpověď max 6 řádků; delší rozpisy piš krátkými řádky s pomlčkou.",
 "Máš nástroje, kterými PŘÍMO zapisuješ do appky. Když uživatel řekne, co snědl, odtrénoval, kolik váží nebo nachodil, ROVNOU to zapiš odpovídajícím nástrojem a pak jednou větou potvrď co jsi zapsal. Nikdy se neptej na svolení k zápisu, neopakuj celý obsah. Doptáváš se jen když chybí něco klíčového (např. váha u série).",
-"Když uživatel jen mluví o jídle bez množství, odhadni běžnou porci a zapiš to (do názvu dej odhad, např. 'Pivo 12° 0,5 l').",
+"Když uživatel jen mluví o jídle bez množství, odhadni běžnou porci a zapiš to (do názvu dej odhad, např. 'Pivo 12° 0,5 l'). Když uživatel opraví údaj u už zapsaného jídla (jiné kalorie, jiná porce, špatný název), použij uprav_jidlo — nezapisuj ho podruhé.",
 "Na dotazy o statistikách a historii odpovídej z dat níže; když je potřeba starší nebo detailnější výřez, použij nástroj dotaz_data. Když chceš aktuální nutriční hodnoty produktu nebo informaci mimo appku, použij web_search.",
-"Když navrhuješ trénink, vycházej z historie (partie, poslední váhy, objem, dny odpočinku) a ber v potaz katalog cviků appky. Návrh rovnou ulož nástrojem uloz_sablonu, ať ho má uživatel v Šablonách, a napiš, že šablona je uložená. Odtrénovaný trénink zapisuj až když ho uživatel skutečně udělal.",
+"POČÍTÁNÍ — pravidlo, které nesmíš porušit: NIKDY nesčítej denní součty v hlavě a NIKDY nepřičítej právě zapsané jídlo k číslu, které už znáš z dřívějška. Appka ti po každém zápisu i smazání jídla vrátí v poli 'den' hotový součet za celý den včetně té změny — hlásíš uživateli VÝHRADNĚ čísla z tohoto pole (kcal_celkem, bilkoviny_celkem, zbyva_kcal, zbyva_bilkovin). Data v tomto systémovém kontextu se přepočítávají před každou tvou odpovědí, takže už taky obsahují všechno, cos právě zapsal. Když v ruce nemáš čerstvé pole 'den' a přesto máš říct součet, zavolej nejdřív dotaz_data s co:'dnes'. Na součty a průměry za delší období (týden, měsíc, objem, kroky) použij dotaz_data s co:'souhrn' — vrátí hotová čísla. Součty, které jsi říkal ve svých dřívějších zprávách v této konverzaci, jsou ZASTARALÉ — nikdy z nich nevycházej a nic k nim nepřičítej. Když uživatel tvoje číslo zpochybní, nehádej se a nepočítej z hlavy — zavolej dotaz_data a odpověz podle výsledku. Radši zavolej nástroj navíc, než abys počítal odhadem.",
+"Když navrhuješ trénink, vycházej z historie (partie, poslední váhy, objem, dny odpočinku) a ber v potaz katalog cviků appky. Návrh rovnou ulož nástrojem uloz_sablonu, ať ho má uživatel v Šablonách, a napiš, že šablona je uložená. Odtrénovaný trénink zapisuj až když ho uživatel skutečně udělal. Když uživatel zmíní bolest nebo zranění, nedoporučuj trénovat přes bolest — navrhni šetrnou variantu nebo pauzu.",
 "Datum bez určení = dnes. Dnes je "+todayISO()+" ("+czLongDate()+"). Včera = "+isoNdaysAgo(1)+".",
 "",
 "=== PROFIL A CÍLE ===",
 "pohlaví "+p.sex+", věk "+p.age+", výška "+p.height+" cm, aktuální váha z profilu "+p.weight+" kg, aktivita "+p.activity+", cíl "+p.goal+
   ", cílová váha "+(p.targetWeight??"nenastavena")+", denní cíl kcal "+(p.targetKcal??"nenastaven")+(tgt&&tgt!==p.targetKcal?" (dnes efektivně "+tgt+")":"")+
   ", cíl bílkovin "+(p.targetProtein??"nenastaven")+" g, cíl kroků "+(p.stepGoal||"-")+", tréninků/týdeň "+(p.daysPerWeek||"-")+", zkušenost "+(p.experience||"-")+", vybavení "+(p.equipment||"-"),
-"Dnes zatím sněděno: "+Math.round(tk)+" kcal, bílkoviny "+Math.round(tp)+" g"+(tgt?" (zbývá "+(tgt-Math.round(tk))+" kcal)":""),
+"Dnes zatím sněděno (HOTOVÝ součet ze všech dnešních zápisů, přepočítaný právě teď — je v něm i to, co jsi zapsal před chvílí v této konverzaci): "+Math.round(tk)+" kcal, bílkoviny "+Math.round(tp)+" g"+(tgt?", do cíle zbývá "+(tgt-Math.round(tk))+" kcal":"")+(p.targetProtein?", do cíle bílkovin zbývá "+Math.max(0,p.targetProtein-Math.round(tp))+" g":""),
 "",
 "=== TRÉNINKY (posledních 120 dní; formát: datum typ [partie] délka objem id | cvik kg x opakování, ...) ===",
 asstSessions(120,90)||"žádné",
@@ -4111,6 +4126,9 @@ const ASST_TOOLS=[
   datum:{type:"string",description:"YYYY-MM-DD, výchozí dnes"}},required:["nazev","kcal"]}},
 {name:"smaz_jidlo",description:"Smaže záznam jídla (jde do archivu na 14 dní). Podle id, nebo podle názvu a data.",input_schema:{type:"object",properties:{
   id:{type:"string"},nazev:{type:"string"},datum:{type:"string"}}}},
+{name:"uprav_jidlo",description:"Opraví už zapsané jídlo (název, kalorie, makra, datum). Najde ho podle id, nebo podle názvu a data. Vyplněná pole přepíše, ostatní nechá být.",input_schema:{type:"object",properties:{
+  id:{type:"string"},nazev:{type:"string",description:"název pro nalezení záznamu"},datum:{type:"string"},
+  novy_nazev:{type:"string"},kcal:{type:"number"},bilkoviny:{type:"number"},sacharidy:{type:"number"},tuky:{type:"number"},nove_datum:{type:"string",description:"YYYY-MM-DD"}}}},
 {name:"zapis_trenink",description:"Uloží odtrénovaný trénink.",input_schema:{type:"object",properties:{
   datum:{type:"string"},typ:{type:"string",enum:["Fitko","Kardio","Jiné"]},partie:{type:"array",items:{type:"string"}},
   delka_min:{type:"number"},poznamka:{type:"string"},
@@ -4137,8 +4155,8 @@ const ASST_TOOLS=[
 {name:"zapis_kroky",description:"Zapíše počet kroků za den.",input_schema:{type:"object",properties:{datum:{type:"string"},kroky:{type:"number"}},required:["kroky"]}},
 {name:"nastav_cile",description:"Nastaví cíle v profilu.",input_schema:{type:"object",properties:{
   kcal:{type:"number"},bilkoviny:{type:"number"},cilova_vaha:{type:"number"},kroky:{type:"number"},treninku_tydne:{type:"number"}}}},
-{name:"dotaz_data",description:"Vrátí surová data z appky pro starší nebo detailnější dotazy.",input_schema:{type:"object",properties:{
-  co:{type:"string",enum:["treninky","jidla","telo","kroky","sablony","recepty","oblibene","profil","cvik"]},
+{name:"dotaz_data",description:"Vrátí surová data z appky pro starší nebo detailnější dotazy. Volba co:'dnes' vrátí HOTOVÝ součet kcal a makro za den (výchozí dnešek, jiný den přes 'od') — použij ji vždy, když máš říct denní součet a nemáš čerstvá čísla z právě proběhlého zápisu. Volba co:'souhrn' vrátí hotové součty a průměry za období (od/do, výchozí 30 dní) — kalorie, bílkoviny, počet tréninků, objem, kroky.",input_schema:{type:"object",properties:{
+  co:{type:"string",enum:["dnes","souhrn","treninky","jidla","telo","kroky","sablony","recepty","oblibene","profil","cvik"]},
   od:{type:"string"},do:{type:"string"},cvik:{type:"string"},limit:{type:"number"}},required:["co"]}}
 ];
 function asstDate(d){return (typeof d==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(d))?d:todayISO()}
@@ -4159,13 +4177,25 @@ async function runAsstTool(name,a){
   if(name==="zapis_jidlo"){const it={id:uid(),date:D,name:String(a.nazev),kcal:Math.round(+a.kcal||0),
       protein:a.bilkoviny!=null?+a.bilkoviny:null,carbs:a.sacharidy!=null?+a.sacharidy:null,fat:a.tuky!=null?+a.tuky:null};
     state.foods.push(it);save();
-    return {ok:true,id:it.id,_act:"🍽️ Zapsáno: "+it.name+" · "+it.kcal+" kcal"+(D===todayISO()?" (dnes)":" ("+fmtDateFull(D)+")")}}
+    return {ok:true,id:it.id,_den:D,_act:"🍽️ Zapsáno: "+it.name+" · "+it.kcal+" kcal"+(D===todayISO()?" (dnes)":" ("+fmtDateFull(D)+")")}}
   if(name==="smaz_jidlo"){let x=a.id?state.foods.find(f=>f.id===a.id):null;
     if(!x&&a.nazev){const nm=String(a.nazev).toLowerCase();
       x=[...state.foods].reverse().find(f=>f.name.toLowerCase().includes(nm)&&(!a.datum||f.date===a.datum))}
     if(!x)return{ok:false,error:"Záznam nenalezen"};
     trashPush("food",x);state.foods=state.foods.filter(f=>f.id!==x.id);save();
-    return {ok:true,_act:"🗑️ Smazáno: "+x.name+" ("+fmtDateFull(x.date)+") — v archivu 14 dní"}}
+    return {ok:true,_den:x.date,_act:"🗑️ Smazáno: "+x.name+" ("+fmtDateFull(x.date)+") — v archivu 14 dní"}}
+  if(name==="uprav_jidlo"){let x=a.id?state.foods.find(f=>f.id===a.id):null;
+    if(!x&&a.nazev){const nm=String(a.nazev).toLowerCase();
+      x=[...state.foods].reverse().find(f=>f.name.toLowerCase().includes(nm)&&(!a.datum||f.date===a.datum))}
+    if(!x)return{ok:false,error:"Záznam nenalezen"};
+    if(a.novy_nazev)x.name=String(a.novy_nazev);
+    if(a.kcal!=null)x.kcal=Math.round(+a.kcal||0);
+    if(a.bilkoviny!=null)x.protein=+a.bilkoviny;
+    if(a.sacharidy!=null)x.carbs=+a.sacharidy;
+    if(a.tuky!=null)x.fat=+a.tuky;
+    if(a.nove_datum)x.date=asstDate(a.nove_datum);
+    save();
+    return {ok:true,id:x.id,_den:x.date,_act:"✏️ Opraveno: "+x.name+" · "+x.kcal+" kcal ("+fmtDateFull(x.date)+")"}}
   if(name==="zapis_trenink"){const ex=asstEx(a.cviky);if(!ex.length)return{ok:false,error:"Chybí cviky"};
     const s={id:uid(),date:D,type:normalizeType(a.typ||"Fitko"),muscles:asstMuscles(a.partie,ex),
       dur:a.delka_min!=null?Math.round(+a.delka_min):null,notes:a.poznamka?String(a.poznamka):"",exercises:ex};
@@ -4219,6 +4249,21 @@ async function runAsstTool(name,a){
     save();return {ok:true,_act:"🎯 Cíle: "+(ch.join(" · ")||"bez změny")}}
   if(name==="dotaz_data"){const lim=Math.max(1,Math.min(400,Math.round(+a.limit||150)));
     const od=a.od||"0000-00-00",dodo=a.do||"9999-99-99";
+    if(a.co==="souhrn"){const o1=a.od||isoNdaysAgo(30),o2=a.do||todayISO();
+      const dny={};state.foods.filter(f=>f.date>=o1&&f.date<=o2).forEach(f=>{
+        const q=dny[f.date]=dny[f.date]||{k:0,p:0};q.k+=+f.kcal||0;q.p+=+f.protein||0});
+      const dl=Object.keys(dny).map(d=>dny[d]),nd=dl.length;
+      const fk=Math.round(dl.reduce((a2,x)=>a2+x.k,0)),fp=Math.round(dl.reduce((a2,x)=>a2+x.p,0));
+      const ss=state.sessions.filter(s=>s.date>=o1&&s.date<=o2),vol=Math.round(ss.reduce((a2,s)=>a2+sessionVolKg(s),0));
+      const kd=Object.keys(state.steps||{}).filter(d=>d>=o1&&d<=o2),kr=kd.reduce((a2,d)=>a2+(+state.steps[d]||0),0);
+      return {data:{od:o1,do:o2,pozn:"Hotove souhrny za obdobi. Pouzij je tak jak jsou, nic neprepocitavej.",
+        dnu_se_zapisem_jidla:nd,kcal_celkem:fk,kcal_prumer_na_den:nd?Math.round(fk/nd):0,
+        bilkoviny_celkem:fp,bilkoviny_prumer_na_den:nd?Math.round(fp/nd):0,
+        treninku:ss.length,objem_kg_celkem:vol,objem_kg_prumer_na_trenink:ss.length?Math.round(vol/ss.length):0,
+        dnu_s_kroky:kd.length,kroky_celkem:kr,kroky_prumer_na_den:kd.length?Math.round(kr/kd.length):0}}}
+    if(a.co==="dnes"){const dd=asstDate(a.od||a.datum);
+      return {data:asstDayTotals(dd),polozky:state.foods.filter(f=>f.date===dd)
+        .map(f=>({id:f.id,name:f.name,kcal:f.kcal,b:f.protein,s:f.carbs,t:f.fat}))}}
     if(a.co==="treninky")return {data:[...state.sessions].filter(s=>s.date>=od&&s.date<=dodo).sort((x,y)=>y.date.localeCompare(x.date)).slice(0,lim)
       .map(s=>({id:s.id,date:s.date,type:s.type,muscles:s.muscles,dur:estDur(s),objem_kg:Math.round(sessionVolKg(s)),cviky:(s.exercises||[]).map(e=>e.n+" "+setStr(e))}))};
     if(a.co==="jidla")return {data:state.foods.filter(f=>f.date>=od&&f.date<=dodo).slice(-lim)
@@ -4248,14 +4293,25 @@ function chatMsgsFromView(){const out=[];
   while(out.length&&out[0].role!=="user")out.shift();
   return out}
 async function asstApi(msgs){
-  const body={model:state.profile.aiModel||"claude-sonnet-4-5",max_tokens:2500,system:asstSystem(),
+  /* v37: nízká temperature — asistent hlavně zapisuje data a hlásí čísla, přesnost > kreativita */
+  const body={model:state.profile.aiModel||"claude-sonnet-4-5",max_tokens:2500,temperature:0.4,system:asstSystem(),
     tools:ASST_TOOLS.concat([{type:"web_search_20250305",name:"web_search",max_uses:5}]),messages:msgs};
-  let r;
-  try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body)})}
-  catch(e){throw new Error("Síťová chyba — zkus to znovu.")}
+  let r=null,sit=false;
+  for(let pokus=0;pokus<2;pokus++){
+    sit=false;r=null;
+    try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body)})}
+    catch(e){sit=true}
+    if(r&&r.ok)return r.json();
+    /* v37: přechodné chyby (výpadek sítě, 429, nával 5xx/529) jednou tiše zopakovat */
+    const s=r?r.status:0;
+    if(pokus===0&&(sit||s===429||s===500||s===502||s===503||s===529)){await new Promise(x=>setTimeout(x,1800));continue}
+    break}
+  if(sit||!r)throw new Error("Síťová chyba — zkus to znovu.");
   if(r.status===401)throw new Error("Neplatný API klíč (401).");
-  if(!r.ok){let d="";try{d=(await r.json()).error?.message||""}catch(e){}throw new Error("API chyba "+r.status+(d?": "+d:""))}
-  return r.json()}
+  let d="";try{d=(await r.json()).error?.message||""}catch(e){}
+  if(r.status===429)throw new Error("Moc dotazů za sebou (429) — chvilku počkej a zkus to znovu.");
+  if(r.status===529||r.status===503)throw new Error("AI služba má zrovna nával ("+r.status+") — zkus to za minutku.");
+  throw new Error("API chyba "+r.status+(d?": "+d:""))}
 async function asstSend(text){
   if(chatBusy)return;
   if(!state.profile.apiKey){toast("Nejdřív vlož API klíč v Nastavení");return}
@@ -4277,14 +4333,20 @@ async function asstSend(text){
       const uses=blocks.filter(b=>b.type==="tool_use");
       msgs.push({role:"assistant",content:blocks});
       if(txtOut){chatView.push({r:"a",t:txtOut});chatSave();renderChat();chatEnd()}
+      /* v37: web_search umí vrátit pause_turn — pokračujeme dalším kolem, jinak by odpověď zůstala useknutá */
+      if(j.stop_reason==="pause_turn"&&!uses.length)continue;
       if(j.stop_reason!=="tool_use"||!uses.length)break;
-      const results=[];
+      const outs=[];
       for(const u of uses){
         chatStatus(String(u.name||"").replace(/_/g," ")+"…");
         let out;try{out=await runAsstTool(u.name,u.input||{})}catch(e){out={ok:false,error:String(e&&e.message||e)}}
         if(out&&out._act){chatView.push({r:"act",t:out._act});chatSave();renderChat();chatEnd();delete out._act}
-        results.push({type:"tool_result",tool_use_id:u.id,content:JSON.stringify(out).slice(0,12000)});
+        outs.push({id:u.id,out:out});
       }
+      /* v37: denní součty dopočítat AŽ po všech zápisech v tomto kole — jinak by asistent
+         dostal mezisoučty a dopočítával si zbytek z hlavy (a právě zapsaná jídla si přičítal dvakrát) */
+      outs.forEach(o=>{const d=o.out&&o.out._den;if(d){delete o.out._den;o.out.den=asstDayTotals(d)}});
+      const results=outs.map(o=>({type:"tool_result",tool_use_id:o.id,content:JSON.stringify(o.out).slice(0,12000)}));
       msgs.push({role:"user",content:results});
     }
   }catch(e){chatView.push({r:"warn",t:String(e&&e.message||e)});chatSave()}
