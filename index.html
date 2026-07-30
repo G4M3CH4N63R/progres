@@ -369,7 +369,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .bo-m i.dn{color:var(--good-ink)} .bo-m i.up{color:var(--muted)}
   .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:none;align-items:flex-end;justify-content:center}
   .modal-bg.show{display:flex}
-  .modal{background:var(--card);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px 18px calc(20px + var(--safe-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.2);max-height:88vh;overflow:auto}
+  .modal{background:var(--card);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px 18px calc(20px + var(--safe-bottom) + var(--kb,0px));box-shadow:0 -8px 30px rgba(0,0,0,.2);max-height:88vh;overflow:auto}
   .modal h3{margin:0 0 6px;font-size:18px}
   .modal p{margin:0 0 16px;color:var(--ink2);font-size:14px}
   .modal img{width:100%;border-radius:14px;margin-bottom:12px}
@@ -631,7 +631,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .chat-sug::-webkit-scrollbar{display:none}
   .chat-sug button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 13px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
   .chat-sug button:active{background:var(--accent-weak);border-color:var(--accent)}
-  .chat-bar{position:sticky;bottom:calc(8px + var(--safe-bottom));z-index:12;background:var(--plane);padding-top:6px}
+  .chat-bar{position:sticky;bottom:calc(8px + var(--safe-bottom) + var(--kb,0px));z-index:12;background:var(--plane);padding-top:6px}
   .chat-in{display:flex;align-items:flex-end;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:6px 6px 6px 8px;box-shadow:var(--shadow)}
   .chat-in textarea{flex:1;min-width:0;border:none;background:transparent;color:var(--ink);font:inherit;font-size:15.5px;line-height:1.4;padding:9px 2px;max-height:132px;resize:none;outline:none}
   .cbtn{flex:none;width:38px;height:38px;border-radius:50%;border:none;background:var(--surface);color:var(--ink);font-size:17px;display:grid;place-items:center;cursor:pointer}
@@ -3930,6 +3930,45 @@ if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){
   window.addEventListener("focus",_checkUpd);
 }
 if(window.Chart){Chart.defaults.font.family="-apple-system,system-ui,'Segoe UI',Roboto,sans-serif";Chart.defaults.font.size=11}
+
+/* ===== v38: iOS klávesnice — editované pole držet ve viditelné části obrazovky =====
+   Na iPhonu (PWA) se po otevření klávesnice stránka odscrolluje tak, že editované pole
+   zmizí (za klávesnicí nebo mimo obraz). Řešení: po fokusu a po změně výšky visual
+   viewportu pole přiscrollovat do horních ~38 % viditelné plochy; u polí v modálu se
+   scrolluje vnitřek modálu. CSS proměnná --kb zvedá chat lištu a spodek modálu nad
+   klávesnici. Na desktopu se výška viewportu nemění, takže se nic z toho neprojeví. */
+(function(){
+  const FRM=/^(INPUT|TEXTAREA|SELECT)$/;
+  function scrollable(el){let p=el&&el.parentElement;
+    while(p&&p!==document.body){const cs=getComputedStyle(p);
+      if(/(auto|scroll)/.test(cs.overflowY)&&p.scrollHeight>p.clientHeight+4)return p;
+      p=p.parentElement}
+    return null}
+  function reveal(){const el=document.activeElement;
+    if(!el||!FRM.test(el.tagName))return;
+    if(el.closest(".chat-bar"))return; /* lišta chatu je sticky + --kb, vidět je vždycky */
+    const vv=window.visualViewport;
+    const top=vv?vv.offsetTop:0,vh=vv?vv.height:window.innerHeight;
+    const r=el.getBoundingClientRect();
+    const cil=top+Math.min(vh*0.38,Math.max(90,vh-120));
+    const posun=(r.top+r.height/2)-cil;
+    if(Math.abs(posun)<28)return;
+    const sc=scrollable(el);
+    if(sc)sc.scrollTop+=posun;else window.scrollBy(0,posun)}
+  let t=null;
+  function plan(ms){clearTimeout(t);t=setTimeout(reveal,ms)}
+  window.kbReveal=reveal; /* pro testy */
+  document.addEventListener("focusin",e=>{const el=e.target;
+    if(el&&FRM.test(el.tagName||""))plan(380)});
+  if(window.visualViewport){
+    const vv=window.visualViewport;
+    function kbVar(){const o=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);
+      document.documentElement.style.setProperty("--kb",(o>60?Math.round(o):0)+"px")}
+    vv.addEventListener("resize",function(){kbVar();plan(120)});
+    vv.addEventListener("scroll",kbVar);
+  }
+})();
+
 initSeg();
 initCustomExForm();
 $("#formSession").date.value=todayISO();
@@ -4293,8 +4332,9 @@ function chatMsgsFromView(){const out=[];
   while(out.length&&out[0].role!=="user")out.shift();
   return out}
 async function asstApi(msgs){
-  /* v37: nízká temperature — asistent hlavně zapisuje data a hlásí čísla, přesnost > kreativita */
-  const body={model:state.profile.aiModel||"claude-sonnet-4-5",max_tokens:2500,temperature:0.4,system:asstSystem(),
+  /* v38: ŽÁDNÉ temperature — aktuální modely ho odmítají (API 400 „deprecated for this model").
+     Přesnost počtů řeší hotové součty (asstDayTotals + pole den), ne sampling. NEVRACET. */
+  const body={model:state.profile.aiModel||"claude-sonnet-4-5",max_tokens:2500,system:asstSystem(),
     tools:ASST_TOOLS.concat([{type:"web_search_20250305",name:"web_search",max_uses:5}]),messages:msgs};
   let r=null,sit=false;
   for(let pokus=0;pokus<2;pokus++){
