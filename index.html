@@ -105,7 +105,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .hub-main .tx b{display:block;font-size:17px;font-weight:700;letter-spacing:-.2px}
   .hub-main .tx span{display:block;font-size:12.5px;color:rgba(255,255,255,.85);margin-top:2px}
   .hub-main .ch{font-size:24px;color:rgba(255,255,255,.8);font-weight:300;flex:none}
-  .hubgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .hubgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding-bottom:66px}
   .hubgrid button{display:flex;flex-direction:column;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 6px 13px;cursor:pointer;color:var(--ink);font:inherit;box-shadow:var(--shadow)}
   .hubgrid button:active{background:var(--accent-weak)}
   .hubgrid button svg{width:28px;height:28px;fill:none;stroke:var(--accent);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -214,6 +214,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .trash{flex:none;display:inline-flex;align-items:center;justify-content:center;border:none;background:transparent;color:var(--bad);cursor:pointer;padding:5px 6px;line-height:1;border-radius:9px}
   .trash:active{background:color-mix(in srgb,var(--bad) 15%,transparent)}
   .trash svg{display:block;width:19px;height:19px}
+  .item .del>svg,.fav-hd .del>svg,.sess .acts button>svg{display:block;width:19px;height:19px}
   .item .del.trash,.sess .acts button.trash,.fav-hd .del.trash{color:var(--bad)}
   .aiitem{display:flex;align-items:center;gap:10px;padding:10px 11px;border:1px solid var(--line);border-radius:13px;background:var(--plane);margin-bottom:7px}
   .aiitem.off{opacity:.42}
@@ -275,6 +276,12 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .heat i{width:12px;height:12px;border-radius:3px;background:var(--h0)}
   .heat i.l1{background:var(--h1)} .heat i.l2{background:var(--h2)} .heat i.l3{background:var(--h3)} .heat i.l4{background:var(--h4)}
   .heat i.today{outline:2px solid var(--warn);outline-offset:-1px}
+  .archd{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+  .archd>summary{list-style:none;cursor:pointer;font-size:12.5px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:7px;padding:4px 2px;text-transform:uppercase;letter-spacing:.4px}
+  .archd>summary::-webkit-details-marker{display:none}
+  .archd>summary::before{content:"▸";font-size:11px;transition:transform .15s}
+  .archd[open]>summary::before{transform:rotate(90deg)}
+  .archd>summary:hover{color:var(--ink2)}
   .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
   .photo-grid .ph{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:3/4;border:1px solid var(--line);cursor:pointer;background:var(--plane)}
   .ph img{width:100%;height:100%;object-fit:cover;display:block}
@@ -600,6 +607,14 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .detbox>summary::-webkit-details-marker{display:none}
   .detbox>summary::after{content:"›";margin-left:auto;font-size:16px;transition:transform .2s}
   .detbox[open]>summary::after{transform:rotate(90deg)}
+  /* karta Soukromí a data */
+  .priv{font-size:13px;line-height:1.55;color:var(--ink2)}
+  .priv p{margin:0 0 10px}
+  .priv .flabel{margin:14px 0 5px;font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+  .priv>.flabel:first-child{margin-top:2px}
+  .priv ul{margin:0 0 10px;padding-left:18px}
+  .priv li{margin-bottom:5px}
+  .priv a{color:var(--accent);text-decoration:none;font-weight:600}
   /* v46: AI asistent (chat) */
   .chat-btn{position:fixed;top:calc(var(--safe-top) + 14px);right:calc(50% - 280px + 62px);z-index:25;width:38px;height:38px;border-radius:50%;border:none;background:var(--accent);box-shadow:var(--shadow);color:#fff;display:grid;place-items:center;cursor:pointer}
   @media(max-width:576px){.chat-btn{right:62px}}
@@ -633,7 +648,6 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
 <div class="app">
   <button class="gear-btn" id="settingsBtn" title="Nastavení" aria-label="Nastavení"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
 
-  <button class="chat-btn" id="asstBtn" type="button" title="AI asistent" aria-label="AI asistent"><svg viewBox="0 0 24 24"><path d="M20.5 12c0 4.1-3.8 7.4-8.5 7.4-1 0-2-.15-2.9-.42L4.5 20.5l1.2-3.4C4.2 15.8 3.5 14 3.5 12 3.5 7.9 7.3 4.6 12 4.6s8.5 3.3 8.5 7.4z"/><path d="M9 11.5h6M9 14h3.5"/></svg></button>
 
   <main>
     <!-- ============ PŘEHLED ============ -->
@@ -641,6 +655,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="page-title" id="greet">Přehled</div>
       <div class="page-sub" id="greetSub"></div>
       <div id="backupNudge"></div>
+      <div class="ring-cards" id="progressRings" style="display:none"></div>
       <div class="swipe" id="statSwipe"></div>
       <div class="swipe-dots" id="statDots"></div>
       <div class="card">
@@ -666,6 +681,11 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="card" id="weekCard">
         <h2>Tento týden</h2>
         <div id="weekSummary" class="small"></div>
+      </div>
+
+<div class="card" id="card-summary">
+        <h2>Souhrn</h2>
+        <div id="dataSummary" class="small"></div>
       </div>
     </section>
 
@@ -750,6 +770,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="card" id="card-templates">
         <h2>Šablony <span class="hint">klepni na detail tréninku</span></h2>
         <div id="tplList"></div>
+        <details class="archd" id="archTpl" style="display:none"></details>
       </div>
 
       <div class="card" id="card-steps">
@@ -767,6 +788,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="card" id="card-trhist">
         <h2>Historie tréninků <span class="hint" id="woCount"></span></h2>
         <div id="sessList"></div>
+        <details class="archd" id="archTr" style="display:none"></details>
       </div>
     </section>
 
@@ -777,6 +799,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div class="page-sub">Rychlé akce</div>
         <div id="bodyOverview"></div>
         <div class="hubgrid">
+          <button type="button" data-card="#card-photos"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.4"/><path d="M8.5 6l1.2-2h4.6l1.2 2"/></svg><span>Fotky postavy</span></button>
           <button type="button" data-card="#card-bodyhist"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5V8h3.5"/><path d="M12 8v4.2l3 1.8"/></svg><span>Historie</span></button>
           <button type="button" data-run="stats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Statistiky</span></button>
         </div>
@@ -847,6 +870,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="card" id="card-bodyhist">
         <h2>Historie měření <span class="hint" id="bodyCount"></span></h2>
         <div id="bodyList"></div>
+        <details class="archd" id="archBody" style="display:none"></details>
       </div>
     </section>
 
@@ -927,43 +951,25 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="card" id="card-recipes">
         <h2>Recepty <span class="hint">tvoje uložená jídla</span></h2>
         <div id="recipeBox"></div>
+        <details class="archd" id="archRcp" style="display:none"></details>
       </div>
 
       <div class="card" id="card-favfoods">
         <h2>Oblíbená jídla <span class="hint">rychlé přidání do deníku</span></h2>
         <div id="favFoodsBox"></div>
+        <details class="archd" id="archFav" style="display:none"></details>
       </div>
 
       <div class="card" id="card-foodhist">
         <h2>Historie jídel <span class="hint" id="foodHistCount"></span></h2>
         <div id="foodHistList"></div>
+        <details class="archd" id="archFood" style="display:none"></details>
       </div>
     </section>
 
-    <!-- ============ DATA ============ -->
-    <section id="tab-data">
-      <div class="hub">
-        <div class="page-title">Progres</div>
-        <div class="page-sub">Rychlé akce</div>
-        <button class="hub-main" type="button" data-card="#card-pr"><span class="ic"><svg viewBox="0 0 24 24"><path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/><path d="M7 6.5H4.5v.5a3 3 0 0 0 3 3M17 6.5h2.5v.5a3 3 0 0 1-3 3"/><path d="M12 12.5V16M9 20h6M10.2 20l.6-4h2.4l.6 4"/></svg></span><span class="tx"><b>Osobní rekordy</b><span>Tvoje nej výkony</span></span><span class="ch">›</span></button>
-        <div class="hubgrid">
-          <button type="button" data-card="#card-strength"><svg viewBox="0 0 24 24"><path d="M4 5v14h16"/><path d="M7 14l3.5-3.5 3 2L21 6"/></svg><span>Grafy cviků</span></button>
-          <button type="button" data-card="#card-volume"><svg viewBox="0 0 24 24"><path d="M4 20V4M4 20h16"/><rect x="7" y="12" width="3" height="5" rx=".6"/><rect x="12" y="9" width="3" height="8" rx=".6"/><rect x="17" y="14" width="3" height="3" rx=".6"/></svg><span>Objem partií</span></button>
-          <button type="button" data-card="#card-weightbig"><svg viewBox="0 0 24 24"><path d="M4 5v14h16"/><path d="M7 9l3.5 3.5 3-2L21 15"/></svg><span>Váha & cíl</span></button>
-          <button type="button" data-card="#card-measurepos"><svg viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="7" rx="1.5"/><path d="M7 8.5v3M10 8.5v4M13 8.5v3M16 8.5v4"/></svg><span>Míry těla</span></button>
-          <button type="button" data-card="#card-heat"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg><span>Frekvence</span></button>
-          <button type="button" data-card="#card-calchart"><svg viewBox="0 0 24 24"><path d="M12 3c1 3.5 5 5 5 9a5 5 0 1 1-10 0c0-1.8.8-3.2 1.8-4.3C9.2 8 10 9 10.5 10 11.3 8 11 5 12 3z"/></svg><span>Kalorie</span></button>
-          <button type="button" data-card="#card-summary"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h8"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span>Souhrn</span></button>
-          <button type="button" data-card="#card-archive"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7l1 12.2a1.5 1.5 0 0 0 1.5 1.3h7a1.5 1.5 0 0 0 1.5-1.3L18 7"/><path d="M12 11v3.4l2.4 1.4"/></svg><span>Archiv</span></button>
-        </div>
-      </div>
-      <button class="hubback" type="button"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Zpět</button>
-      <div class="page-title">Progres &amp; data</div>
-      <div class="page-sub">tvůj dlouhodobý vývoj</div>
-
-      <div class="ring-cards" id="progressRings" style="display:none"></div>
-
-      <div class="card" style="padding:10px 12px">
+    <!-- ====== ZÁSOBNÍK STATISTIK — karty se přesouvají do sekcí (zkratka „Statistiky") ====== -->
+    <div id="statsPool" style="display:none">
+      <div class="card" id="card-period" style="padding:10px 12px">
         <div class="seg mini" data-seg="period">
           <button type="button" data-val="30">30 dní</button>
           <button type="button" data-val="90" class="on">90 dní</button>
@@ -973,15 +979,13 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <input type="hidden" id="periodInput" value="90">
       </div>
 
-      <div class="group-label">Váha & tělo</div>
-      <div class="card" id="card-weightbig">
+<div class="card" id="card-weightbig">
         <h2>Váha a cíl <span class="hint">se 7denním průměrem</span></h2>
         <div class="chart-wrap"><canvas id="chWeightBig"></canvas></div>
         <div class="small" id="weightTrend" style="margin-top:10px"></div>
       </div>
 
-      <div class="group-label">Síla & výkon</div>
-      <div class="card" id="card-strength">
+<div class="card" id="card-strength">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
           <h2 style="margin:0" id="strengthTitle">Síla</h2>
           <div class="strength-pick"><select id="exSelect"></select><span class="chev">změnit ▾</span></div>
@@ -1003,60 +1007,80 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div class="swipe-dots" id="exDots"><i class="on"></i><i></i></div>
       </div>
 
-      <div class="card" id="card-pr">
+<div class="card" id="card-pr">
         <h2>Osobní rekordy <span class="hint">odhad 1RM</span></h2>
         <div id="prTable"></div>
       </div>
 
-      <div class="card" id="card-volume">
+<div class="card" id="card-volume">
         <h2>Týdenní objem podle partií <span class="hint">kg × série × opak.</span></h2>
         <div class="chart-wrap"><canvas id="chVolume"></canvas></div>
       </div>
 
-      <div class="card" id="card-heat">
+<div class="card" id="card-heat">
         <h2>Konzistence <span class="hint">posledních 20 týdnů</span></h2>
         <div class="heat" id="heatmap"></div>
         <div class="small muted" id="heatInfo"></div>
       </div>
 
-      <div class="group-label">Míry & pocity</div>
-      <div class="card" id="card-measurepos">
+<div class="card" id="card-measurepos">
         <h2>Míry těla · 90 dní</h2>
         <div id="measurePos"></div>
       </div>
 
-      <div class="card" id="card-feel">
+<div class="card" id="card-feel">
         <h2>Pocity <span class="hint">týdenní průměr</span></h2>
         <div class="chart-wrap xs"><canvas id="chFeel"></canvas></div>
       </div>
 
-      <div class="group-label">Kalorie & aktivita</div>
-      <div class="card" id="card-calchart">
+<div class="card" id="card-calchart">
         <h2>Kalorie <span class="hint">denně vs. cíl, 7denní průměr</span></h2>
         <div class="chart-wrap sm"><canvas id="chCal"></canvas></div>
       </div>
 
-      <div class="card">
+<div class="card" id="card-macrosplit">
+        <h2>Rozložení maker <span class="hint">podíl na kaloriích</span></h2>
+        <div class="chart-wrap sm"><canvas id="chMacroSplit"></canvas></div>
+        <div class="cmp3" id="macroSplitInfo"></div>
+      </div>
+
+<div class="card" id="card-macrotime">
+        <h2>Makra v čase <span class="hint">gramy denně — B · S · T</span></h2>
+        <div class="chart-wrap sm"><canvas id="chMacroTime"></canvas></div>
+      </div>
+
+<div class="card" id="card-protein">
+        <h2>Bílkoviny <span class="hint">denně vs. cíl</span></h2>
+        <div class="chart-wrap xs"><canvas id="chProtein"></canvas></div>
+        <div class="small" id="proteinInfo" style="margin-top:9px"></div>
+      </div>
+
+<div class="card" id="card-fooddow">
+        <h2>Kalorie podle dne v týdnu <span class="hint">průměr za období</span></h2>
+        <div class="chart-wrap xs"><canvas id="chDow"></canvas></div>
+        <div class="small muted" id="dowInfo" style="margin-top:9px"></div>
+      </div>
+
+<div class="card" id="card-stepschart">
         <h2>Kroky <span class="hint">posledních 14 dní</span></h2>
         <div class="chart-wrap xs"><canvas id="chSteps"></canvas></div>
       </div>
 
-      <div class="group-label">Přehled & data</div>
-      <div class="card">
+<div class="card" id="card-fooddays">
+        <h2>Tabulka dnů <span class="hint">kalorie a makra</span></h2>
+        <div style="overflow-x:auto"><div id="foodDaysTable"></div></div>
+      </div>
+
+<div class="card" id="card-topfoods">
+        <h2>Nejčastější jídla <span class="hint">za zvolené období</span></h2>
+        <div style="overflow-x:auto"><div id="topFoodsTable"></div></div>
+      </div>
+
+<div class="card" id="card-bodytable">
         <h2>Tabulka měření <span class="hint">posledních 10</span></h2>
         <div style="overflow-x:auto"><div id="bodyTable"></div></div>
       </div>
-
-      <div class="card" id="card-summary">
-        <h2>Souhrn</h2>
-        <div id="dataSummary" class="small"></div>
-      </div>
-
-      <div class="card" id="card-archive">
-        <h2>Archiv smazaných <span class="hint">tréninky a jídla, 14 dní na obnovu</span></h2>
-        <div id="archiveBox"></div>
-      </div>
-    </section>
+    </div>
 
     <!-- ============ NASTAVENÍ ============ -->
     <section id="tab-nastaveni">
@@ -1141,6 +1165,11 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div id="apiKeyBox"></div>
       </div>
 
+<div class="card" id="card-archive">
+        <h2>Archiv smazaných <span class="hint">vše smazané, 14 dní na obnovu</span></h2>
+        <div id="archiveBox"></div>
+      </div>
+
       <div class="card">
         <h2>Záloha &amp; export</h2>
         <div id="backupStatus"></div>
@@ -1164,11 +1193,48 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
           <button class="btn danger small" id="wipeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 4.5h4a1 1 0 0 1 1 1V7H9V5.5a1 1 0 0 1 1-1z"/><path d="M6 7l1 12.2a1.5 1.5 0 0 0 1.5 1.3h7a1.5 1.5 0 0 0 1.5-1.3L18 7"/><path d="M10 11v6M14 11v6"/></svg>Smazat vše</button>
         </div>
       </div>
+
+      <div class="card" id="card-privacy">
+        <h2>Soukromí a data</h2>
+        <p class="small" style="margin:0">🔒 <b>Tvoje data zůstávají v tomhle telefonu.</b> <span class="muted">Nemám k nim přístup a na žádný server se nekopírují. Ven odchází jen to, co sám pošleš AI.</span></p>
+        <details class="detbox" id="privDet" style="margin:8px 0 0">
+          <summary>Podrobnosti</summary>
+          <div class="priv">
+            <span class="flabel">Kde data jsou</span>
+            <p>Tréninky, jídla, míry i fotky se ukládají jen do tohoto prohlížeče. Neexistuje server, kam by se odesílaly, a nikdo jiný — ani já — se k nim nedostane.</p>
+            <p>Má to i druhou stranu: když prohlížeč smaže data webů nebo přijdeš o telefon, data zmizí s ním. Proto ta záloha výš.</p>
+
+            <span class="flabel">Co odchází ven, když použiješ AI</span>
+            <p>Dotaz se posílá společnosti Anthropic, která provozuje model Claude. Podle funkce jde ven:</p>
+            <ul>
+              <li><b>Foto jídla</b> — fotky, které vyfotíš, a tvůj popis</li>
+              <li><b>Hledání jídla / AI plán</b> — název potraviny, případně tvůj profil a cíle</li>
+              <li><b>Asistent</b> — přehled tréninků, jídel, měr a rekordů z poslední doby, aby mohl odpovídat na otázky ke tvým datům</li>
+            </ul>
+            <p>U hledání na webu jde dotaz navíc do internetového vyhledávání. Zpracování běží na serverech v USA. <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener noreferrer">Zásady ochrany soukromí Anthropic</a></p>
+
+            <span class="flabel">Co se neposílá nikdy</span>
+            <p>Fotky postavy a porovnání. Ty zůstávají v telefonu a AI je nevidí.</p>
+
+            <span class="flabel" id="aiRouteLabel">Kdo za AI platí</span>
+            <p id="aiRouteNote">Dotazy jdou na tvůj vlastní API klíč, který sis vložil výš — účtuje si je Anthropic přímo tobě a nikdo mezi tím není.</p>
+
+            <span class="flabel">Chat s asistentem</span>
+            <p>Historie chatu je jen v tomhle zařízení a do zálohy se nezahrnuje. Smazat ji můžeš tlačítkem <b>Vymazat chat</b> v asistentovi.</p>
+
+            <span class="flabel">Záloha</span>
+            <p>Záloha je obyčejný soubor, který si uložíš, kam chceš — nikam se neodesílá sama. API klíč v ní není.</p>
+
+            <span class="flabel">Smazání</span>
+            <p>Tlačítkem <b>Smazat vše</b> výš zmizí úplně všechno, včetně fotek. Nemusíš mě o nic žádat, protože u sebe nic nemám.</p>
+          </div>
+        </details>
+      </div>
     </section>
 
     <!-- ============ AI ASISTENT ============ -->
     <section id="tab-asistent">
-      <div style="padding-right:108px">
+      <div style="padding-right:56px">
         <div class="page-title" style="padding-right:0">Asistent</div>
         <div class="page-sub" id="asstSub" style="margin-bottom:6px">trenér, který zapisuje i radí</div>
       </div>
@@ -1195,10 +1261,21 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
     <button data-tab="trenink"><svg viewBox="0 0 24 24"><rect x="3" y="8.5" width="3" height="7" rx="1"/><rect x="18" y="8.5" width="3" height="7" rx="1"/><path d="M8 7.5v9M16 7.5v9M6 12h12"/></svg>Trénink</button>
     <button data-tab="telo"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.4"/><path d="M12 8v8M8 11l4-1 4 1M9 20l3-4 3 4"/></svg>Tělo</button>
     <button data-tab="kalorie"><svg viewBox="0 0 24 24"><path d="M12 2c1 3.5 5 5 5 9a5 5 0 11-10 0c0-1.8.8-3.2 1.8-4.3C9.2 8 10 9 10.5 10 11.3 8 11 5 12 2z"/></svg>Jídlo</button>
-    <button data-tab="data"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progres</button>
+    <button data-tab="asistent"><svg viewBox="0 0 24 24"><path d="M20.5 12c0 4.1-3.8 7.4-8.5 7.4-1 0-2-.15-2.9-.42L4.5 20.5l1.2-3.4C4.2 15.8 3.5 14 3.5 12 3.5 7.9 7.3 4.6 12 4.6s8.5 3.3 8.5 7.4z"/><path d="M9 11.5h6M9 14h3.5"/></svg>Asistent</button>
   </nav>
   <button class="fab" id="fab" type="button" aria-label="Rychlé přidání">＋</button>
   <div class="fab-bg" id="fabBg"><div class="fab-sheet" id="fabSheet"></div></div>
+</div>
+
+<div class="modal-bg" id="promptBg">
+  <div class="modal">
+    <h3 id="promptTitle">Název</h3>
+    <label class="field" style="margin:2px 0 14px"><span id="promptLabel">Název</span><input type="text" id="promptInput" autocomplete="off" spellcheck="false"></label>
+    <div class="btn-row">
+      <button class="btn secondary" id="promptCancel" type="button" style="flex:1">Zrušit</button>
+      <button class="btn" id="promptOk" type="button" style="flex:1">Uložit</button>
+    </div>
+  </div>
 </div>
 
 <datalist id="exdb"></datalist>
@@ -1292,6 +1369,7 @@ function lsGet(k){try{return localStorage.getItem(k)}catch(e){return memStore[k]
 function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){memStore[k]=v}}
 function uid(){try{return crypto.randomUUID()}catch(e){return Date.now()+"-"+Math.round(Math.random()*1e6)}}
 const ICON_TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 4.5h4a1 1 0 0 1 1 1V7H9V5.5a1 1 0 0 1 1-1z"/><path d="M6 7l1 12.2a1.5 1.5 0 0 0 1.5 1.3h7a1.5 1.5 0 0 0 1.5-1.3L18 7"/><path d="M10 11v6M14 11v6"/></svg>';
+const ICON_PEN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l9.6-9.6a2.3 2.3 0 0 0-3.2-3.2L4.5 17.2V20z"/><path d="M13.6 7l3.4 3.4"/></svg>';
 function confirmDel(title,text,cb){openModal(title,text,cb)}
 const LIQUID_RE=/(ml[eé]k[oa]|ml[eé]ku|n[aá]poj|dž[uů]s|šť[aá]v|voda|vody|vodka|cola|kola|limon[aá]d|tonik|pivo|v[ií]no|prosecco|whisk|k[aá]va|cappuccino|latte|espresso|kakao|smoothie|kef[ií]r|podm[aá]sl[ií]|shake|sirup|olej|smetana|čaj)/i;
 function foodUnit(n){return LIQUID_RE.test(String(n||""))?"ml":"g"}
@@ -1504,7 +1582,7 @@ function initSeg(root=document){
 function setSeg(name,val){const seg=$(`.seg[data-seg="${name}"]`);if(!seg)return;
   seg.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.val===String(val)));
   const inp=seg.parentElement.querySelector("input[type=hidden]");if(inp)inp.value=val}
-const HUBTABS=new Set(["trenink","telo","kalorie","data"]);
+const HUBTABS=new Set(["trenink","telo","kalorie"]);
 function clearModes(sec){sec.classList.remove("hubon","soloon");sec.querySelectorAll(".solocard").forEach(c=>c.classList.remove("solocard"));syncFab();}
 /* v45: velké „+" jen když je otevřená karta, ne na rozcestníku */
 function syncFab(){const f=document.getElementById("fab");if(!f)return;
@@ -1545,10 +1623,11 @@ function hubAction(a,tab){
 }
 /* ---- Statistiky přímo v dané sekci (karty se sem přesunou z Progresu) ---- */
 const STATS_CARDS={
-  trenink:["#card-strength","#card-pr","#card-volume","#card-heat"],
-  telo:["#card-weightbig","#card-measurepos","#card-feel"],
-  kalorie:["#card-calchart"]
+  trenink:["#card-period","#card-strength","#card-pr","#card-volume","#card-heat","#card-stepschart"],
+  telo:["#card-period","#card-weightbig","#card-measurepos","#card-feel","#card-bodytable"],
+  kalorie:["#card-period","#card-calchart","#card-macrosplit","#card-macrotime","#card-protein","#card-fooddow","#card-fooddays","#card-topfoods"]
 };
+let _statsTab=null;
 function statsSlots(){
   Object.keys(STATS_CARDS).forEach(t=>STATS_CARDS[t].forEach(sel=>{
     const el=document.querySelector(sel);if(!el||el.dataset.slotted)return;
@@ -1556,15 +1635,16 @@ function statsSlots(){
     el.parentNode.insertBefore(s,el);el.dataset.slotted="1";}));
 }
 function statsRestore(){
+  _statsTab=null;
   document.querySelectorAll("[data-stats-slot]").forEach(s=>{
     const el=document.querySelector(s.dataset.statsSlot);
     if(el&&el.previousSibling!==s)s.parentNode.insertBefore(el,s.nextSibling);
     if(el)el.classList.remove("solocard");});
 }
 function renderStatsFor(tab){
-  if(tab==="trenink"){chartStrength();renderPrTable();chartVolume();renderHeatmap()}
-  else if(tab==="telo"){chartWeightBig();renderMeasurePos();chartFeel()}
-  else if(tab==="kalorie"){chartCalBig();chartSteps()}
+  if(tab==="trenink"){chartStrength();renderPrTable();chartVolume();renderHeatmap();chartSteps()}
+  else if(tab==="telo"){chartWeightBig();renderMeasurePos();chartFeel();renderBodyTable()}
+  else if(tab==="kalorie"){chartCalBig();chartMacroSplit();chartMacroTime();chartProtein();chartFoodDow();renderFoodDaysTable();renderTopFoods()}
 }
 function showStats(tab){
   statsSlots();statsRestore();
@@ -1572,7 +1652,7 @@ function showStats(tab){
   clearModes(sec);
   (STATS_CARDS[tab]||[]).forEach(sel=>{const el=document.querySelector(sel);if(!el)return;
     sec.appendChild(el);el.classList.add("solocard")});
-  sec.classList.add("soloon");
+  sec.classList.add("soloon");_statsTab=tab;
   window.scrollTo(0,0);
   renderStatsFor(tab);
   requestAnimationFrame(()=>{try{window.dispatchEvent(new Event("resize"))}catch(e){}});
@@ -1589,28 +1669,32 @@ function tplExDetail(t){
 }
 function renderTplList(){
   var box=document.getElementById("tplList");if(!box)return;
+  renderCardArchives();
   if(!state.templates.length){box.innerHTML='<div class="small muted" style="padding:18px 4px">Zatím žádné uložené šablony.<br>Ve složce <b>Nový trénink</b> ulož trénink tlačítkem „Uložit jako šablonu".</div>';return}
   box.innerHTML=state.templates.map(function(t){
     var cnt=(t.exercises||[]).length;
     var sub=[(t.muscles&&t.muscles.length?t.muscles.join(" · "):""),(t.type||""),cnt+" cviků"].filter(Boolean).join(" · ");
     return '<div class="fav-card"><div class="fav-hd"><div class="fav-b"><div class="t1">'+esc(t.name)+'</div><div class="t2">'+esc(sub)+'</div></div>'
+      +'<button class="del" type="button" data-tplren="'+t.id+'" aria-label="Přejmenovat" title="Přejmenovat">'+ICON_PEN+'</button>'
       +'<button class="del trash" type="button" data-tpldel="'+t.id+'" aria-label="Smazat" title="Smazat">'+ICON_TRASH+'</button></div>'
       +'<details class="ingr"><summary>Detail tréninku</summary>'+tplExDetail(t)+'</details>'
       +'<div class="fav-actions"><button class="btn small" type="button" data-tplload="'+t.id+'">Načíst do tréninku</button></div></div>';
   }).join("");
   $$("#tplList [data-tplload]").forEach(b=>b.onclick=()=>{const t=state.templates.find(x=>x.id===b.dataset.tplload);if(!t)return;
     fillSessionForm(t);showSolo(document.getElementById("tab-trenink"),"#card-newworkout");toast("Šablona načtena: "+t.name)});
+  $$("#tplList [data-tplren]").forEach(b=>b.onclick=()=>{const t=state.templates.find(x=>x.id===b.dataset.tplren);if(!t)return;
+    openPrompt("Přejmenovat šablonu","Název šablony",t.name,v=>{t.name=v;save();renderTplList();if(typeof renderTplRow==="function")renderTplRow();toast("Přejmenováno na „"+v+"“")})});
   $$("#tplList [data-tpldel]").forEach(b=>b.onclick=()=>{const id=b.dataset.tpldel,t=state.templates.find(x=>x.id===id);
-    confirmDel("Smazat šablonu?",(t?"„"+t.name+"“":"Šablona")+" se smaže. Uložené tréninky zůstanou.",()=>{
-      state.templates=state.templates.filter(x=>x.id!==id);save();renderTplList();if(typeof renderTplRow==="function")renderTplRow();toast("Šablona smazána")})});
+    confirmDel("Smazat šablonu?",(t?"„"+t.name+"“":"Šablona")+" se přesune do archivu — 14 dní ji můžeš obnovit.",()=>{
+      trashPush("template",t);state.templates=state.templates.filter(x=>x.id!==id);save();renderTplList();if(typeof renderTplRow==="function")renderTplRow();toast("Šablona v archivu (14 dní)")})});
 }
 document.addEventListener("click",e=>{
   const _pk=e.target.closest(".tplpick");
   if(_pk){const t=state.templates.find(x=>x.id===_pk.dataset.id);if(t){if(typeof fillSessionForm==="function")fillSessionForm(t);showSolo(document.getElementById("tab-trenink"),"#card-newworkout");toast("Šablona načtena: "+t.name);}return;}
   const _dl=e.target.closest(".tpldel");
   if(_dl){const _id=_dl.dataset.del,_t=state.templates.find(x=>x.id===_id);
-    confirmDel("Smazat šablonu?",(_t?"„"+_t.name+"“":"Šablona")+" se smaže. Uložené tréninky zůstanou.",()=>{
-      state.templates=state.templates.filter(x=>x.id!==_id);save();renderTplList();if(typeof renderTplRow==="function")renderTplRow();toast("Šablona smazána")});return;}
+    confirmDel("Smazat šablonu?",(_t?"„"+_t.name+"“":"Šablona")+" se přesune do archivu — 14 dní ji můžeš obnovit.",()=>{
+      trashPush("template",_t);state.templates=state.templates.filter(x=>x.id!==_id);save();renderTplList();if(typeof renderTplRow==="function")renderTplRow();toast("Šablona v archivu (14 dní)")});return;}
   const tile=e.target.closest(".hub-main,.hubgrid button");
   if(tile&&tile.closest(".hub")){
     const sec=tile.closest("section"),own=sec.id.replace("tab-","");
@@ -1630,7 +1714,7 @@ function currentTab(){const on=$("nav button.on");return on?on.dataset.tab:"preh
 const FABMENU={
   kalorie:[{t:"Přidat jídlo",e:"🍽️",bg:"var(--accent)",go:()=>fabGo("kalorie","#card-foodlog")},{t:"Databáze / hledat",e:"🔍",bg:"#5e5ce6",go:()=>fabGo("kalorie",null,"foodpick")},{t:"Sken kódu",e:"🏷️",bg:"#ff2d55",go:()=>fabGo("kalorie",null,"scan")},{t:"Fotka jídla",e:"📷",bg:"#30b0c7",go:()=>fabGo("kalorie","#card-ai")}],
   trenink:[{t:"Fitko",e:"🏋️",bg:"var(--accent)",go:()=>fabGo("trenink","#card-newworkout",null,null,"Fitko")},{t:"Kardio",e:"🏃",bg:"#ff2d55",go:()=>fabGo("trenink","#card-newworkout",null,null,"Kardio")},{t:"Jiné",e:"🧘",bg:"#5e5ce6",go:()=>fabGo("trenink","#card-newworkout",null,null,"Jiné")},{t:"Ze šablony",e:"📋",bg:"#ff9f0a",go:()=>fabGo("trenink","#card-templates")}],
-  telo:[{t:"Zvážit se",e:"⚖️",bg:"var(--accent)",go:()=>fabGo("telo","#weighHero")},{t:"Míry",e:"📏",bg:"#30d158",go:()=>fabGo("telo","#card-measures")},{t:"Detailní záznam",e:"📝",bg:"#ff9f0a",go:()=>fabGo("telo","#card-bodyrec")},{t:"Fotka postavy",e:"📸",bg:"#30b0c7",go:()=>fabGo("telo","#card-photos")}],
+  telo:[{t:"Zvážit se",e:"⚖️",bg:"var(--accent)",go:()=>fabGo("telo","#weighHero")},{t:"Míry",e:"📏",bg:"#30d158",go:()=>fabGo("telo","#card-measures")},{t:"Detailní záznam",e:"📝",bg:"#ff9f0a",go:()=>fabGo("telo","#card-bodyrec")}],
   prehled:[{t:"Přidat jídlo",e:"🍽️",bg:"var(--accent)",go:()=>fabGo("kalorie","#card-foodlog")},{t:"Nový trénink",e:"🏋️",bg:"#30d158",go:()=>fabGo("trenink","#card-newworkout")},{t:"Zvážit se",e:"⚖️",bg:"#ff9f0a",go:()=>fabGo("telo","#weighHero")}]
 };
 function fabGo(tab,card,run,focus,type){closeFab();switchTab(tab);
@@ -1638,8 +1722,7 @@ function fabGo(tab,card,run,focus,type){closeFab();switchTab(tab);
   if(run==="foodpick"){if(typeof openFoodPick==="function")openFoodPick();return;}
   if(card){const sec=document.getElementById("tab-"+tab);if(sec)showSolo(sec,card,focus);}
   if(type){const ts=$("#formSession [name=type]");if(ts){ts.value=type;ts.dispatchEvent(new Event("change",{bubbles:true}));}}}
-function buildFabMenu(){const items=[{t:"AI asistent",e:"💬",bg:"var(--accent)",go:()=>{closeFab();if(typeof openAsst==="function")openAsst()}}]
-    .concat(FABMENU[currentTab()]||FABMENU.prehled);const sheet=$("#fabSheet");if(!sheet)return;
+function buildFabMenu(){const items=(FABMENU[currentTab()]||FABMENU.prehled).slice();const sheet=$("#fabSheet");if(!sheet)return;
   sheet.innerHTML='<h3>Rychlé přidání</h3><div class="fab-grid">'+items.map((it,i)=>`<button class="fab-tile" type="button" data-fi="${i}"><span class="fi" style="background:${it.bg}">${it.e}</span>${it.t}</button>`).join("")+'</div>';
   $$("#fabSheet [data-fi]").forEach(b=>b.onclick=()=>items[+b.dataset.fi].go());}
 function openFab(){buildFabMenu();$("#fabBg").classList.add("show")}
@@ -1690,7 +1773,7 @@ function renderTab(name){
   else if(name==="trenink")renderSessions();
   else if(name==="telo"){renderBody();renderPhotos()}
   else if(name==="kalorie")renderCalories();
-  else if(name==="data")renderData()}
+  else if(name==="asistent"){renderChat();window.scrollTo(0,document.body.scrollHeight)}}
 function darkOn(){return document.documentElement.getAttribute("data-theme")==="dark"}
 function applyTheme(t){document.documentElement.setAttribute("data-theme",t);
   const tb=$("#themeBtn");if(tb)tb.innerHTML=t==="dark"?ICON_SUN:ICON_MOON;
@@ -1699,7 +1782,7 @@ function applyTheme(t){document.documentElement.setAttribute("data-theme",t);
   lsSet(TKEY,t)}
 (function(){const saved=lsGet(TKEY);const pref=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";applyTheme(saved||pref)})();
 function toggleTheme(){applyTheme(darkOn()?"light":"dark");
-  if(settingsOpen())renderSettings();else renderTab(currentTab())}
+  if(settingsOpen())renderSettings();else if(_statsTab)renderStatsFor(_statsTab);else renderTab(currentTab())}
 /* ---- Nastavení (gear) ---- */
 let _prevTab="prehled";
 function settingsOpen(){return $("#tab-nastaveni").classList.contains("active")}
@@ -1711,6 +1794,7 @@ function openSettings(){if(settingsOpen())return;_prevTab=currentTab();
   syncFab();window.scrollTo(0,0);renderSettings()}
 function closeSettings(){switchTab(_prevTab||"prehled")}
 function renderSettings(){const p=state.profile;
+  renderArchive();
   const tg=$("#themeToggle");if(tg)tg.classList.toggle("on",darkOn());
   const f=$("#formCalc");
   if(f){f.age.value=p.age;f.height.value=p.height;f.weight.value=p.weight;f.activity.value=p.activity;
@@ -1781,6 +1865,7 @@ function weightTrendInfo(){
   return {perWeek,cur,eta};
 }
 function renderDashboard(){
+  renderProgressRings();renderDataSummary();
   const g=$("#greet");const h=new Date().getHours();
   g.textContent="Přehled";
   const gs=$("#greetSub");if(gs)gs.textContent=(h<10?"Dobré ráno":h<18?"Ahoj":"Dobrý večer")+" · "+czLongDate();
@@ -2159,6 +2244,7 @@ function bestBefore(name,beforeId){let bm=0,be=0;const nl=name.toLowerCase();
   return{bm,be}}
 function renderSessions(){
   setTimeout(refreshNeedFill,0);
+  renderCardArchives();
   fillExDb();renderPlanBox();renderTplRow();renderTplList();renderStepsCard();
   const tsub=$("#treninkSub");if(tsub)tsub.textContent=czLongDate();
   const list=$("#sessList");
@@ -2169,8 +2255,9 @@ function renderSessions(){
   list.innerHTML=ss.map(s=>{
     const vol=Math.round(sessionVolKg(s));
     return `<div class="sess">
-      <div class="hd"><div class="dt">${fmtDateFull(s.date)}</div>
+      <div class="hd"><div class="dt">${s.title?esc(s.title):fmtDateFull(s.date)}${s.title?`<span class="muted" style="font-weight:600;font-size:12px"> · ${fmtDate(s.date)}</span>`:""}</div>
         <div class="acts">
+          <button data-ren-sess="${s.id}" title="Přejmenovat" aria-label="Přejmenovat">${ICON_PEN}</button>
           <button data-copy="${s.id}" title="Použít jako předlohu">⧉</button>
           <button class="trash" data-del-sess="${s.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button>
         </div></div>
@@ -2181,6 +2268,9 @@ function renderSessions(){
   $$("[data-del-sess]",list).forEach(b=>b.onclick=()=>{const id=b.dataset.delSess,s=state.sessions.find(x=>x.id===id);
     confirmDel("Smazat trénink?",(s?fmtDateFull(s.date)+" — ":"")+"záznam se přesune do archivu, kde ho 14 dní můžeš obnovit.",()=>{
       trashPush("session",s);state.sessions=state.sessions.filter(x=>x.id!==id);save();renderSessions();toast("Trénink smazán — v archivu 14 dní")})});
+  $$("[data-ren-sess]",list).forEach(b=>b.onclick=()=>{const s=state.sessions.find(x=>x.id===b.dataset.renSess);if(!s)return;
+    const dflt=s.title||((s.muscles&&s.muscles.length?s.muscles.join(" + "):s.type||"Trénink"));
+    openPrompt("Přejmenovat trénink","Název záznamu",dflt,v=>{s.title=v;save();renderSessions();toast("Přejmenováno na „"+v+"“")})});
   $$("[data-copy]",list).forEach(b=>b.onclick=()=>{
     const s=state.sessions.find(x=>x.id===b.dataset.copy);if(!s)return;
     fillSessionForm(s);window.scrollTo({top:0,behavior:"smooth"});toast("Předvyplněno podle "+fmtDate(s.date))});
@@ -2197,20 +2287,24 @@ $("#tplUse").addEventListener("click",()=>{
   fillSessionForm(t);toast("Šablona načtena: "+t.name)});
 $("#tplDel").addEventListener("click",()=>{
   const t=state.templates.find(x=>x.id===$("#tplSelect").value);if(!t)return;
-  confirmDel("Smazat šablonu?","„"+t.name+"“ se smaže. Uložené tréninky zůstanou.",()=>{
-    state.templates=state.templates.filter(x=>x.id!==t.id);save();renderTplRow();renderTplList();toast("Šablona smazána")})});
+  confirmDel("Smazat šablonu?","„"+t.name+"“ se přesune do archivu — 14 dní ji můžeš obnovit.",()=>{
+    trashPush("template",t);state.templates=state.templates.filter(x=>x.id!==t.id);save();renderTplRow();renderTplList();toast("Šablona v archivu (14 dní)")})});
 $("#saveTplBtn").addEventListener("click",()=>{
   const f=$("#formSession");
   if(curType()!=="Fitko"){const act=selectedMuscles()[0];if(!act){toast("Vyber aktivitu");return}
     const mins=Math.max(0,Math.round(+($("#cardioMin").value)||0));const cfg=CARDIO_DIST[act];const dist=cfg?(+$("#cardioDist").value||0):0;
     const exOne={n:act,unit:"time",sets:[{sec:mins*60,done:false}]};if(cfg&&dist>0){exOne.dist=dist;exOne.distUnit=cfg.u;exOne.mkind=cfg.kind;}
-    state.templates.push({id:uid(),name:act+(mins?" · "+mins+" min":""),muscles:[act],type:curType(),exercises:[exOne]});
-    save();renderTplRow();toast("💾 Šablona uložena");return;}
+    const dflt=act+(mins?" · "+mins+" min":"");
+    openPrompt("Uložit jako šablonu","Název šablony",dflt,nm=>{
+      state.templates.push({id:uid(),name:nm,muscles:[act],type:curType(),exercises:[exOne]});
+      save();renderTplRow();renderTplList();toast("💾 Šablona uložena: "+nm)},"Uložit šablonu");
+    return;}
   const ex=readExRows();const mus=selectedMuscles();
   if(!ex.length){toast("Přidej aspoň jeden cvik");return}
-  const name=(mus.length?mus.join(" + "):"Trénink")+" · "+ex.length+" cviků";
-  state.templates.push({id:uid(),name,muscles:mus,type:f.type.value,exercises:ex});
-  save();renderTplRow();toast("💾 Šablona uložena: "+name)});
+  const dflt=(mus.length?mus.join(" + "):"Trénink")+" · "+ex.length+" cviků";
+  openPrompt("Uložit jako šablonu","Název šablony",dflt,nm=>{
+    state.templates.push({id:uid(),name:nm,muscles:mus,type:f.type.value,exercises:ex});
+    save();renderTplRow();renderTplList();toast("💾 Šablona uložena: "+nm)},"Uložit šablonu")});
 
 $("#formSession").addEventListener("submit",e=>{
   e.preventDefault();const f=e.target;
@@ -2289,6 +2383,7 @@ $("#saveMeasuresBtn").addEventListener("click",()=>{const r=todayBody();
   $$("#measureList input[data-mk]").forEach(inp=>{r[inp.dataset.mk]=inp.value!==""?+inp.value:null});
   save();renderBody();toast("Měření uloženo")});
 function renderBody(){
+  renderCardArchives();
   renderWeighHero();
   renderMeasureList();
   const rows0=[...state.body].sort((a,b)=>b.date.localeCompare(a.date));
@@ -2302,8 +2397,8 @@ function renderBody(){
     return `<div class="item"><div class="tag">${FEEL[r.feeling]||"🙂"}</div><div class="body"><div class="t1">${fmtDateFull(r.date)}</div><div class="t2">${m||"bez měr"}${r.notes?" — "+esc(r.notes):""}</div></div><button class="del trash" data-del-body="${r.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div>`;
   }).join("");
   $$("[data-del-body]",list).forEach(b=>b.onclick=()=>{const id=b.dataset.delBody,r=state.body.find(x=>x.id===id);
-    confirmDel("Smazat záznam těla?",(r?fmtDateFull(r.date)+" — ":"")+"váha, míry i pocit k tomuto dni se smažou.",()=>{
-      state.body=state.body.filter(x=>x.id!==id);save();renderBody();toast("Smazáno")})});
+    confirmDel("Smazat záznam těla?",(r?fmtDateFull(r.date)+" — ":"")+"záznam se přesune do archivu, kde ho 14 dní můžeš obnovit.",()=>{
+      trashPush("body",r);state.body=state.body.filter(x=>x.id!==id);save();renderBody();toast("Smazáno — v archivu 14 dní")})});
 }
 $("#formBody").addEventListener("submit",e=>{
   e.preventDefault();const f=e.target;
@@ -2770,18 +2865,20 @@ function renderBatch(){const box=$("#batchBox");if(!box)return;
 function recipeTotals(r){return (r.items||[]).reduce((a,it)=>({kcal:a.kcal+(+it.kcal||0),p:a.p+(+it.protein||0),c:a.c+(+it.carbs||0),f:a.f+(+it.fat||0)}),{kcal:0,p:0,c:0,f:0})}
 function plurPorce(n){return n===1?"porce":(n>=2&&n<=4)?"porce":"porcí"}
 function sortedRecipes(){return [...(state.recipes||[])].sort((a,b)=>(b.fav?1:0)-(a.fav?1:0)||a.name.localeCompare(b.name,"cs"))}
-function renderRecipes(){const box=$("#recipeBox");if(!box)return;const rs=sortedRecipes();
+function renderRecipes(){const box=$("#recipeBox");if(!box)return;renderCardArchives();const rs=sortedRecipes();
   if(!rs.length){box.innerHTML=`<div class="empty" style="padding:22px 12px"><div class="big">🍳</div>Zatím žádné recepty.<br><span class="muted">Slož jídlo přes „Přidat jako ingredienci ↓" na Talíři, rozděl na porce a ulož jako recept — objeví se tady.</span></div>`;return}
   box.innerHTML=rs.map(r=>{const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
     const ing=(r.items||[]).map(it=>`<div class="ingr-row"><span>${esc(it.name)}</span><span>${macroLine(it.protein,it.carbs,it.fat,it.kcal)}</span></div>`).join("");
-    return `<div class="fav-card"><div class="fav-hd"><button class="favb${r.fav?" on":""}" data-fav="${r.id}" title="Oblíbený">${r.fav?"★":"☆"}</button><div class="fav-b"><div class="t1">${esc(r.name)}</div><div class="t2">${Math.round(t.kcal/sv)} kcal/porce · ${r.items.length} ${plurPolozka(r.items.length)} · ${sv} ${plurPorce(sv)}</div></div><button class="btn small secondary" type="button" data-open="${r.id}">Otevřít</button><button class="del trash" data-rmrec="${r.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div><div class="fav-actions"><button class="btn small" type="button" data-addrec="${r.id}">＋ Přidat 1 porci do deníku</button></div><details class="ingr"><summary>Ingredience & makra</summary>${ing||'<div class="small muted">Bez ingrediencí.</div>'}<div class="ingr-tot">Celkem: ${macroLine(t.p,t.c,t.f,t.kcal)}</div></details></div>`}).join("");
+    return `<div class="fav-card"><div class="fav-hd"><button class="favb${r.fav?" on":""}" data-fav="${r.id}" title="Oblíbený">${r.fav?"★":"☆"}</button><div class="fav-b"><div class="t1">${esc(r.name)}</div><div class="t2">${Math.round(t.kcal/sv)} kcal/porce · ${r.items.length} ${plurPolozka(r.items.length)} · ${sv} ${plurPorce(sv)}</div></div><button class="btn small secondary" type="button" data-open="${r.id}">Otevřít</button><button class="del" data-renrec="${r.id}" title="Přejmenovat" aria-label="Přejmenovat">${ICON_PEN}</button><button class="del trash" data-rmrec="${r.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div><div class="fav-actions"><button class="btn small" type="button" data-addrec="${r.id}">＋ Přidat 1 porci do deníku</button></div><details class="ingr"><summary>Ingredience & makra</summary>${ing||'<div class="small muted">Bez ingrediencí.</div>'}<div class="ingr-tot">Celkem: ${macroLine(t.p,t.c,t.f,t.kcal)}</div></details></div>`}).join("");
   $$("#recipeBox [data-fav]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.fav);if(r){r.fav=!r.fav;save();renderRecipes();renderFavFoods()}});
   $$("#recipeBox [data-open]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.open);if(!r)return;
     batch=clone(r.items);batchServings=Math.max(1,+r.servings||1);batchName=r.name;renderBatch();showSolo(document.getElementById("tab-kalorie"),"#card-foodlog");toast("🍽️ Recept je na talíři — uprav a sněz ⤵")});
   $$("#recipeBox [data-addrec]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.addrec);if(!r)return;const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
     addFood({name:r.name+" — 1 porce",kcal:Math.round(t.kcal/sv),protein:+(t.p/sv).toFixed(1),carbs:+(t.c/sv).toFixed(1),fat:+(t.f/sv).toFixed(1)});toast("Přidáno do deníku ✓")});
+  $$("#recipeBox [data-renrec]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.renrec);if(!r)return;
+    openPrompt("Přejmenovat recept","Název receptu",r.name,v=>{r.name=v;save();renderRecipes();renderFavFoods();toast("Přejmenováno na „"+v+"“")})});
   $$("#recipeBox [data-rmrec]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.rmrec);if(!r)return;
-    openModal("Smazat recept?",`„${r.name}" se smaže ze seznamu. Záznamy v deníku zůstanou.`,()=>{state.recipes=state.recipes.filter(x=>x.id!==r.id);save();renderRecipes();renderFavFoods();toast("Recept smazán")})});
+    openModal("Smazat recept?",`„${r.name}" se přesune do archivu — 14 dní ho můžeš obnovit. Záznamy v deníku zůstanou.`,()=>{trashPush("recipe",r);state.recipes=state.recipes.filter(x=>x.id!==r.id);save();renderRecipes();renderFavFoods();toast("Recept v archivu (14 dní)")})});
 }
 
 /* ---- Oblíbená jídla + rozložení maker ---- */
@@ -2795,9 +2892,10 @@ function toggleFavFood(o){state.favorites=state.favorites||[];const k=favKey(o.n
 function macroLine(p,c,f,kcal){return (kcal!=null?Math.round(kcal)+" kcal · ":"")+"B "+Math.round(p||0)+" · S "+Math.round(c||0)+" · T "+Math.round(f||0)}
 function favRecipeRow(r){const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
   const ing=(r.items||[]).map(it=>`<div class="ingr-row"><span>${esc(it.name)}</span><span>${macroLine(it.protein,it.carbs,it.fat,it.kcal)}</span></div>`).join("");
-  return `<div class="fav-card"><div class="fav-hd"><button class="favb on" data-unfavrec="${r.id}" title="Odebrat z oblíbených">★</button><div class="fav-b"><div class="t1">${esc(r.name)}</div><div class="t2">${Math.round(t.kcal/sv)} kcal/porce · ${r.items.length} ${plurPolozka(r.items.length)}</div></div></div><div class="fav-actions" style="display:flex;gap:8px"><button class="btn small" data-addrec="${r.id}" type="button">Sníst 1 porci</button><button class="btn small secondary" data-platerec="${r.id}" type="button">🍽️ Na talíř</button></div><details class="ingr"><summary>Ingredience & makra</summary>${ing||'<div class="small muted">Bez ingrediencí.</div>'}<div class="ingr-tot">Celkem: ${macroLine(t.p,t.c,t.f,t.kcal)} · ${sv} ${plurPorce(sv)}</div></details></div>`}
-function favFoodRow(f){return `<div class="fav-card"><div class="fav-hd"><button class="favb on" data-unfavfood="${f.id}" title="Odebrat z oblíbených">★</button><div class="fav-b"><div class="t1">${esc(f.name)}</div><div class="t2">${macroLine(f.protein,f.carbs,f.fat,f.kcal)}</div></div></div><div class="fav-actions" style="display:flex;gap:8px"><button class="btn small" data-addfood="${f.id}" type="button">Sníst</button><button class="btn small secondary" data-platefood="${f.id}" type="button">🍽️ Na talíř</button></div></div>`}
+  return `<div class="fav-card"><div class="fav-hd"><button class="favb on" data-unfavrec="${r.id}" title="Odebrat z oblíbených">★</button><div class="fav-b"><div class="t1">${esc(r.name)}</div><div class="t2">${Math.round(t.kcal/sv)} kcal/porce · ${r.items.length} ${plurPolozka(r.items.length)}</div></div><button class="del" data-renrec="${r.id}" title="Přejmenovat" aria-label="Přejmenovat">${ICON_PEN}</button></div><div class="fav-actions" style="display:flex;gap:8px"><button class="btn small" data-addrec="${r.id}" type="button">Sníst 1 porci</button><button class="btn small secondary" data-platerec="${r.id}" type="button">🍽️ Na talíř</button></div><details class="ingr"><summary>Ingredience & makra</summary>${ing||'<div class="small muted">Bez ingrediencí.</div>'}<div class="ingr-tot">Celkem: ${macroLine(t.p,t.c,t.f,t.kcal)} · ${sv} ${plurPorce(sv)}</div></details></div>`}
+function favFoodRow(f){return `<div class="fav-card"><div class="fav-hd"><button class="favb on" data-unfavfood="${f.id}" title="Odebrat z oblíbených">★</button><div class="fav-b"><div class="t1">${esc(f.name)}</div><div class="t2">${macroLine(f.protein,f.carbs,f.fat,f.kcal)}</div></div><button class="del" data-renfood="${f.id}" title="Přejmenovat" aria-label="Přejmenovat">${ICON_PEN}</button><button class="del trash" data-rmfav="${f.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div><div class="fav-actions" style="display:flex;gap:8px"><button class="btn small" data-addfood="${f.id}" type="button">Sníst</button><button class="btn small secondary" data-platefood="${f.id}" type="button">🍽️ Na talíř</button></div></div>`}
 function renderFavFoods(){const box=$("#favFoodsBox");if(!box)return;
+  renderCardArchives();
   const recs=sortedRecipes().filter(r=>r.fav);
   const foods=[...(state.favorites||[])].sort((a,b)=>a.name.localeCompare(b.name,"cs"));
   if(!recs.length&&!foods.length){box.innerHTML=`<div class="empty" style="padding:22px 12px"><div class="big">☆</div>Zatím žádná oblíbená jídla.<br><span class="muted">U jídla ve „Vybrat z databáze / historie" nebo u receptu klepni na hvězdičku ☆ a objeví se tady.</span></div>`;return}
@@ -2807,6 +2905,13 @@ function renderFavFoods(){const box=$("#favFoodsBox");if(!box)return;
   box.innerHTML=html;
   box.querySelectorAll("[data-unfavrec]").forEach(b=>b.onclick=()=>{const r=(state.recipes||[]).find(x=>x.id===b.dataset.unfavrec);if(r){r.fav=false;save();renderFavFoods();renderRecipes();toast("Odebráno z oblíbených")}});
   box.querySelectorAll("[data-unfavfood]").forEach(b=>b.onclick=()=>{state.favorites=(state.favorites||[]).filter(x=>x.id!==b.dataset.unfavfood);save();renderFavFoods();toast("Odebráno z oblíbených")});
+  box.querySelectorAll("[data-renfood]").forEach(b=>b.onclick=()=>{const f=(state.favorites||[]).find(x=>x.id===b.dataset.renfood);if(!f)return;
+    openPrompt("Přejmenovat oblíbené","Název jídla",f.name,v=>{f.name=v;save();renderFavFoods();toast("Přejmenováno na „"+v+"“")})});
+  box.querySelectorAll("[data-renrec]").forEach(b=>b.onclick=()=>{const r=(state.recipes||[]).find(x=>x.id===b.dataset.renrec);if(!r)return;
+    openPrompt("Přejmenovat recept","Název receptu",r.name,v=>{r.name=v;save();renderFavFoods();renderRecipes();toast("Přejmenováno na „"+v+"“")})});
+  box.querySelectorAll("[data-rmfav]").forEach(b=>b.onclick=()=>{const f=(state.favorites||[]).find(x=>x.id===b.dataset.rmfav);if(!f)return;
+    confirmDel("Smazat z oblíbených?","„"+f.name+"“ se přesune do archivu — 14 dní ho můžeš obnovit.",()=>{
+      trashPush("favorite",f);state.favorites=(state.favorites||[]).filter(x=>x.id!==f.id);save();renderFavFoods();toast("V archivu (14 dní)")})});
   box.querySelectorAll("[data-addrec]").forEach(b=>b.onclick=()=>{const r=(state.recipes||[]).find(x=>x.id===b.dataset.addrec);if(!r)return;const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);addFood({name:r.name+" — 1 porce",kcal:Math.round(t.kcal/sv),protein:+(t.p/sv).toFixed(1),carbs:+(t.c/sv).toFixed(1),fat:+(t.f/sv).toFixed(1)});renderCalories();toast("Přidáno na dnes ✓")});
   box.querySelectorAll("[data-addfood]").forEach(b=>b.onclick=()=>{const f=(state.favorites||[]).find(x=>x.id===b.dataset.addfood);if(!f)return;addFood({name:f.name,kcal:f.kcal,protein:f.protein,carbs:f.carbs,fat:f.fat});renderCalories();toast("Snědeno — zapsáno do dneška ✓")});
   box.querySelectorAll("[data-platefood]").forEach(b=>b.onclick=()=>{const f=(state.favorites||[]).find(x=>x.id===b.dataset.platefood);if(!f)return;
@@ -2956,6 +3061,7 @@ function renderPortion(){const pp=$("#portionPanel");
     closeFoodPick();renderCalories();toast("Snědeno — zapsáno do deníku ✓")};
 }
 function renderFoodHist(){const box=$("#foodHistList");if(!box)return;
+  renderCardArchives();
   const cnt=$("#foodHistCount");if(cnt)cnt.textContent=state.foods.length?state.foods.length+" záznamů":"";
   if(!state.foods.length){box.innerHTML=`<div class="empty" style="padding:22px 12px"><div class="big">🍽️</div>Zatím žádná jídla.<br><span class="muted">Co sníš, najdeš tady i po dnešku.</span></div>`;return}
   const byDay={};state.foods.forEach(f=>(byDay[f.date]=byDay[f.date]||[]).push(f));
@@ -2964,13 +3070,15 @@ function renderFoodHist(){const box=$("#foodHistList");if(!box)return;
     return `<div class="group-label" style="margin:16px 4px 4px;display:flex;justify-content:space-between;gap:8px"><span>${fmtDateFull(d)}${d===todayISO()?" · dnes":""}</span><span class="muted">${nbsp(kc)} kcal</span></div>`
       +it.map(x=>{const mac=[x.protein?`B ${Math.round(x.protein)}`:"",x.carbs?`S ${Math.round(x.carbs)}`:"",x.fat?`T ${Math.round(x.fat)}`:""].filter(Boolean).join(" · ");
         const cnh=x.name.replace(/\s*×\s*[\d,.]+$/,"");
-        return `<div class="item"><div class="tag" style="min-width:56px">${x.kcal}<br><span style="font-size:10px;font-weight:600">kcal</span></div><div class="body"><div class="t1">${esc(x.name)}</div><div class="t2">${mac||"bez maker"}</div></div><button class="del favb${isFavFood(cnh)?" on":""}" data-favh="${x.id}" title="Do oblíbených">${isFavFood(cnh)?"★":"☆"}</button><button class="del" data-copyh="${x.id}" title="Na talíř">⧉</button><button class="del trash" data-delh="${x.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div>`}).join("")}).join("");
+        return `<div class="item"><div class="tag" style="min-width:56px">${x.kcal}<br><span style="font-size:10px;font-weight:600">kcal</span></div><div class="body"><div class="t1">${esc(x.name)}</div><div class="t2">${mac||"bez maker"}</div></div><button class="del favb${isFavFood(cnh)?" on":""}" data-favh="${x.id}" title="Do oblíbených">${isFavFood(cnh)?"★":"☆"}</button><button class="del" data-renh="${x.id}" title="Přejmenovat" aria-label="Přejmenovat">${ICON_PEN}</button><button class="del" data-copyh="${x.id}" title="Na talíř">⧉</button><button class="del trash" data-delh="${x.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div>`}).join("")}).join("");
   $$("#foodHistList [data-favh]").forEach(b=>b.onclick=()=>{const x=state.foods.find(f=>f.id===b.dataset.favh);if(!x)return;
     const cn=x.name.replace(/\s*×\s*[\d,.]+$/,"");
     toggleFavFood({name:cn,kcal:x.kcal,protein:x.protein,carbs:x.carbs,fat:x.fat});renderFoodHist();renderFavFoods()});
   $$("#foodHistList [data-delh]").forEach(b=>b.onclick=()=>{const id=b.dataset.delh,x=state.foods.find(f=>f.id===id);
     confirmDel("Smazat jídlo?",(x?"„"+x.name+"“":"Záznam")+" se smaže z historie — v archivu ho najdeš 14 dní.",()=>{
       trashPush("food",x);state.foods=state.foods.filter(f=>f.id!==id);save();renderCalories();toast("Smazáno — v archivu 14 dní")})});
+  $$("#foodHistList [data-renh]").forEach(b=>b.onclick=()=>{const x=state.foods.find(f=>f.id===b.dataset.renh);if(!x)return;
+    openPrompt("Přejmenovat jídlo","Název jídla",x.name,v=>{x.name=v;save();renderCalories();toast("Přejmenováno na „"+v+"“")})});
   $$("#foodHistList [data-copyh]").forEach(b=>b.onclick=()=>{const x=state.foods.find(f=>f.id===b.dataset.copyh);if(!x)return;
     prefillFood(x.name.replace(/\s*×\s*\d+$/,""),x.kcal,x.protein,x.carbs,x.fat);
     showSolo(document.getElementById("tab-kalorie"),"#card-foodlog");toast("🍽️ Na talíři — uprav a sněz ⤵")});
@@ -3425,39 +3533,169 @@ function renderBodyTable(){
   const rows=[...state.body].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,10);
   $("#bodyTable").innerHTML=rows.length?`<table class="mini"><tr><th>Datum</th><th>Váha</th><th>Pas</th><th>Biceps</th><th>Hrudník</th><th>Pocit</th></tr>${rows.map(r=>`<tr><td>${fmtDate(r.date)}</td><td>${r.weight??"–"}</td><td>${r.waist??"–"}</td><td>${r.biceps??"–"}</td><td>${r.chest??"–"}</td><td>${FEEL[r.feeling]||"–"}</td></tr>`).join("")}</table>`:`<div class="empty">Zatím žádná měření.</div>`;
 }
+/* ---- Archiv smazaných (obecný, 14 dní) ---- */
+const TRASH_LBL={session:"trénink",food:"jídlo",template:"šablona",favorite:"oblíbené",recipe:"recept",body:"měření"};
+const TRASH_ALL=["session","food","template","favorite","recipe","body"];
+function plurDen(n){return n===1?"den":(n>=2&&n<=4)?"dny":"dní"}
+function trashLeft(x){return Math.max(0,TRASH_DAYS-Math.floor((Date.now()-(+x.at||0))/864e5))}
+function trashMeta(x){const it=x.item||{},k=x.kind;
+  if(k==="session")return{t1:(it.title?esc(it.title)+" · ":"")+fmtDateFull(it.date||todayISO()),t2:((it.muscles||[]).map(esc).join(" · ")||"bez partií")+" · "+esc(it.type||"Trénink")+" · "+((it.exercises||[]).length)+" cviků"};
+  if(k==="food")return{t1:esc(it.name||"Jídlo"),t2:fmtDateFull(it.date||todayISO())+" · "+Math.round(+it.kcal||0)+" kcal"};
+  if(k==="template")return{t1:esc(it.name||"Šablona"),t2:((it.muscles||[]).map(esc).join(" · ")||esc(it.type||"—"))+" · "+((it.exercises||[]).length)+" cviků"};
+  if(k==="favorite")return{t1:esc(it.name||"Jídlo"),t2:macroLine(it.protein,it.carbs,it.fat,it.kcal)};
+  if(k==="recipe")return{t1:esc(it.name||"Recept"),t2:((it.items||[]).length)+" ingrediencí · "+Math.max(1,+it.servings||1)+" porcí"};
+  if(k==="body")return{t1:fmtDateFull(it.date||todayISO()),t2:[it.weight!=null?it.weight+" kg":"",it.waist?"pas "+it.waist:"",it.biceps?"biceps "+it.biceps:"",it.chest?"hrudník "+it.chest:""].filter(Boolean).join(" · ")||"bez měr"};
+  return{t1:esc(it.name||"Záznam"),t2:""}}
+function archRow(x){const m=trashMeta(x),d=trashLeft(x);
+  return '<div class="item"><div class="tag" style="min-width:60px;font-size:11px;line-height:1.3">'+(TRASH_LBL[x.kind]||"záznam")+'<br><span style="font-size:10px;font-weight:600">'+d+" "+plurDen(d)+'</span></div>'
+    +'<div class="body"><div class="t1">'+m.t1+'</div><div class="t2">'+m.t2+'</div></div>'
+    +'<button class="btn small secondary" type="button" data-restore="'+x.tid+'" style="flex:none;width:auto;padding:0 12px">Obnovit</button>'
+    +'<button class="del trash" type="button" data-purge="'+x.tid+'" title="Smazat navždy" aria-label="Smazat navždy">'+ICON_TRASH+'</button></div>'}
+function trashRestore(x){const it=clone(x.item||{});const k=x.kind;
+  if(k==="session"){if(!state.sessions.some(s=>s.id===it.id))state.sessions.push(it)}
+  else if(k==="food"){if(!state.foods.some(f=>f.id===it.id))state.foods.push(it)}
+  else if(k==="template"){state.templates=state.templates||[];if(!state.templates.some(t=>t.id===it.id))state.templates.push(it)}
+  else if(k==="favorite"){state.favorites=state.favorites||[];if(!state.favorites.some(f=>f.id===it.id))state.favorites.push(it)}
+  else if(k==="recipe"){state.recipes=state.recipes||[];if(!state.recipes.some(r=>r.id===it.id))state.recipes.push(it)}
+  else if(k==="body"){if(!state.body.some(r=>r.id===it.id))state.body.push(it)}
+  state.trash=(state.trash||[]).filter(y=>y.tid!==x.tid);save();refreshAfterTrash(k)}
+function refreshAfterTrash(kind){
+  try{if(kind==="session"||kind==="template"){if(typeof renderSessions==="function")renderSessions()}
+  if(kind==="food"||kind==="favorite"||kind==="recipe"){if(typeof renderCalories==="function")renderCalories();if(typeof renderFavFoods==="function")renderFavFoods();if(typeof renderRecipes==="function")renderRecipes()}
+  if(kind==="body"){if(typeof renderBody==="function")renderBody()}
+  }catch(e){}
+  renderArchive();renderCardArchives()}
+function wireArch(root){
+  root.querySelectorAll("[data-restore]").forEach(bt=>bt.onclick=()=>{
+    const x=(state.trash||[]).find(y=>y.tid===bt.dataset.restore);if(!x)return;
+    const k=x.kind;trashRestore(x);toast((TRASH_LBL[k]||"Záznam")+" obnoveno ✓")});
+  root.querySelectorAll("[data-purge]").forEach(bt=>bt.onclick=()=>{
+    const tid=bt.dataset.purge;
+    confirmDel("Smazat navždy?","Záznam se smaže nevratně — obnovit už nepůjde.",()=>{
+      state.trash=(state.trash||[]).filter(y=>y.tid!==tid);save();renderArchive();renderCardArchives();toast("Smazáno navždy")})})}
+function trashOf(kinds){return (state.trash||[]).filter(x=>kinds.indexOf(x.kind)>=0).sort((p,q)=>(+q.at||0)-(+p.at||0))}
+function renderArchiveBlock(elId,kinds,label){
+  const el=document.getElementById(elId);if(!el)return;
+  const t=trashOf(kinds);
+  if(!t.length){el.style.display="none";el.innerHTML="";el.open=false;return}
+  el.style.display="";
+  el.innerHTML='<summary>'+(label||"Archiv smazaných")+' · '+t.length+'</summary><div style="padding-top:6px">'+t.map(archRow).join("")+'<div class="small muted" style="padding:8px 4px 2px">Obnovit můžeš '+TRASH_DAYS+' dní, pak se maže natrvalo.</div></div>';
+  wireArch(el)}
+function renderCardArchives(){
+  if(pruneTrash())save();
+  renderArchiveBlock("archTr",["session"],"Archiv tréninků");
+  renderArchiveBlock("archFood",["food"],"Archiv jídel");
+  renderArchiveBlock("archTpl",["template"],"Archiv šablon");
+  renderArchiveBlock("archFav",["favorite"],"Archiv oblíbených");
+  renderArchiveBlock("archRcp",["recipe"],"Archiv receptů");
+  renderArchiveBlock("archBody",["body"],"Archiv měření")}
 function renderArchive(){const box=$("#archiveBox");if(!box)return;
   if(pruneTrash())save();
-  const t=[...(state.trash||[])].sort((a,b)=>(+b.at||0)-(+a.at||0));
-  if(!t.length){box.innerHTML='<div class="empty" style="padding:22px 12px"><div class="big">'+EMPTY_SVG+'</div>Archiv je prázdný.<br><span class="muted">Smazané tréninky a jídla tu počkají 14 dní, než zmizí natrvalo.</span></div>';return}
-  const left=x=>Math.max(0,TRASH_DAYS-Math.floor((Date.now()-(+x.at||0))/864e5));
-  const plurD=n=>n===1?"den":(n>=2&&n<=4)?"dny":"dní";
-  box.innerHTML=t.map(x=>{const it=x.item||{},isS=x.kind==="session";
-    const t1=isS?(fmtDateFull(it.date||todayISO())+" · "+esc(it.type||"Trénink")):esc(it.name||"Jídlo");
-    const t2=isS?(((it.muscles||[]).map(esc).join(" · ")||"bez partií")+" · "+((it.exercises||[]).length)+" cviků")
-      :(fmtDateFull(it.date||todayISO())+" · "+Math.round(+it.kcal||0)+" kcal");
-    const d=left(x);
-    return '<div class="item"><div class="tag" style="min-width:58px;font-size:11px;line-height:1.3">'+(isS?"trénink":"jídlo")+'<br><span style="font-size:10px;font-weight:600">'+d+" "+plurD(d)+'</span></div>'
-      +'<div class="body"><div class="t1">'+t1+'</div><div class="t2">'+t2+'</div></div>'
-      +'<button class="btn small secondary" type="button" data-restore="'+x.tid+'" style="flex:none;width:auto;padding:0 12px">Obnovit</button>'
-      +'<button class="del trash" type="button" data-purge="'+x.tid+'" title="Smazat navždy" aria-label="Smazat navždy">'+ICON_TRASH+'</button></div>'}).join("");
-  $$("#archiveBox [data-restore]").forEach(b=>b.onclick=()=>{
-    const x=(state.trash||[]).find(y=>y.tid===b.dataset.restore);if(!x)return;
-    const it=clone(x.item);
-    if(x.kind==="session"){if(!state.sessions.some(s=>s.id===it.id))state.sessions.push(it)}
-    else{if(!state.foods.some(f=>f.id===it.id))state.foods.push(it)}
-    state.trash=(state.trash||[]).filter(y=>y.tid!==x.tid);save();
-    renderArchive();if(typeof renderCalories==="function"&&x.kind==="food")renderCalories();
-    toast(x.kind==="session"?"Trénink obnoven ✓":"Jídlo obnoveno ✓")});
-  $$("#archiveBox [data-purge]").forEach(b=>b.onclick=()=>{
-    const x=(state.trash||[]).find(y=>y.tid===b.dataset.purge);
-    confirmDel("Smazat navždy?",(x&&x.item&&(x.item.name||x.item.date)?"Záznam se smaže nevratně — obnovit už nepůjde.":"Záznam se smaže nevratně."),()=>{
-      state.trash=(state.trash||[]).filter(y=>y.tid!==b.dataset.purge);save();renderArchive();toast("Smazáno navždy")})});
+  const t=trashOf(TRASH_ALL);
+  if(!t.length){box.innerHTML='<div class="empty" style="padding:22px 12px"><div class="big">'+EMPTY_SVG+'</div>Archiv je prázdný.<br><span class="muted">Smazané záznamy tu počkají 14 dní, než zmizí natrvalo.</span></div>';return}
+  box.innerHTML=t.map(archRow).join("");
+  wireArch(box)}
+/* ---- v47: grafy a tabulky jídla ---- */
+function foodDays(cut){const m={};state.foods.forEach(f=>{if(f.date<cut)return;
+  const d=m[f.date]||(m[f.date]={kcal:0,p:0,c:0,f:0});
+  d.kcal+=+f.kcal||0;d.p+=+f.protein||0;d.c+=+f.carbs||0;d.f+=+f.fat||0});return m}
+function legendOpt(c){return{display:true,position:"bottom",labels:{color:c.muted,boxWidth:9,boxHeight:9,usePointStyle:true,pointStyle:"circle",padding:14,font:{size:11.5,weight:"600"}}}}
+function chartMacroTime(){
+  const cut=periodCut(),p=+($("#periodInput").value||90),m=foodDays(cut);
+  const dates=Object.keys(m).sort();
+  if(!dates.length)return emptyCanvas("chMacroTime","Žádná jídla v tomto období.");
+  showCanvas("chMacroTime");destroy("chMacroTime");const c=C();
+  let labels,P,S,F;
+  if(p===0||p>120){const w={};dates.forEach(d=>{const k=mondayOf(d);(w[k]=w[k]||[]).push(m[d])});
+    const ks=Object.keys(w).sort();labels=ks.map(fmtDate);
+    const avg=(k,f)=>Math.round(w[k].reduce((a,x)=>a+x[f],0)/w[k].length);
+    P=ks.map(k=>avg(k,"p"));S=ks.map(k=>avg(k,"c"));F=ks.map(k=>avg(k,"f"));
+  }else{labels=dates.map(fmtDate);P=dates.map(d=>Math.round(m[d].p));S=dates.map(d=>Math.round(m[d].c));F=dates.map(d=>Math.round(m[d].f))}
+  const o=baseOpts();o.scales.x.stacked=true;o.scales.y.stacked=true;
+  o.plugins.legend=legendOpt(c);o.plugins.tooltip.displayColors=true;
+  o.plugins.tooltip.callbacks={label:x=>x.dataset.label+": "+Math.round(x.raw)+" g"};
+  charts.chMacroTime=new Chart($("#chMacroTime"),{type:"bar",data:{labels,datasets:[
+    {label:"Bílkoviny",data:P,backgroundColor:c.s2,borderRadius:3,maxBarThickness:20},
+    {label:"Sacharidy",data:S,backgroundColor:c.s3,borderRadius:3,maxBarThickness:20},
+    {label:"Tuky",data:F,backgroundColor:c.s4,borderRadius:3,maxBarThickness:20}]},options:o});
 }
-function renderData(){
-  renderProgressRings();
-  renderArchive();
-  chartWeightBig();chartStrength();renderPrTable();chartVolume();renderHeatmap();
-  renderMeasurePos();chartFeel();chartCalBig();chartSteps();renderBodyTable();
+function chartMacroSplit(){
+  const info=$("#macroSplitInfo");const m=foodDays(periodCut());const ds=Object.keys(m);
+  if(!ds.length){if(info)info.innerHTML="";return emptyCanvas("chMacroSplit","Žádná jídla v tomto období.")}
+  showCanvas("chMacroSplit");destroy("chMacroSplit");const c=C();
+  let p=0,s=0,f=0,k=0;ds.forEach(d=>{p+=m[d].p;s+=m[d].c;f+=m[d].f;k+=m[d].kcal});
+  const n=ds.length,kp=p*4,ks=s*4,kf=f*9,tot=kp+ks+kf;
+  const pct=v=>tot?Math.round(v/tot*100):0;
+  const o={responsive:true,maintainAspectRatio:false,cutout:"64%",
+    plugins:{legend:legendOpt(c),tooltip:{backgroundColor:c.ink,titleColor:c.card,bodyColor:c.card,padding:11,cornerRadius:10,displayColors:true,
+      callbacks:{label:x=>x.label+": "+pct(x.raw)+" % kcal"}}}};
+  charts.chMacroSplit=new Chart($("#chMacroSplit"),{type:"doughnut",
+    data:{labels:["Bílkoviny","Sacharidy","Tuky"],datasets:[{data:[kp,ks,kf],backgroundColor:[c.s2,c.s3,c.s4],borderWidth:0,hoverOffset:6}]},options:o});
+  if(info)info.innerHTML=
+    '<div class="c"><div class="n">'+Math.round(p/n)+' g</div><div class="l">ø bílkoviny · '+pct(kp)+' %</div></div>'
+   +'<div class="c"><div class="n">'+Math.round(s/n)+' g</div><div class="l">ø sacharidy · '+pct(ks)+' %</div></div>'
+   +'<div class="c"><div class="n">'+Math.round(f/n)+' g</div><div class="l">ø tuky · '+pct(kf)+' %</div></div>';
+}
+function chartProtein(){
+  const info=$("#proteinInfo");const m=foodDays(periodCut());
+  const dates=Object.keys(m).sort();
+  if(!dates.length){if(info)info.innerHTML="";return emptyCanvas("chProtein","Žádná jídla v tomto období.")}
+  showCanvas("chProtein");destroy("chProtein");const c=C();
+  const tgt=state.profile.targetProtein;
+  const vals=dates.map(d=>Math.round(m[d].p));
+  const ds=[{type:"bar",data:vals,backgroundColor:vals.map(v=>tgt?(v>=tgt?c.s2:c.grid):c.s2),borderRadius:3,borderSkipped:false,maxBarThickness:18}];
+  if(tgt)ds.push({type:"line",data:vals.map(()=>tgt),borderColor:c.muted,borderWidth:1.5,borderDash:[3,4],pointRadius:0});
+  const o=baseOpts();o.plugins.tooltip.callbacks={label:x=>Math.round(x.raw)+" g bílkovin"};
+  charts.chProtein=new Chart($("#chProtein"),{data:{labels:dates.map(fmtDate),datasets:ds},options:o});
+  const avg=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  if(info){const hit=tgt?vals.filter(v=>v>=tgt).length:0;
+    info.innerHTML='Průměrně <b>'+avg+' g</b> denně'+(tgt?' · cíl '+tgt+' g splněn <b>'+hit+'</b>/'+vals.length+' dní':' <span class="muted">— nastav si cíl bílkovin v Nastavení</span>');}
+}
+function chartFoodDow(){
+  const info=$("#dowInfo");const m=foodDays(periodCut());const dates=Object.keys(m);
+  if(!dates.length){if(info)info.innerHTML="";return emptyCanvas("chDow","Žádná jídla v tomto období.")}
+  showCanvas("chDow");destroy("chDow");const c=C();
+  const DOW=["Po","Út","St","Čt","Pá","So","Ne"],sum=[0,0,0,0,0,0,0],cnt=[0,0,0,0,0,0,0];
+  dates.forEach(d=>{const i=(new Date(d+"T00:00:00").getDay()+6)%7;sum[i]+=m[d].kcal;cnt[i]++});
+  const vals=sum.map((s,i)=>cnt[i]?Math.round(s/cnt[i]):0);
+  const tgt=state.profile.targetKcal;
+  const ds=[{type:"bar",data:vals,backgroundColor:vals.map(v=>tgt&&v>tgt?c.warn:c.s1),borderRadius:4,borderSkipped:false,maxBarThickness:34}];
+  if(tgt)ds.push({type:"line",data:vals.map(()=>tgt),borderColor:c.muted,borderWidth:1.5,borderDash:[3,4],pointRadius:0});
+  const o=baseOpts();o.scales.x.ticks.maxTicksLimit=7;
+  o.plugins.tooltip.callbacks={label:x=>Math.round(x.raw)+" kcal ø"};
+  charts.chDow=new Chart($("#chDow"),{data:{labels:DOW,datasets:ds},options:o});
+  const mx=vals.indexOf(Math.max(...vals)),mn=(()=>{let bi=-1,bv=Infinity;vals.forEach((v,i)=>{if(cnt[i]&&v<bv){bv=v;bi=i}});return bi})();
+  if(info)info.innerHTML=mx>=0&&mn>=0?("Nejvíc jíš v <b>"+DOW[mx]+"</b> ("+nbsp(vals[mx])+" kcal), nejmíň v <b>"+DOW[mn]+"</b> ("+nbsp(vals[mn])+" kcal)."):"";
+}
+function renderFoodDaysTable(){
+  const box=$("#foodDaysTable");if(!box)return;
+  const m=foodDays(periodCut());const ds=Object.keys(m).sort((a,b)=>b.localeCompare(a)).slice(0,14);
+  if(!ds.length){box.innerHTML='<div class="empty">Žádná jídla v tomto období.</div>';return}
+  const tgt=state.profile.targetKcal;
+  box.innerHTML='<table class="mini"><tr><th style="text-align:left">Datum</th><th>kcal</th><th>B</th><th>S</th><th>T</th>'+(tgt?'<th>vs. cíl</th>':'')+'</tr>'
+   +ds.map(d=>{const x=m[d],diff=Math.round(x.kcal-(tgt||0));
+     return '<tr><td style="text-align:left">'+fmtDate(d)+(d===todayISO()?' <span class="muted">dnes</span>':'')+'</td>'
+      +'<td><b>'+nbsp(Math.round(x.kcal))+'</b></td><td>'+Math.round(x.p)+'</td><td>'+Math.round(x.c)+'</td><td>'+Math.round(x.f)+'</td>'
+      +(tgt?'<td style="color:'+(diff>0?"var(--warn-ink)":"var(--good-ink)")+';font-weight:700">'+(diff>0?"+":"")+nbsp(diff)+'</td>':'')+'</tr>'}).join("")
+   +'</table>';
+}
+function renderTopFoods(){
+  const box=$("#topFoodsTable");if(!box)return;
+  const cut=periodCut(),m={};
+  state.foods.forEach(f=>{if(f.date<cut)return;
+    const nm=String(f.name||"").replace(/\s*×\s*[\d,.]+$/,"").trim();if(!nm)return;
+    if(/^(souhrn dne|souhrn|celkem|den|denní souhrn)$/i.test(nm))return;
+    const k=nm.toLowerCase(),e=m[k]||(m[k]={name:nm,n:0,kcal:0,p:0});
+    e.n++;e.kcal+=+f.kcal||0;e.p+=+f.protein||0});
+  const rows=Object.keys(m).map(k=>m[k]).sort((a,b)=>b.n-a.n||b.kcal-a.kcal).slice(0,12);
+  if(!rows.length){box.innerHTML='<div class="empty">Žádná jídla v tomto období.</div>';return}
+  box.innerHTML='<table class="mini"><tr><th style="text-align:left">Jídlo</th><th>×</th><th>ø kcal</th><th>ø B</th><th>Celkem</th></tr>'
+   +rows.map(r=>'<tr><td style="text-align:left">'+esc(r.name.length>28?r.name.slice(0,28)+"…":r.name)+'</td><td><b>'+r.n+'</b></td><td>'+Math.round(r.kcal/r.n)+'</td><td>'+Math.round(r.p/r.n)+' g</td><td>'+nbsp(Math.round(r.kcal))+'</td></tr>').join("")
+   +'</table>';
+}
+function renderData(){renderProgressRings();renderArchive();renderCardArchives();renderDataSummary()}
+function renderDataSummary(){
+  if(!$("#dataSummary"))return;
   const s=state;
   const totalVol=s.sessions.reduce((a,x)=>a+sessionVolKg(x),0);
   const exTotal=s.sessions.reduce((a,x)=>a+x.exercises.length,0);
@@ -3471,7 +3709,7 @@ function renderData(){
     Záznamů jídla: <b>${s.foods.length}</b> · průměr 30 dní: <b>${cal30?cal30+" kcal/den":"–"}</b><br>
     Dní s kroky: <b>${Object.keys(s.steps).length}</b>`;
 }
-$("#periodInput").addEventListener("change",renderData);
+$("#periodInput").addEventListener("change",()=>{if(_statsTab)renderStatsFor(_statsTab)});
 $("#exSelect").addEventListener("change",chartStrength);
 (function(){const sw=$("#exSwipe");if(!sw)return;
   sw.addEventListener("scroll",()=>{const cd=sw.querySelector(".swipe-card");if(!cd)return;
@@ -3594,6 +3832,21 @@ function openModal(title,text,cb){$("#modalTitle").textContent=title;$("#modalTe
 function closeModal(){$("#modalBg").classList.remove("show");modalCb=null}
 $("#modalCancel").addEventListener("click",closeModal);
 $("#modalBg").addEventListener("click",e=>{if(e.target===$("#modalBg"))closeModal()});
+/* v47: dialog na název / přejmenování */
+let promptCb=null;
+function openPrompt(title,label,val,cb,okText){
+  const bg=$("#promptBg");if(!bg){const v=window.prompt(label||title,val||"");if(v&&v.trim()&&cb)cb(v.trim());return}
+  $("#promptTitle").textContent=title;$("#promptLabel").textContent=label||"Název";
+  const i=$("#promptInput");i.value=val==null?"":String(val);
+  $("#promptOk").textContent=okText||"Uložit";promptCb=cb;bg.classList.add("show");
+  setTimeout(()=>{try{i.focus();i.select()}catch(e){}},70)}
+function closePrompt(){const bg=$("#promptBg");if(bg)bg.classList.remove("show");promptCb=null}
+function promptSubmit(){const v=($("#promptInput").value||"").trim();if(!v){toast("Zadej název");return}
+  const cb=promptCb;closePrompt();if(cb)cb(v)}
+$("#promptOk").addEventListener("click",promptSubmit);
+$("#promptCancel").addEventListener("click",closePrompt);
+$("#promptBg").addEventListener("click",e=>{if(e.target===$("#promptBg"))closePrompt()});
+$("#promptInput").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();promptSubmit()}});
 $("#modalOk").addEventListener("click",()=>{if(modalCb)modalCb();closeModal()});
 $("#wipeBtn").addEventListener("click",()=>{
   openModal("Smazat všechna data?","Smaže i fotky. Tuto akci nelze vrátit — doporučujeme nejdřív stáhnout zálohu.",async()=>{
@@ -3681,12 +3934,8 @@ let chatView=[], chatPend=[], chatBusy=false, chatRec=null;
 function chatLoad(){try{const j=JSON.parse(lsGet(CHATKEY)||"[]");chatView=Array.isArray(j)?j.slice(-80):[]}catch(e){chatView=[]}}
 function chatSave(){try{lsSet(CHATKEY,JSON.stringify(chatView.slice(-80)))}catch(e){}}
 function asstOpen(){return $("#tab-asistent").classList.contains("active")}
-function openAsst(){if(asstOpen())return;_prevTab=currentTab();
-  $$("section").forEach(s=>s.classList.remove("active"));
-  $("#tab-asistent").classList.add("active");
-  $$("nav button").forEach(b=>b.classList.remove("on"));
-  syncFab();renderChat();window.scrollTo(0,document.body.scrollHeight)}
-function closeAsst(){switchTab(_prevTab||"prehled")}
+function openAsst(){if(asstOpen())return;_prevTab=currentTab();switchTab("asistent")}
+function closeAsst(){switchTab(_prevTab&&_prevTab!=="asistent"?_prevTab:"prehled")}
 
 /* ---- kontext: co asistent o tobě ví ---- */
 function setStr(e){const u=exUnit(e);return exSets(e).map(s=>u==="kg"?((+s.w||0)+"x"+(+s.r||0)):u==="reps"?String(+s.r||0):(Math.round((+s.sec||0))+"s")).join(",")}
@@ -3963,6 +4212,7 @@ function renderChatImgs(){const box=$("#chatImgs");if(!box)return;
 (function initAsst(){
   chatLoad();
   const ab=$("#asstBtn");if(ab)ab.addEventListener("click",()=>asstOpen()?closeAsst():openAsst());
+  renderCardArchives();
   const inp=$("#chatInput"),send=$("#chatSend");
   function grow(){inp.style.height="auto";inp.style.height=Math.min(132,inp.scrollHeight)+"px"}
   if(inp){inp.addEventListener("input",grow);
@@ -4150,6 +4400,25 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
     if (h) h.innerHTML = txt + ' <span class="hint">' + hint + "</span>";
   }
 
+  /* karta „Soukromí a data": odstavec o tom, kudy dotazy na AI tečou.
+     Zdroj appky zná jen variantu s vlastním klíčem — sdílený režim dopisujeme
+     tady, aby o proxy věděl jenom tenhle soubor. */
+  function routeNote(mine) {
+    var l = document.querySelector("#aiRouteLabel");
+    var n = document.querySelector("#aiRouteNote");
+    if (!l || !n) return;
+    if (mine) {
+      l.textContent = "Kdo za AI platí";
+      n.textContent = "Dotazy jdou na tvůj vlastní API klíč, který sis vložil výš — " +
+        "účtuje si je Anthropic přímo tobě a nikdo mezi tím není.";
+    } else {
+      l.textContent = "Jak to funguje bez tvého klíče";
+      n.textContent = "Dotazy jdou přes můj přeposílací server, který drží můj API klíč — " +
+        "proto AI funguje rovnou, bez nastavování, a platím ji já. Server dotazy neukládá, " +
+        "jen je předá dál. Chceš-li to mít úplně mimo mě, vlož si vlastní klíč výš.";
+    }
+  }
+
   var _rKey = window.renderApiKeyBox;
   window.renderApiKeyBox = function () {
     var p = state && state.profile;
@@ -4159,6 +4428,7 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
     if (own(p.apiKey)) {
       _rKey.apply(this, arguments);
       heading("AI klíč", "pro foto jídla a plán tréninku");
+      routeNote(true);
       var b = document.querySelector("#apiKeyBox");
       if (b) {
         var note = document.createElement("p");
@@ -4175,6 +4445,7 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
     p.apiKey = "";
     try { _rKey.apply(this, arguments) } finally { p.apiKey = SENT }
 
+    routeNote(false);
     var box = document.querySelector("#apiKeyBox");
     if (!box) return;
     heading("AI", "foto jídla a plán tréninku");
