@@ -3951,21 +3951,33 @@ if(window.Chart){Chart.defaults.font.family="-apple-system,system-ui,'Segoe UI',
     const vv=window.visualViewport;
     const top=vv?vv.offsetTop:0,vh=vv?vv.height:window.innerHeight;
     const r=el.getBoundingClientRect();
-    const cil=top+Math.min(vh*0.38,Math.max(90,vh-120));
-    const posun=(r.top+r.height/2)-cil;
-    if(Math.abs(posun)<28)return;
+    /* v40: reveal zasahne JEN kdyz pole neni cele videt — iOS si po fokusu
+       scrolluje sam a pole si typicky poklada PAR PX NAD KLAVESNICI, takze
+       jakakoli "pohodlna rezerva" u spodni hrany znamena rvacku dvou scrollu
+       a poskoceni obsahu (porucha z v39). A kdyz uz zasahne, scrolluje
+       MINIMALNE (pole k nejblizsi hrane), zadne tahani na 38% linku. */
+    const M=12;
+    if(r.top>=top+M&&r.bottom<=top+vh-M)return;
+    const posun=(r.bottom>top+vh-M)?r.bottom-(top+vh-M):r.top-(top+M);
     const sc=scrollable(el);
     if(sc)sc.scrollTop+=posun;else window.scrollBy(0,posun)}
-  let t=null;
+  let t=null,armedUntil=0;
   function plan(ms){clearTimeout(t);t=setTimeout(reveal,ms)}
+  function disarm(){armedUntil=0;clearTimeout(t)}
   window.kbReveal=reveal; /* pro testy */
   document.addEventListener("focusin",e=>{const el=e.target;
-    if(el&&FRM.test(el.tagName||""))plan(380)});
+    if(el&&FRM.test(el.tagName||"")){armedUntil=Date.now()+1200;plan(380)}});
+  /* v40: reveal je "ozbrojeny" jen ~1,2 s po fokusu — tedy kolem otevirani
+     klavesnice. Jakmile uzivatel sahne na scroll (touchmove/wheel), rizeni
+     prebira on a reveal se odzbroji: resize viewportu totiz v Safari chodi
+     i pri rucnim scrollu (sbaleni listy) a stahoval uzivatele zpatky k poli. */
+  window.addEventListener("touchmove",disarm,{passive:true});
+  window.addEventListener("wheel",disarm,{passive:true});
   if(window.visualViewport){
     const vv=window.visualViewport;
     function kbVar(){const o=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);
       document.documentElement.style.setProperty("--kb",(o>60?Math.round(o):0)+"px")}
-    vv.addEventListener("resize",function(){kbVar();plan(120)});
+    vv.addEventListener("resize",function(){kbVar();if(Date.now()<armedUntil)plan(120)});
     vv.addEventListener("scroll",kbVar);
   }
 })();
