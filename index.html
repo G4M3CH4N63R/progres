@@ -1124,6 +1124,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="card">
         <h2>Cíl kalorií &amp; profil <span class="hint">Mifflin–St Jeor</span></h2>
         <form id="formCalc">
+          <label class="field"><span>Oslovení v chatu (nepovinné)</span><input type="text" name="uname" maxlength="30" autocomplete="off" placeholder="např. Karle — takhle tě asistent osloví; ulož tlačítkem níž"></label>
           <label class="field"><span>Pohlaví</span>
             <div class="seg" data-seg="sex">
               <button type="button" data-val="m" class="on">Muž</button>
@@ -1418,7 +1419,7 @@ function confirmDel(title,text,cb){openModal(title,text,cb)}
 const LIQUID_RE=/(ml[eé]k[oa]|ml[eé]ku|n[aá]poj|dž[uů]s|šť[aá]v|voda|vody|vodka|cola|kola|limon[aá]d|tonik|pivo|v[ií]no|prosecco|whisk|k[aá]va|cappuccino|latte|espresso|kakao|smoothie|kef[ií]r|podm[aá]sl[ií]|shake|sirup|olej|smetana|čaj)/i;
 function foodUnit(n){return LIQUID_RE.test(String(n||""))?"ml":"g"}
 const DEFAULT={version:3,sessions:[],body:[],foods:[],steps:{},templates:[],customExercises:[],foodDb:[],recipes:[],favorites:[],trash:[],lastBackup:null,
-  profile:{sex:"m",age:30,height:180,weight:80,activity:1.55,goal:"maintain",targetKcal:null,targetProtein:null,targetWeight:null,stepGoal:10000,exPerDay:5,addStepsToGoal:false,addWorkoutToGoal:false,apiKey:"",aiModel:"",daysPerWeek:3,experience:"pokrocily",equipment:"posilovna",plan:null}};
+  profile:{name:"",sex:"m",age:30,height:180,weight:80,activity:1.55,goal:"maintain",targetKcal:null,targetProtein:null,targetWeight:null,stepGoal:10000,exPerDay:5,addStepsToGoal:false,addWorkoutToGoal:false,apiKey:"",aiModel:"",daysPerWeek:3,experience:"pokrocily",equipment:"posilovna",plan:null}};
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function mergeState(d){const s=clone(DEFAULT);
   if(typeof d.lastBackup==="string"&&/^\d{4}-\d\d-\d\d$/.test(d.lastBackup))s.lastBackup=d.lastBackup;
@@ -1841,7 +1842,7 @@ function renderSettings(){const p=state.profile;
   renderArchive();
   const tg=$("#themeToggle");if(tg)tg.classList.toggle("on",darkOn());
   const f=$("#formCalc");
-  if(f){f.age.value=p.age;f.height.value=p.height;f.weight.value=p.weight;f.activity.value=p.activity;
+  if(f){f.uname.value=p.name||"";f.age.value=p.age;f.height.value=p.height;f.weight.value=p.weight;f.activity.value=p.activity;
     f.targetWeight.value=p.targetWeight??"";setSeg("sex",p.sex);setSeg("goal",p.goal);calc();}
   $("#stepGoalInput").value=p.stepGoal||"";
   $("#stepsToggle").classList.toggle("on",!!p.addStepsToGoal);
@@ -2521,7 +2522,7 @@ $("#formCalc").addEventListener("input",calc);
 $("#formCalc").addEventListener("change",calc);
 $("#saveGoal").addEventListener("click",()=>{
   const r=calc();const f=$("#formCalc");
-  Object.assign(state.profile,{sex:f.sex.value,age:+f.age.value,height:+f.height.value,weight:+f.weight.value,activity:+f.activity.value,goal:f.goal.value,
+  Object.assign(state.profile,{name:f.uname.value.trim().slice(0,30),sex:f.sex.value,age:+f.age.value,height:+f.height.value,weight:+f.weight.value,activity:+f.activity.value,goal:f.goal.value,
     targetWeight:f.targetWeight.value?+f.targetWeight.value:null,targetKcal:r.target,targetProtein:r.protein});
   save();renderSettings();toast("Cíl uložen: "+r.target+" kcal / "+r.protein+" g bílkovin")});
 
@@ -4122,7 +4123,7 @@ function asstSystem(){const p=state.profile,tgt=effTarget();
   const steps=Object.keys(state.steps||{}).sort().reverse().slice(0,30).map(d=>d+":"+state.steps[d]).join(", ");
   const cat={};allExercises().forEach(x=>(cat[x[1]]=cat[x[1]]||[]).push(x[0]));
   return [
-"Jsi AI trenér a asistent uvnitř české fitness appky Progres. Uživatel je Karel. Mluvíš česky, věcně a krátce jako trenér — bez omáček, bez markdown formátování (žádné **, #, tabulky). Odpověď max 6 řádků; delší rozpisy piš krátkými řádky s pomlčkou.",
+"Jsi AI trenér a asistent uvnitř české fitness appky Progres."+(state.profile.name?" Uživatel si přeje oslovení „"+state.profile.name+"“ — oslovuj ho tak.":"")+" Mluvíš česky, věcně a krátce jako trenér — bez omáček, bez markdown formátování (žádné **, #, tabulky). Odpověď max 6 řádků; delší rozpisy piš krátkými řádky s pomlčkou.",
 "Máš nástroje, kterými PŘÍMO zapisuješ do appky. Když uživatel řekne, co snědl, odtrénoval, kolik váží nebo nachodil, ROVNOU to zapiš odpovídajícím nástrojem a pak jednou větou potvrď co jsi zapsal. Nikdy se neptej na svolení k zápisu, neopakuj celý obsah. Doptáváš se jen když chybí něco klíčového (např. váha u série).",
 "Když uživatel jen mluví o jídle bez množství, odhadni běžnou porci a zapiš to (do názvu dej odhad, např. 'Pivo 12° 0,5 l'). Když uživatel opraví údaj u už zapsaného jídla (jiné kalorie, jiná porce, špatný název), použij uprav_jidlo — nezapisuj ho podruhé.",
 "Na dotazy o statistikách a historii odpovídej z dat níže; když je potřeba starší nebo detailnější výřez, použij nástroj dotaz_data. Když chceš aktuální nutriční hodnoty produktu nebo informaci mimo appku, použij web_search.",
@@ -4407,7 +4408,7 @@ function renderChat(){const log=$("#chatLog");if(!log)return;
   const sub=$("#asstSub"),cc=chatCur();
   if(sub)sub.textContent=(cc&&chatView.length&&cc.title&&cc.title!=="Nový chat")?cc.title:ASST_SUB;
   renderChatList();
-  if(!chatView.length){log.innerHTML='<div class="cmsg a">Ahoj Karle. Zapíšu ti jídlo, trénink, váhu i kroky — stačí napsat, co bylo. Umím taky navrhnout trénink podle tvojí historie a odpovědět na dotazy k číslům.</div>'}
+  if(!chatView.length){log.innerHTML='<div class="cmsg a">Ahoj'+(state.profile.name?" "+esc(state.profile.name):"")+'. Zapíšu ti jídlo, trénink, váhu i kroky — stačí napsat, co bylo. Umím taky navrhnout trénink podle tvojí historie a odpovědět na dotazy k číslům.</div>'}
   else log.innerHTML=chatView.map(m=>{
     if(m.r==="u")return '<div class="cmsg u">'+esc(m.t)+(m.img?'<div class="small" style="opacity:.8;margin-top:4px">📷 '+m.img+'× fotka</div>':'')+'</div>';
     if(m.r==="a")return '<div class="cmsg a">'+esc(m.t)+'</div>';
@@ -4479,7 +4480,7 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
   "use strict";
 
   var PROXY = "https://progres-ai.chuanito-bonito.workers.dev";
-  var TOKEN = "prg_8fbd38768185168500b57a16af81e88574830bde";
+  var TOKEN = "prg_083fd90b0e680fa7b78c65d503fa1fcbf51674bc";
   var SENT  = "__proxy__";
 
   /* Má uživatel vlastní klíč? (sentinel se za klíč nepočítá) */
