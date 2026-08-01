@@ -57,9 +57,12 @@ na straně backendu Anthropicu** (anthropics/claude-code#33875, #79083, #12839;
 proto jede oklikou přes veřejné repo. Zdroj (`progres.src.html`) v projektu
 tedy **není** — čte se z disku v Cowork session s připojenou složkou.
 
-⚠️ **Zrcadlo se rozchází tiše.** Když se `claude/*.md` změní a nezkopíruje do
-`repo/claude/`, projekt čte starou verzi a nic nehlásí. Krok 6 v Deploy sekci
-`CLAUDE.md` je proti tomu.
+✅ **Zrcadlo hlídají git hooky** (`tools/hooks/`, zapnuté přes
+`git config core.hooksPath tools/hooks`). `pre-commit` zkontroluje `claude/`
+na tajemství, zkopíruje změny do `repo/claude/` a commitne je; `pre-push`
+zrcadlo odešle dřív než toolchain a při selhání zastaví i ten. Ruční `cp`
+tedy odpadá. Bez hooků (cizí klon, `--no-verify`) se zrcadlo **rozchází tiše** —
+projekt čte starou verzi a nic nehlásí.
 
 ⚠️ **Většina obsahu ze syncu je balast** — z 967 KB `index.html` je 583 KB
 minifikovaných knihoven, které konkurují ve výsledcích hledání. Dotazy
