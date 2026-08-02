@@ -725,7 +725,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div class="page-sub">Rychlé akce</div>
         <div id="trainWeek"></div>
         <div class="hubgrid">
-          <button type="button" data-card="#card-aiplan"><svg viewBox="0 0 24 24"><path d="M12 3.5l1.6 4.4L18 9.5l-4.4 1.6L12 15.5l-1.6-4.4L6 9.5l4.4-1.6L12 3.5z"/><path d="M18.5 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg><span>AI plán</span></button>
+          <button type="button" data-card="#card-trsettings"><svg viewBox="0 0 24 24"><path d="M4 7h6M14 7h6M4 17h10M18 17h2"/><circle cx="12" cy="7" r="2.2"/><circle cx="16" cy="17" r="2.2"/></svg><span>Nastavení</span></button>
           <button type="button" data-card="#card-templates"><svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Šablony</span></button>
           <button type="button" data-card="#card-steps"><svg viewBox="0 0 24 24"><path d="M8.5 3.5c1.6 0 2.6 1.3 2.6 3.2 0 2-.9 3.4-.9 4.8 0 1.2.8 1.8.8 3 0 1.4-1 2.3-2.4 2.3s-2.4-1-2.4-2.6c0-1.6.6-2.4.6-3.7 0-1.6-1-2.9-1-4.5 0-1.6 1.1-2.5 2.7-2.5z"/><path d="M16.2 8.5c1.5 0 2.4 1.2 2.4 3 0 1.9-.8 3.2-.8 4.5 0 1.1.7 1.7.7 2.8 0 1.3-.9 2.2-2.2 2.2s-2.3-1-2.3-2.4c0-1.5.6-2.3.6-3.5 0-1.5-.9-2.7-.9-4.2 0-1.5 1-2.4 2.5-2.4z"/></svg><span>Kroky</span></button>
           <button type="button" data-card="#card-trhist"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5V8h3.5"/><path d="M12 8v4.2l3 1.8"/></svg><span>Historie</span></button>
@@ -813,9 +813,9 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div class="small muted" id="stepsInfo" style="margin-top:10px"></div>
       </div>
 
-      <div class="card" id="card-aiplan">
-        <h2>AI plán tréninku <span class="hint">z tvého cíle a těla</span></h2>
-        <div id="planBox"></div>
+      <div class="card" id="card-trsettings">
+        <h2>Nastavení tréninku <span class="hint">podle toho ti radí asistent</span></h2>
+        <div id="trSetBox"></div>
       </div>
 
       <div class="card" id="card-trhist">
@@ -1195,7 +1195,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       </div>
 
       <div class="card">
-        <h2>AI klíč <span class="hint">pro foto jídla a plán tréninku</span></h2>
+        <h2>AI klíč <span class="hint">pro foto jídla a asistenta</span></h2>
         <div id="apiKeyBox"></div>
       </div>
 
@@ -1448,7 +1448,7 @@ function confirmDel(title,text,cb){openModal(title,text,cb)}
 const LIQUID_RE=/(ml[eé]k[oa]|ml[eé]ku|n[aá]poj|dž[uů]s|šť[aá]v|voda|vody|vodka|cola|kola|limon[aá]d|tonik|pivo|v[ií]no|prosecco|whisk|k[aá]va|cappuccino|latte|espresso|kakao|smoothie|kef[ií]r|podm[aá]sl[ií]|shake|sirup|olej|smetana|čaj)/i;
 function foodUnit(n){return LIQUID_RE.test(String(n||""))?"ml":"g"}
 const DEFAULT={version:3,sessions:[],body:[],foods:[],steps:{},templates:[],customExercises:[],foodDb:[],recipes:[],favorites:[],trash:[],lastBackup:null,
-  profile:{name:"",sex:"m",age:30,height:180,weight:80,activity:1.55,goal:"maintain",targetKcal:null,targetProtein:null,targetWeight:null,stepGoal:10000,exPerDay:5,addStepsToGoal:false,addWorkoutToGoal:false,apiKey:"",aiModel:"",daysPerWeek:3,experience:"pokrocily",equipment:"posilovna",plan:null}};
+  profile:{name:"",sex:"m",age:30,height:180,weight:80,activity:1.55,goal:"maintain",targetKcal:null,targetProtein:null,targetWeight:null,stepGoal:10000,exPerDay:5,addStepsToGoal:false,addWorkoutToGoal:false,apiKey:"",aiModel:"",daysPerWeek:3,experience:"pokrocily",equipment:"posilovna"}};
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function mergeState(d){const s=clone(DEFAULT);
   if(typeof d.lastBackup==="string"&&/^\d{4}-\d\d-\d\d$/.test(d.lastBackup))s.lastBackup=d.lastBackup;
@@ -2336,7 +2336,7 @@ function bestBefore(name,beforeId){let bm=0,be=0;const nl=name.toLowerCase();
 function renderSessions(){
   setTimeout(refreshNeedFill,0);
   renderCardArchives();
-  fillExDb();renderPlanBox();renderTplRow();renderTplList();renderStepsCard();
+  fillExDb();renderTrainSettings();renderTplRow();renderTplList();renderStepsCard();
   const tsub=$("#treninkSub");if(tsub)tsub.textContent=czLongDate();
   const list=$("#sessList");
   const ss=[...state.sessions].sort((a,b)=>b.date.localeCompare(a.date));
@@ -2775,7 +2775,7 @@ async function stopScan(){
 function renderApiKeyBox(){
   const box=$("#apiKeyBox");if(!box)return;const key=state.profile.apiKey;
   if(!key){box.innerHTML=`
-    <p class="small muted" style="margin-top:0">Pro foto jídla a AI plán tréninku vlož svůj <b>Anthropic API klíč</b> (console.anthropic.com — platí se za použití, pár haléřů za dotaz). Uloží se jen v tomto zařízení.</p>
+    <p class="small muted" style="margin-top:0">Pro foto jídla a asistenta vlož svůj <b>Anthropic API klíč</b> (console.anthropic.com — platí se za použití, pár haléřů za dotaz). Uloží se jen v tomto zařízení.</p>
     <div style="display:flex;gap:8px">
       <input type="password" id="apiKeyInput" placeholder="sk-ant-…" style="flex:1" autocomplete="off">
       <button class="btn small" id="apiKeySave" type="button">Uložit</button>
@@ -2788,12 +2788,12 @@ function renderApiKeyBox(){
         if(r.status===401){toast("Klíč vypadá neplatně (401)");$("#apiKeySave").disabled=false;$("#apiKeySave").textContent="Uložit";return}
         if(r.ok){const j=await r.json();const m=(j.data||[]).find(x=>/sonnet/i.test(x.id));if(m)model=m.id}}
       catch(e){}
-      state.profile.apiKey=k;state.profile.aiModel=model;save();renderApiKeyBox();renderAiBox();renderPlanBox();
+      state.profile.apiKey=k;state.profile.aiModel=model;save();renderApiKeyBox();renderAiBox();
       toast("Klíč uložen");};
     return}
   box.innerHTML=`<p class="small" style="margin-top:0">AI aktivní <span class="muted">(${esc(state.profile.aiModel||"auto")})</span></p>
     <button class="btn secondary small" id="apiKeyRemove" type="button">Odebrat klíč</button>`;
-  $("#apiKeyRemove").onclick=()=>{state.profile.apiKey="";save();renderApiKeyBox();renderAiBox();renderPlanBox()};
+  $("#apiKeyRemove").onclick=()=>{state.profile.apiKey="";save();renderApiKeyBox();renderAiBox()};
 }
 function renderAiBox(){
   const box=$("#aiBox");if(!box)return;const key=state.profile.apiKey;
@@ -3195,13 +3195,17 @@ function renderRecentChips(){const el=$("#recentFoods");if(!el)return;
 }
 
 /* ---- AI plánování tréninku ---- */
-function renderPlanBox(){
-  const box=$("#planBox");if(!box)return;const p=state.profile;
-  if(!p.apiKey){box.innerHTML=`<p class="small muted" style="margin-top:0">AI plán potřebuje API klíč — přidej ho v <a href="#" id="planToSettings" style="color:var(--accent);font-weight:600">Nastavení</a>. Pak z tvého cíle, měr a fotek navrhnu týdenní rozpis a uložím ho jako šablony.</p>`;const l=$("#planToSettings");if(l)l.onclick=e=>{e.preventDefault();openSettings()};renderPlan();return}
+/* v44: AI plan treninku odstranen — plan se dela s asistentem (umi uloz_sablonu).
+   Zustala jen jeho ctyri nastaveni, ktera nikde jinde nesla nastavit a ktera
+   asistent VIDI pres dotaz_data co:"profil" — proto se nemazou, jen prestehovaly
+   z Nastaveni do vlastni karty v Treninku. */
+function renderTrainSettings(){
+  const box=$("#trSetBox");if(!box)return;const p=state.profile;
   box.innerHTML=`
+    <p class="small muted" style="margin-top:0">Podle těchhle údajů ti asistent sestaví plán na míru — řekni mu v chatu „naplánuj mi trénink".</p>
     <div class="row">
       <label class="field"><span>Tréninků týdně</span>
-        <div class="seg mini" data-seg="pdays">${[1,2,3,4,5,6,7].map(n=>`<button type="button" data-val="${n}"${n===p.daysPerWeek?' class="on"':''}>${n}</button>`).join("")}</div>
+        <div class="seg mini" data-seg="pdays">${[1,2,3,4,5,6,7].map(x=>`<button type="button" data-val="${x}"${x===p.daysPerWeek?' class="on"':''}>${x}</button>`).join("")}</div>
         <input type="hidden" id="pdaysInput" value="${p.daysPerWeek}"></label>
       <label class="field"><span>Zkušenost</span>
         <div class="seg mini" data-seg="pexp">
@@ -3217,82 +3221,17 @@ function renderPlanBox(){
         <button type="button" data-val="vlastní váha"${p.equipment==="vlastní váha"?' class="on"':''}>Vlastní váha</button>
       </div><input type="hidden" id="pequipInput" value="${esc(p.equipment)}"></label>
     <label class="field"><span>Cviků na jeden trénink</span>
-      <div class="seg mini" data-seg="pexd">${[3,4,5,6,7].map(n=>`<button type="button" data-val="${n}"${n===(p.exPerDay||5)?' class="on"':''}>${n}</button>`).join("")}</div>
+      <div class="seg mini" data-seg="pexd">${[3,4,5,6,7].map(x=>`<button type="button" data-val="${x}"${x===(p.exPerDay||5)?' class="on"':''}>${x}</button>`).join("")}</div>
       <input type="hidden" id="pexdInput" value="${p.exPerDay||5}"></label>
-    <label class="field"><span>Zaměření / poznámka (volitelné)</span><input id="pfocus" placeholder="např. důraz na horní tělo, šetřit bedra…"></label>
-    ${photos.length?`<div class="setrow"><div class="lb">Zohlednit poslední fotku<span class="sub2">Pošle AI tvoji poslední fotku progresu.</span></div><button class="tgl" id="planPhotoTgl" type="button"><i></i></button></div>`:""}
-    <button class="btn" id="planGo" type="button">Vygenerovat plán</button>
-    <div class="ai-status" id="planStatus"></div>
-    <div id="planOut"></div>`;
+    <button class="btn" id="trSetSave" type="button" style="margin-top:12px">Uložit nastavení</button>`;
   initSeg(box);
-  let usePhoto=false;const pt=$("#planPhotoTgl");if(pt)pt.onclick=()=>{usePhoto=!usePhoto;pt.classList.toggle("on",usePhoto)};
-  $("#planGo").onclick=async()=>{
-    state.profile.daysPerWeek=+$("#pdaysInput").value||3;state.profile.experience=$("#pexpInput").value;state.profile.equipment=$("#pequipInput").value;
-    state.profile.exPerDay=Math.max(3,Math.min(7,+$("#pexdInput").value||5));save();
-    const btn=$("#planGo"),st=$("#planStatus");btn.disabled=true;btn.innerHTML='<span class="spin"></span> Sestavuji plán…';st.textContent="";
-    try{const plan=await generatePlan($("#pfocus").value.trim(),usePhoto);state.profile.plan=plan;save();renderPlan();}
-    catch(err){st.innerHTML=`<span style="color:var(--bad)">Nepovedlo se: ${esc(err.message)}</span>`}
-    btn.disabled=false;btn.textContent="Vygenerovat znovu";};
-  renderPlan();
+  const b=$("#trSetSave");if(b)b.onclick=()=>{
+    state.profile.daysPerWeek=Math.max(1,Math.min(7,+$("#pdaysInput").value||3));
+    state.profile.experience=$("#pexpInput").value;
+    state.profile.equipment=$("#pequipInput").value;
+    state.profile.exPerDay=Math.max(3,Math.min(7,+$("#pexdInput").value||5));
+    save();toast("Nastavení tréninku uloženo")};
 }
-function planContent(focus,usePhoto,compact){
-  const p=state.profile;
-  const bw=[...state.body].filter(b=>b.weight!=null).sort((a,b)=>b.date.localeCompare(a.date))[0];
-  const lastM=[...state.body].sort((a,b)=>b.date.localeCompare(a.date))[0]||{};
-  const goalCz=p.goal==="cut"?"zhubnout a vyrýsovat":p.goal==="bulk"?"nabrat svalovou hmotu":"udržet formu";
-  const ctx=`Pohlaví: ${p.sex==="m"?"muž":"žena"}, věk ${p.age}, výška ${p.height} cm, váha ${bw?bw.weight:p.weight} kg`
-    +(p.targetWeight?`, cílová váha ${p.targetWeight} kg`:"")
-    +`. Hlavní cíl: ${goalCz}. Chce trénovat ${p.daysPerWeek}× týdně. Úroveň: ${p.experience}. Vybavení: ${p.equipment}.`
-    +(lastM.waist?` Míry: pas ${lastM.waist} cm${lastM.chest?", hrudník "+lastM.chest+" cm":""}${lastM.biceps?", biceps "+lastM.biceps+" cm":""}.`:"")
-    +(focus?` Poznámka: ${focus}.`:"");
-  const content=[];
-  if(usePhoto&&photos.length)content.push({type:"image",source:{type:"base64",media_type:"image/jpeg",data:photos[photos.length-1].img.split(",")[1]}});
-  content.push({type:"text",text:`Jsi zkušený osobní trenér. Navrhni týdenní tréninkový plán na míru. ${ctx}\nVrať POUZE platný JSON bez dalšího textu ve tvaru:\n{"shrnuti":"2-3 věty proč je plán takto sestavený","dny":[{"nazev":"Den 1 – Hrudník + Triceps","partie":["Hrudník","Triceps"],"cviky":[{"nazev":"Bench press","partie":"Hrudník","jednotka":"kg","serie":4,"opakovani":8,"sekundy":0,"poznamka":""}]}],"tipy":["krátký tip","..."]}\nPočet dnů = ${p.daysPerWeek}. jednotka je "kg" (s činkou), "reps" (vlastní váha na počet opakování) nebo "time" (výdrž — vyplň pole sekundy). Partie z: Hrudník, Záda, Nohy, Ramena, Biceps, Triceps, Břicho, Kardio. Názvy cviků česky, drž se běžných cviků. Přesně ${Math.max(3,Math.min(7,+p.exPerDay||5))} cviků na den (nikdy víc), "poznamka" vždy prázdná (""). Piš maximálně kompaktně, bez zbytečných mezer a nových řádků. Vrať jen samotný JSON — žádný text před ani za, žádné markdown bloky — a JSON MUSÍ být celý uzavřený.${compact?` Buď ještě úspornější: maximálně ${Math.max(3,(+p.exPerDay||5)-1)} cviky na den, "shrnuti" nech prázdné ("") a "tipy" jako prázdné pole [].`:''}`});
-  return content;
-}
-function salvagePlan(plan){
-  if(!plan||typeof plan!=="object")return null;
-  let dny=Array.isArray(plan.dny)?plan.dny:(Array.isArray(plan.days)?plan.days:null);
-  if(!dny)return null;
-  dny=dny.map(d=>Object.assign({},d,{cviky:(Array.isArray(d&&d.cviky)?d.cviky:[]).filter(c=>c&&c.nazev)}))
-         .filter(d=>d.cviky.length);
-  if(!dny.length)return null;
-  return {shrnuti:typeof plan.shrnuti==="string"?plan.shrnuti:"",dny,
-    tipy:Array.isArray(plan.tipy)?plan.tipy.filter(t=>typeof t==="string"&&t):[]};
-}
-async function generatePlan(focus,usePhoto){
-  let last=null;
-  for(let att=0;att<3;att++){
-    try{
-      const plan=aiJson(await aiCall(planContent(focus,usePhoto&&att===0,att>0),att===0?8000:6000));
-      const ok=salvagePlan(plan);
-      if(ok)return ok;
-      last=new Error("AI vrátila neúplný plán.");
-    }catch(e){
-      last=e;
-      if(/401|klíč|Síťová chyba|API chyba 4[0-9][0-9]/i.test(String(e&&e.message))&&!/AI vrátila/.test(String(e&&e.message)))throw e;
-    }
-  }
-  throw new Error((last&&last.message?last.message+" ":"")+"Zkus to prosím znovu (někdy pomůže méně dnů v týdnu).");
-}
-function renderPlan(){const out=$("#planOut");if(!out)return;const plan=state.profile.plan;
-  if(!plan||!Array.isArray(plan.dny)){out.innerHTML="";return}
-  out.innerHTML=`<div style="border-top:1px solid var(--line);margin:14px 0 10px"></div>
-    ${plan.shrnuti?`<p class="small">${esc(plan.shrnuti)}</p>`:""}
-    ${plan.dny.map((d,i)=>`<div class="plan-day"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h4>${esc(d.nazev||("Den "+(i+1)))}</h4><button class="btn secondary small" data-saveday="${i}" type="button">Uložit šablonu</button></div>
-      <div class="small">${(d.cviky||[]).map(c=>`${esc(c.nazev||"")} <span class="muted">— ${c.jednotka==="time"?((c.serie?c.serie+"× ":"")+(c.sekundy||0)+" s"):c.jednotka==="reps"?((c.serie||0)+"×"+(c.opakovani||0)+" (vl. váha)"):((c.serie||0)+"×"+(c.opakovani||0))}</span>`).join("<br>")}</div></div>`).join("")}
-    ${(Array.isArray(plan.tipy)&&plan.tipy.length)?`<div class="small muted" style="margin-top:8px">${plan.tipy.map(t=>"• "+esc(t)).join("<br>")}</div>`:""}
-    <button class="btn" id="saveAllDays" type="button" style="margin-top:10px">Uložit všechny dny jako šablony</button>`;
-  $$("#planOut [data-saveday]").forEach(b=>b.onclick=()=>{savePlanDay(plan.dny[+b.dataset.saveday]);toast("Den uložen jako šablona ✅")});
-  $("#saveAllDays").onclick=()=>{plan.dny.forEach(savePlanDay);renderTplRow();toast("✅ Uloženo "+plan.dny.length+" šablon — najdeš je nahoře v „Šablony“")};
-}
-function savePlanDay(d){if(!d)return;
-  const exercises=(d.cviky||[]).map(c=>{const unit=["kg","reps","time"].includes(c.jednotka)?c.jednotka:"kg";
-    if(c.nazev&&!exDef(c.nazev))state.customExercises.push({n:c.nazev,m:c.partie||(d.partie&&d.partie[0])||"Jiné",unit});
-    return{n:c.nazev||"Cvik",unit,w:0,s:+c.serie||0,r:(unit==="time")?0:(+c.opakovani||0),sec:(unit==="time")?(+c.sekundy||0):0}});
-  const muscles=(Array.isArray(d.partie)&&d.partie.length)?d.partie:[...new Set(exercises.map(e=>exDef(e.n)?exDef(e.n).muscle:null).filter(Boolean))];
-  state.templates.push({id:uid(),name:(d.nazev||"Plán")+" · "+exercises.length+" cviků",muscles,type:"Síla",exercises});
-  save();fillExDb()}
 
 /* Kroky — karta v Tréninku */
 function renderStepsCard(){
@@ -4785,7 +4724,7 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
     /* a) vlastní klíč — původní UI beze změny, jen s poznámkou */
     if (own(p.apiKey)) {
       _rKey.apply(this, arguments);
-      heading("AI klíč", "pro foto jídla a plán tréninku");
+      heading("AI klíč", "pro foto jídla a asistenta");
       routeNote(true);
       var b = document.querySelector("#apiKeyBox");
       if (b) {
@@ -4806,7 +4745,7 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
     routeNote(false);
     var box = document.querySelector("#apiKeyBox");
     if (!box) return;
-    heading("AI", "foto jídla a plán tréninku");
+    heading("AI", "foto jídla a asistent");
 
     var hidden = document.createElement("div");
     hidden.id = "apiKeyOwn";
@@ -4831,7 +4770,7 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
   };
 
   /* ---- 5) ostatní bloky jen pojistíme sentinelem ---- */
-  ["renderAiBox", "renderPlanBox", "renderChat"].forEach(function (n) {
+  ["renderAiBox", "renderChat"].forEach(function (n) {
     var o = window[n];
     if (typeof o !== "function") return;
     window[n] = function () { ensure(); return o.apply(this, arguments) };
@@ -4839,7 +4778,7 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
 
   /* ---- 6) start: zapnout hned a překreslit, co už bylo vykresleno ---- */
   ensure();
-  ["#apiKeyBox:renderApiKeyBox", "#aiBox:renderAiBox", "#planBox:renderPlanBox",
+  ["#apiKeyBox:renderApiKeyBox", "#aiBox:renderAiBox",
    "#chatLog:renderChat"].forEach(function (pair) {
     var s = pair.split(":");
     try { if (document.querySelector(s[0])) window[s[1]]() } catch (e) {}
