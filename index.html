@@ -832,6 +832,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div class="page-sub">Rychlé akce</div>
         <div id="bodyOverview"></div>
         <div class="hubgrid">
+          <button type="button" data-card="#card-myprofile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg><span>Můj profil</span></button>
           <button type="button" data-card="#card-photos"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.4"/><path d="M8.5 6l1.2-2h4.6l1.2 2"/></svg><span>Fotky postavy</span></button>
           <button type="button" data-card="#card-bodyhist"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5V8h3.5"/><path d="M12 8v4.2l3 1.8"/></svg><span>Historie</span></button>
           <button type="button" data-run="stats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Statistiky</span></button>
@@ -878,6 +879,11 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         </form>
       </div>
 
+      <div class="card" id="card-myprofile">
+        <h2>Můj profil <span class="hint">vstupuje do výpočtu cíle</span></h2>
+        <div id="myProfBox"></div>
+      </div>
+
       <div class="card" id="card-photos">
         <h2>Fotky progresu <span class="hint">zůstávají jen v tvém zařízení</span></h2>
         <div class="row">
@@ -918,6 +924,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
           <button type="button" data-card="#card-recipes"><svg viewBox="0 0 24 24"><path d="M3 11h18M4 11a8 8 0 0 0 16 0"/><path d="M8.5 11c0-2 1.3-3.5 3.5-3.5s3.5 1.5 3.5 3.5"/></svg><span>Recepty</span></button>
           <button type="button" data-card="#card-favfoods"><svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.6 6.1.6-4.6 4.1 1.4 6L12 16.9 6.1 19.8l1.4-6-4.6-4.1 6.1-.6z"/></svg><span>Oblíbené</span></button>
           <button type="button" data-card="#card-today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 12V3.5"/><path d="M12 12l7.4 4.3"/></svg><span>Dnešní makro</span></button>
+          <button type="button" data-card="#card-goal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.2"/><path d="M12 3.5v3M12 17.5v3M3.5 12h3M17.5 12h3"/></svg><span>Cíl a výpočet</span></button>
           <button type="button" data-card="#card-foodhist"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5V8h3.5"/><path d="M12 8v4.2l3 1.8"/></svg><span>Historie</span></button>
           <button type="button" data-run="stats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Statistiky</span></button>
         </div>
@@ -926,6 +933,11 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       <div class="page-title">Jídlo</div>
       <div class="page-sub" id="foodDaySub"></div>
       <div class="card hero" id="calHero" style="display:none"></div>
+
+      <div class="card" id="card-goal">
+        <h2>Cíl a výpočet <span class="hint">Mifflin–St Jeor</span></h2>
+        <div id="goalBox"></div>
+      </div>
 
       <div class="card" id="card-foodlog">
         <h2>Talíř <span class="hint">slož jídlo a sněz ho</span></h2>
@@ -1130,68 +1142,10 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       </div>
 
       <div class="card">
-        <h2>Cíl kalorií &amp; profil <span class="hint">Mifflin–St Jeor</span></h2>
-        <form id="formCalc">
-          <label class="field"><span>Oslovení v chatu (nepovinné)</span><input type="text" name="uname" maxlength="30" autocomplete="off" placeholder="např. Karle — takhle tě asistent osloví; ulož tlačítkem níž"></label>
-          <label class="field"><span>Pohlaví</span>
-            <div class="seg" data-seg="sex">
-              <button type="button" data-val="m" class="on">Muž</button>
-              <button type="button" data-val="f">Žena</button>
-            </div>
-            <input type="hidden" name="sex" value="m">
-          </label>
-          <div class="row-3">
-            <label class="field"><span>Věk</span><input type="number" name="age" min="10" max="100" value="30"></label>
-            <label class="field"><span>Výška (cm)</span><input type="number" name="height" min="120" max="230" value="180"></label>
-            <label class="field"><span>Váha (kg)</span><input type="number" name="weight" min="30" max="250" step="0.1" value="80"></label>
-          </div>
-          <label class="field"><span>Aktivita</span>
-            <select name="activity">
-              <option value="1.2">Sedavý (málo pohybu)</option>
-              <option value="1.375">Lehká (1–3× týdně)</option>
-              <option value="1.55" selected>Střední (3–5× týdně)</option>
-              <option value="1.725">Vysoká (6–7× týdně)</option>
-              <option value="1.9">Velmi vysoká (fyz. práce / 2× denně)</option>
-            </select>
-          </label>
-          <div class="row">
-            <label class="field"><span>Cíl</span>
-              <div class="seg" data-seg="goal">
-                <button type="button" data-val="cut">Zhubnout</button>
-                <button type="button" data-val="maintain" class="on">Udržet</button>
-                <button type="button" data-val="bulk">Nabrat</button>
-              </div>
-              <input type="hidden" name="goal" value="maintain">
-            </label>
-            <label class="field"><span>Cílová váha (kg)</span><input type="number" name="targetWeight" step="0.1" min="0" placeholder="volitelné"></label>
-          </div>
-        </form>
-        <div class="result">
-          <div class="r"><div class="n" id="rBmr">–</div><div class="l">BMR</div></div>
-          <div class="r"><div class="n" id="rTdee">–</div><div class="l">Udržení</div></div>
-          <div class="r hi"><div class="n" id="rTarget">–</div><div class="l">Tvůj cíl (kcal)</div></div>
-        </div>
-        <div class="small muted" style="margin-top:10px" id="calcNote"></div>
-        <button class="btn" id="saveGoal" style="margin-top:12px">Uložit jako můj denní cíl</button>
-      </div>
-
-      <div class="card">
-        <h2>Krokový cíl</h2>
-        <label class="field"><span>Denní cíl kroků</span><input type="number" id="stepGoalInput" min="0" step="500" placeholder="10000"></label>
-        <button class="btn secondary" id="saveStepGoalBtn" type="button">Uložit cíl kroků</button>
-        <div class="setrow" style="margin-top:6px">
-          <div class="lb">Připočítat výdej z kroků k cíli
-            <span class="sub2">Kroky navíc k dennímu cíli kalorií.</span>
-          </div>
-          <button class="tgl" id="stepsToggle" type="button" aria-label="Připočítat kroky"><i></i></button>
-        </div>
-        <div class="setrow">
-          <div class="lb">Připočítat výdej z tréninků k cíli
-            <span class="sub2">Odhad podle typu, délky a tvé váhy (MET).</span>
-          </div>
-          <button class="tgl" id="workoutToggle" type="button" aria-label="Připočítat tréninky"><i></i></button>
-        </div>
-        <div class="small muted" id="stepsWarn"></div>
+        <h2>Asistent <span class="hint">jak tě má oslovovat</span></h2>
+        <label class="field"><span>Oslovení v chatu (nepovinné)</span><input type="text" id="unameInput" maxlength="30" autocomplete="off" placeholder="např. Karle — v 5. pádě"></label>
+        <button class="btn secondary" id="saveUname" type="button">Uložit oslovení</button>
+        <p class="small muted" style="margin:10px 0 0">Údaje o těle najdeš v sekci <b>Tělo</b>, denní cíl kalorií v <b>Jídlo</b>, nastavení tréninku v <b>Trénink</b>.</p>
       </div>
 
       <div class="card">
@@ -1545,13 +1499,21 @@ const EMPTY_SVG='<svg width="30" height="30" viewBox="0 0 24 24" fill="none" str
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 function e1rm(w,r){if(!w)return 0;if(!r||r<=1)return w;return w*(1+r/30)}
 function periodCut(){const p=+($("#periodInput").value||90);return p===0?"0000-00-00":isoNdaysAgo(p)}
-function stepKcal(steps){const w=+state.profile.weight||75;return Math.round(steps*w*0.0005)}
+/* v45: JEDINA pravda o aktualni vaze — posledni vazeni z Tela.
+   Do v44 se `profile.weight` z rucniho vazeni NEAKTUALIZOVAL, takze vydej
+   z kroku i treninku a BMR jely na cisle zadanem kdysi v profilu.
+   profile.weight zustava jako fallback pro stare zalohy a udrzuje se pri vazeni. */
+function curWeight(){
+  const bw=(state.body||[]).filter(b=>b&&b.weight!=null).sort((a,b)=>a.date.localeCompare(b.date));
+  if(bw.length)return +bw[bw.length-1].weight;
+  return +state.profile.weight||0}
+function stepKcal(steps){const w=curWeight()||75;return Math.round(steps*w*0.0005)}
 const METS={"Fitko":5.0,"Kardio":8.0,"Jiné":4.0,"Síla":5.0,"Objem":4.5,"Vytrvalost":5.5};
 function estDur(s){if(s.dur)return s.dur;
   if(s.type==="Kardio")return 30;
   const sets=s.exercises.reduce((a,e)=>a+exSets(e).length,0);
   return Math.max(20,sets*3)}
-function workoutKcal(s){const w=+state.profile.weight||75;
+function workoutKcal(s){const w=curWeight()||75;
   return Math.round((METS[s.type]||5)*w*estDur(s)/60)}
 function todayWorkoutKcal(){return state.sessions.filter(s=>s.date===todayISO()).reduce((a,s)=>a+workoutKcal(s),0)}
 function effTarget(){const t=state.profile.targetKcal;if(!t)return null;let e=t;
@@ -1841,7 +1803,11 @@ function renderBodyOverview(){const el=$("#bodyOverview");if(!el)return;const bw
   else wCard=`<div class="ring-card">${ringSVG(84,0,"var(--accent)","–",17,"kg",8)}<div class="cap">Váha</div><div class="sub">zatím bez dat</div></div>`;
   const mrow=(lbl,key)=>{const m=mLatest(key);if(!m)return `<div class="bo-m"><span>${lbl}</span><b>–</b></div>`;return `<div class="bo-m"><span>${lbl}</span><b>${String(m.cur).replace(".",",")}<small> cm</small>${m.chg?` <i class="${m.chg<0?"dn":"up"}">${m.chg>0?"+":""}${String(m.chg).replace(".",",")}</i>`:""}</b></div>`;};
   const mCard=`<div class="ring-card" style="text-align:left"><div class="cap" style="text-align:center;margin-bottom:8px">Míry (cm)</div>${mrow("Pas","waist")}${mrow("Hrudník","chest")}${mrow("Biceps","biceps")}${mrow("Stehno","thigh")}</div>`;
-  el.innerHTML=`<div class="ring-cards" style="margin-bottom:0">${wCard}${mCard}</div>`;}
+  el.innerHTML=`<div class="ring-cards">${wCard}${mCard}</div>`;}
+/* v45: inline margin-bottom:0 prebijel CSS pravidlo .ring-cards a dlazdice
+   Rychlych akci se pak dotykaly karet nad sebou. Trenink i Jidlo maji nad
+   hubgridem .wk-hero s margin-bottom:14px — .ring-cards ma tutez hodnotu,
+   takze po odstraneni inline stylu maji vsechny tri sekce stejnou mezeru. */
 function renderTab(name){
   if(name==="prehled")renderDashboard();
   else if(name==="trenink")renderSessions();
@@ -1870,13 +1836,7 @@ function closeSettings(){switchTab(_prevTab||"prehled")}
 function renderSettings(){const p=state.profile;
   renderArchive();
   const tg=$("#themeToggle");if(tg)tg.classList.toggle("on",darkOn());
-  const f=$("#formCalc");
-  if(f){f.uname.value=p.name||"";f.age.value=p.age;f.height.value=p.height;f.weight.value=p.weight;f.activity.value=p.activity;
-    f.targetWeight.value=p.targetWeight??"";setSeg("sex",p.sex);setSeg("goal",p.goal);calc();}
-  $("#stepGoalInput").value=p.stepGoal||"";
-  $("#stepsToggle").classList.toggle("on",!!p.addStepsToGoal);
-  $("#workoutToggle").classList.toggle("on",!!p.addWorkoutToGoal);
-  $("#stepsWarn").textContent=((p.addStepsToGoal||p.addWorkoutToGoal)&&p.activity>=1.55)?"⚠️ Aktivita střední a vyšší už výdej započítává — s přepínači se počítá dvakrát. Zvaž nižší aktivitu s přepínači, nebo vyšší bez nich.":"";
+  const u=$("#unameInput");if(u)u.value=p.name||"";
   renderApiKeyBox();renderBackupStatus();}
 $("#settingsBtn").addEventListener("click",()=>{settingsOpen()?closeSettings():openSettings()});
 $("#themeToggle").addEventListener("click",toggleTheme);
@@ -2052,7 +2012,7 @@ function chartCalMini(){
   const map={};state.foods.forEach(f=>{map[f.date]=(map[f.date]||0)+(+f.kcal||0)});
   const days=[];for(let i=13;i>=0;i--)days.push(isoNdaysAgo(i));
   const vals=days.map(d=>map[d]||0);
-  if(vals.every(v=>v===0))return emptyCanvas("chCalMini","Zatím žádná jídla.<br>Přidej je v sekci <b>Kalorie</b>.");
+  if(vals.every(v=>v===0))return emptyCanvas("chCalMini","Zatím žádná jídla.<br>Přidej je v sekci <b>Jídlo</b>.");
   showCanvas("chCalMini");destroy("chCalMini");const c=C();const tgt=state.profile.targetKcal;
   const ds=[{type:"bar",data:vals,backgroundColor:vals.map(v=>tgt&&v>tgt?c.warn:c.s1),borderRadius:4,borderSkipped:false,maxBarThickness:22}];
   if(tgt)ds.push({type:"line",data:days.map(()=>tgt),borderColor:c.muted,borderWidth:1.5,borderDash:[5,4],pointRadius:0,tension:0});
@@ -2467,7 +2427,8 @@ function renderWeighHero(){
   $("#weighPlus").onclick=()=>{weighDraft=Math.round((base()+0.1)*10)/10;renderWeighHero()};
   $("#weighSave").onclick=()=>{const w=base();const t=todayISO();const ex=state.body.find(b=>b.date===t);
     if(ex)ex.weight=w;else state.body.push({id:uid(),date:t,weight:w,biceps:null,chest:null,waist:null,hips:null,thigh:null,calf:null,feeling:3,notes:""});
-    weighDraft=null;save();renderBody();toast("Váha uložena: "+String(w).replace(".",",")+" kg")};
+    state.profile.weight=w;   /* v45: drzet profil v souladu s vazenim */
+    weighDraft=null;save();renderBody();renderGoalCard();toast("Váha uložena: "+String(w).replace(".",",")+" kg")};
 }
 const MEASURES=[["waist","Pas","down"],["biceps","Biceps","up"],["chest","Hrudník","up"],["hips","Boky","down"],["thigh","Stehno","up"],["calf","Lýtko","up"]];
 function todayBody(){let r=state.body.find(b=>b.date===todayISO());
@@ -2489,6 +2450,7 @@ $("#saveMeasuresBtn").addEventListener("click",()=>{const r=todayBody();
   save();renderBody();toast("Měření uloženo")});
 function renderBody(){
   renderCardArchives();
+  renderMyProfile();
   renderWeighHero();
   renderMeasureList();
   const rows0=[...state.body].sort((a,b)=>b.date.localeCompare(a.date));
@@ -2564,40 +2526,116 @@ $("#photoModalDel").addEventListener("click",()=>{
   confirmDel("Smazat fotku?","Fotka progresu se nevratně smaže z tohoto zařízení.",async()=>{
     await phDel(id);await refreshPhotos();renderPhotos();toast("Fotka smazána")})});
 /* ================== KALORIE ================== */
-function calc(){
-  const f=$("#formCalc");const p={sex:f.sex.value,age:+f.age.value||30,height:+f.height.value||180,weight:+f.weight.value||80,activity:+f.activity.value,goal:f.goal.value};
-  const bmr=Math.round(10*p.weight+6.25*p.height-5*p.age+(p.sex==="m"?5:-161));
-  const tdee=Math.round(bmr*p.activity);
+/* v45: vypocet je ciste funkce nad profilem — udaje o tele sedi na Tele,
+   aktivita a cil na Kaloriich, takze cist je z jednoho formulare uz nejde. */
+function calcFrom(p){
+  const w=curWeight()||80, h=+p.height||180, a=+p.age||30;
+  const bmr=Math.round(10*w+6.25*h-5*a+(p.sex==="m"?5:-161));
+  const tdee=Math.round(bmr*(+p.activity||1.55));
   const factor=p.goal==="cut"?0.8:p.goal==="bulk"?1.1:1;
   const target=Math.round(tdee*factor);
-  const protein=Math.round(p.weight*(p.goal==="cut"?2.0:1.8));
-  $("#rBmr").textContent=bmr;$("#rTdee").textContent=tdee;$("#rTarget").textContent=target;
-  const note=p.goal==="cut"?`Deficit ~20 % (−${tdee-target} kcal) na hubnutí. Doporučené bílkoviny ${protein} g.`
-    :p.goal==="bulk"?`Přebytek ~10 % (+${target-tdee} kcal) na nabírání. Doporučené bílkoviny ${protein} g.`
-    :`Udržovací kalorie. Doporučené bílkoviny ${protein} g.`;
-  $("#calcNote").textContent=note+" (orientační, ne lékařská rada)";
-  return {target,protein,p};
+  const protein=Math.round(w*(p.goal==="cut"?2.0:1.8));
+  return {bmr,tdee,target,protein,weight:w};
 }
-$("#formCalc").addEventListener("input",calc);
-$("#formCalc").addEventListener("change",calc);
-$("#saveGoal").addEventListener("click",()=>{
-  const r=calc();const f=$("#formCalc");
-  Object.assign(state.profile,{name:f.uname.value.trim().slice(0,30),sex:f.sex.value,age:+f.age.value,height:+f.height.value,weight:+f.weight.value,activity:+f.activity.value,goal:f.goal.value,
-    targetWeight:f.targetWeight.value?+f.targetWeight.value:null,targetKcal:r.target,targetProtein:r.protein});
-  save();renderSettings();toast("Cíl uložen: "+r.target+" kcal / "+r.protein+" g bílkovin")});
+
+{const b=$("#saveUname");if(b)b.addEventListener("click",()=>{
+  state.profile.name=($("#unameInput").value||"").trim().slice(0,30);
+  save();toast(state.profile.name?"Asistent tě bude oslovovat „"+state.profile.name+"“":"Oslovení zrušeno")});}
 
 (function(){const sb=$("#saveStepsBtn");if(!sb)return;sb.addEventListener("click",()=>{
   const v=$("#stepsInput").value;
   if(v!=="")state.steps[todayISO()]=Math.max(0,+v||0);
   save();renderStepsCard();renderCalories();toast("Kroky uloženy")})})();
-$("#saveStepGoalBtn").addEventListener("click",()=>{
-  const g=$("#stepGoalInput").value;
-  if(g!=="")state.profile.stepGoal=Math.max(0,+g||0);
-  save();renderSettings();toast("Cíl kroků uložen")});
-$("#stepsToggle").addEventListener("click",()=>{
-  state.profile.addStepsToGoal=!state.profile.addStepsToGoal;save();renderSettings()});
-$("#workoutToggle").addEventListener("click",()=>{
-  state.profile.addWorkoutToGoal=!state.profile.addWorkoutToGoal;save();renderSettings()});
+
+/* ---- v45: Muj profil (Telo) — kdo jsem fyzicky ---- */
+function renderMyProfile(){
+  const box=$("#myProfBox");if(!box)return;const p=state.profile;const w=curWeight();
+  box.innerHTML=`
+    <label class="field"><span>Pohlaví</span>
+      <div class="seg" data-seg="msex">
+        <button type="button" data-val="m"${p.sex==="m"?' class="on"':''}>Muž</button>
+        <button type="button" data-val="f"${p.sex==="f"?' class="on"':''}>Žena</button>
+      </div><input type="hidden" id="msexInput" value="${p.sex||"m"}"></label>
+    <div class="row-3">
+      <label class="field"><span>Věk</span><input type="number" id="mageInput" min="10" max="100" inputmode="numeric" value="${p.age||30}"></label>
+      <label class="field"><span>Výška (cm)</span><input type="number" id="mheightInput" min="120" max="230" inputmode="numeric" value="${p.height||180}"></label>
+      <label class="field"><span>Cílová váha (kg)</span><input type="number" id="mtwInput" step="0.1" min="0" inputmode="decimal" placeholder="volitelné" value="${p.targetWeight??""}"></label>
+    </div>
+    <div class="setrow" style="margin-top:6px">
+      <div class="lb">${w?`Aktuální váha <b>${String(w).replace(".",",")} kg</b>`:"Aktuální váha zatím není"}
+        <span class="sub2">${w?"Bere se z posledního vážení — tady ji zadávat nemusíš.":"Zvaž se a appka si váhu vezme odtud."}</span>
+      </div>
+      <button class="btn secondary small" id="myProfWeigh" type="button">⚖️ Zvážit se</button>
+    </div>
+    <button class="btn" id="myProfSave" type="button" style="margin-top:12px">Uložit profil</button>
+    <p class="small muted" style="margin:10px 0 0">Tyhle údaje vstupují do výpočtu denního cíle kalorií — najdeš ho v sekci <b>Jídlo</b> pod „Cíl a výpočet".</p>`;
+  initSeg(box);
+  const gw=$("#myProfWeigh");if(gw)gw.onclick=()=>fabGo("telo","#weighHero");
+  const b=$("#myProfSave");if(b)b.onclick=()=>{
+    state.profile.sex=$("#msexInput").value==="f"?"f":"m";
+    state.profile.age=Math.max(10,Math.min(100,+$("#mageInput").value||30));
+    state.profile.height=Math.max(120,Math.min(230,+$("#mheightInput").value||180));
+    const tw=($("#mtwInput").value||"").trim();
+    state.profile.targetWeight=tw?+tw:null;
+    save();renderBody();renderGoalCard();toast("Profil uložen")};
+}
+
+/* ---- v45: Cil a vypocet (Kalorie) — parametry denniho cile ---- */
+function renderGoalCard(){
+  const box=$("#goalBox");if(!box)return;const p=state.profile;
+  const r=calcFrom(p);
+  box.innerHTML=`
+    <label class="field"><span>Aktivita</span>
+      <select id="gactInput">
+        ${[["1.2","Sedavý (málo pohybu)"],["1.375","Lehká (1–3× týdně)"],["1.55","Střední (3–5× týdně)"],["1.725","Vysoká (6–7× týdně)"],["1.9","Velmi vysoká (fyz. práce / 2× denně)"]]
+          .map(o=>`<option value="${o[0]}"${String(p.activity)===o[0]?" selected":""}>${o[1]}</option>`).join("")}
+      </select></label>
+    <label class="field"><span>Cíl</span>
+      <div class="seg" data-seg="ggoal">
+        <button type="button" data-val="cut"${p.goal==="cut"?' class="on"':''}>Zhubnout</button>
+        <button type="button" data-val="maintain"${p.goal==="maintain"?' class="on"':''}>Udržet</button>
+        <button type="button" data-val="bulk"${p.goal==="bulk"?' class="on"':''}>Nabrat</button>
+      </div><input type="hidden" id="ggoalInput" value="${p.goal||"maintain"}"></label>
+    <div class="result">
+      <div class="r"><div class="n" id="rBmr">${r.bmr}</div><div class="l">BMR</div></div>
+      <div class="r"><div class="n" id="rTdee">${r.tdee}</div><div class="l">Udržení</div></div>
+      <div class="r hi"><div class="n" id="rTarget">${r.target}</div><div class="l">Tvůj cíl (kcal)</div></div>
+    </div>
+    <div class="small muted" style="margin-top:10px" id="calcNote"></div>
+    <button class="btn" id="saveGoal" type="button" style="margin-top:12px">Uložit jako můj denní cíl</button>
+    <div class="setrow" style="margin-top:14px">
+      <div class="lb">Připočítat výdej z kroků k cíli<span class="sub2">Kroky navíc k dennímu cíli kalorií.</span></div>
+      <button class="tgl${p.addStepsToGoal?" on":""}" id="stepsToggle" type="button" aria-label="Připočítat kroky"><i></i></button>
+    </div>
+    <div class="setrow">
+      <div class="lb">Připočítat výdej z tréninků k cíli<span class="sub2">Odhad podle typu, délky a tvé váhy (MET).</span></div>
+      <button class="tgl${p.addWorkoutToGoal?" on":""}" id="workoutToggle" type="button" aria-label="Připočítat tréninky"><i></i></button>
+    </div>
+    <div class="small muted" id="stepsWarn"></div>
+    <p class="small muted" style="margin:12px 0 0">Počítá se z tvé váhy, výšky, věku a pohlaví — ty najdeš v sekci <b>Tělo</b> pod „Můj profil".</p>`;
+  initSeg(box);
+  const paint=()=>{
+    const q=Object.assign({},state.profile,{activity:+$("#gactInput").value,goal:$("#ggoalInput").value});
+    const c=calcFrom(q);
+    $("#rBmr").textContent=c.bmr;$("#rTdee").textContent=c.tdee;$("#rTarget").textContent=c.target;
+    $("#calcNote").textContent=(q.goal==="cut"?`Deficit ~20 % (−${c.tdee-c.target} kcal) na hubnutí. Doporučené bílkoviny ${c.protein} g.`
+      :q.goal==="bulk"?`Přebytek ~10 % (+${c.target-c.tdee} kcal) na nabírání. Doporučené bílkoviny ${c.protein} g.`
+      :`Udržovací kalorie. Doporučené bílkoviny ${c.protein} g.`)+" (orientační, ne lékařská rada)";
+    const sw=$("#stepsWarn");if(sw)sw.textContent=((state.profile.addStepsToGoal||state.profile.addWorkoutToGoal)&&q.activity>=1.55)
+      ?"⚠️ Aktivita střední a vyšší už výdej započítává — s přepínači se počítá dvakrát. Zvaž nižší aktivitu s přepínači, nebo vyšší bez nich.":"";
+  };
+  paint();
+  const sel=$("#gactInput");if(sel)sel.onchange=paint;
+  box.querySelectorAll('[data-seg="ggoal"] button').forEach(b=>b.addEventListener("click",()=>setTimeout(paint,0)));
+  const sg=$("#saveGoal");if(sg)sg.onclick=()=>{
+    state.profile.activity=+$("#gactInput").value||1.55;
+    state.profile.goal=$("#ggoalInput").value;
+    const c=calcFrom(state.profile);
+    state.profile.targetKcal=c.target;state.profile.targetProtein=c.protein;
+    save();renderCalories();renderDashboard();toast("Cíl uložen: "+c.target+" kcal / "+c.protein+" g bílkovin")};
+  const st=$("#stepsToggle");if(st)st.onclick=()=>{state.profile.addStepsToGoal=!state.profile.addStepsToGoal;save();renderGoalCard();renderCalories()};
+  const wt=$("#workoutToggle");if(wt)wt.onclick=()=>{state.profile.addWorkoutToGoal=!state.profile.addWorkoutToGoal;save();renderGoalCard();renderCalories()};
+}
 
 /* ---- Databáze jídel (na 100 g): [název, kcal, bílk, sach, tuky] ---- */
 const FOODDB=[
@@ -3223,6 +3261,7 @@ function renderTrainSettings(){
     <label class="field"><span>Cviků na jeden trénink</span>
       <div class="seg mini" data-seg="pexd">${[3,4,5,6,7].map(x=>`<button type="button" data-val="${x}"${x===(p.exPerDay||5)?' class="on"':''}>${x}</button>`).join("")}</div>
       <input type="hidden" id="pexdInput" value="${p.exPerDay||5}"></label>
+    <label class="field" style="margin-top:4px"><span>Denní cíl kroků</span><input type="number" id="pstepgoalInput" min="0" step="500" inputmode="numeric" placeholder="10000" value="${p.stepGoal||""}"></label>
     <button class="btn" id="trSetSave" type="button" style="margin-top:12px">Uložit nastavení</button>`;
   initSeg(box);
   const b=$("#trSetSave");if(b)b.onclick=()=>{
@@ -3230,7 +3269,9 @@ function renderTrainSettings(){
     state.profile.experience=$("#pexpInput").value;
     state.profile.equipment=$("#pequipInput").value;
     state.profile.exPerDay=Math.max(3,Math.min(7,+$("#pexdInput").value||5));
-    save();toast("Nastavení tréninku uloženo")};
+    const sg=($("#pstepgoalInput").value||"").trim();
+    state.profile.stepGoal=sg?Math.max(0,+sg||0):0;
+    save();renderStepsCard();renderCalories();toast("Nastavení tréninku uloženo")};
 }
 
 /* Kroky — karta v Tréninku */
@@ -3246,6 +3287,7 @@ function renderStepsCard(){
 function renderCalories(){
   const p=state.profile;
   const twk=todayWorkoutKcal();
+  renderGoalCard();
   plateDateSync();
   renderStepsCard();
   renderAiBox();
@@ -3539,7 +3581,7 @@ function chartCalBig(){
 function chartSteps(){
   const days=[];for(let i=13;i>=0;i--)days.push(isoNdaysAgo(i));
   const vals=days.map(d=>+state.steps[d]||0);
-  if(vals.every(v=>!v))return emptyCanvas("chSteps","Zapisuj kroky v sekci Kalorie.");
+  if(vals.every(v=>!v))return emptyCanvas("chSteps","Zapisuj kroky v sekci <b>Trénink</b>.");
   showCanvas("chSteps");destroy("chSteps");const c=C();const g=state.profile.stepGoal;
   const ds=[{type:"bar",data:vals,backgroundColor:vals.map(v=>g&&v>=g?c.s5:c.s1),borderRadius:3,borderSkipped:false,maxBarThickness:18}];
   if(g)ds.push({type:"line",data:days.map(()=>g),borderColor:c.muted,borderWidth:1.5,borderDash:[3,4],pointRadius:0});
