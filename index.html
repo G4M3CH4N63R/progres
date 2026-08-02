@@ -4451,16 +4451,31 @@ function renderChatImgs(){const box=$("#chatImgs");if(!box)return;
       renderChatImgs();if(chatPend.length)toast("Fotka připravená — napiš co to je, nebo pošli prázdné")})}
   const mic=$("#chatMic");
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(mic&&SR){mic.style.display="grid";
+  /* v41: na iOS se webkitSpeechRecognition tvari jako dostupne (existuje v window),
+     ale rozpoznavani umi zatuhnout cely WebView - appka prestane reagovat a musi se
+     uplne zavrit. Na iOS proto tlacitko nezobrazujeme vubec: diktovat jde ze systemove
+     klavesnice (mikrofon vedle mezerniku), takze o funkci nikdo neprijde. */
+  const IOS=/iP(hone|od|ad)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  window.micBlocked=IOS;
+  if(mic&&SR&&!IOS){mic.style.display="grid";
+    let micT=null;
+    const micOff=()=>{if(micT){clearTimeout(micT);micT=null}chatRec=null;mic.classList.remove("rec")};
+    window.micOff=micOff;
     mic.addEventListener("click",()=>{
-      if(chatRec){try{chatRec.stop()}catch(e){}chatRec=null;mic.classList.remove("rec");return}
+      if(chatRec){try{chatRec.stop()}catch(e){}micOff();return}
       const r=new SR();r.lang="cs-CZ";r.interimResults=true;r.continuous=false;
       let base=inp.value?inp.value+" ":"";
+      r.onstart=()=>{if(micT){clearTimeout(micT);micT=null}};
       r.onresult=ev=>{let s="";for(let i=ev.resultIndex;i<ev.results.length;i++)s+=ev.results[i][0].transcript;
         inp.value=base+s;inp.dispatchEvent(new Event("input"))};
-      r.onend=()=>{chatRec=null;mic.classList.remove("rec")};
-      r.onerror=()=>{chatRec=null;mic.classList.remove("rec");toast("Diktování nejde — zkontroluj mikrofon")};
-      try{r.start();chatRec=r;mic.classList.add("rec")}catch(e){toast("Diktování není dostupné")}})}
+      r.onend=micOff;
+      r.onerror=()=>{micOff();toast("Diktování nejde — zkontroluj mikrofon")};
+      try{r.start();chatRec=r;mic.classList.add("rec");
+        /* pojistka: start() selhava asynchronne, catch ho nechyti. Kdyz do 8 s
+           nedorazi onstart, stav se uklidi sam a tlacitko prestane svitit. */
+        micT=setTimeout(()=>{if(chatRec===r){try{r.abort()}catch(e){}micOff();
+          toast("Diktování se nespustilo")}},8000);
+      }catch(e){micOff();toast("Diktování není dostupné")}})}
   const cl=$("#asstClear");
   if(cl)cl.addEventListener("click",()=>confirmDel("Vymazat chat?","Smaže se otevřená konverzace. Starší chaty v Historii i zapsaná data v appce zůstanou.",()=>{
     chatClear();toast("Chat vymazán")}));
