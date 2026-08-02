@@ -1072,9 +1072,9 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       </div>
 
 <div class="card" id="card-macrosplit">
-        <h2>Rozložení maker <span class="hint">podíl na kaloriích</span></h2>
-        <div class="chart-wrap sm"><canvas id="chMacroSplit"></canvas></div>
-        <div class="cmp3" id="macroSplitInfo"></div>
+        <h2>Rozložení maker <span class="hint">podíl na kaloriích · swipe mezi dny</span></h2>
+        <div class="swipe" id="macroSwipe"></div>
+        <div class="swipe-dots" id="macroDots"></div>
       </div>
 
 <div class="card" id="card-macrotime">
@@ -3702,22 +3702,48 @@ function chartMacroTime(){
     {label:"Sacharidy",data:S,backgroundColor:c.s3,borderRadius:3,maxBarThickness:20},
     {label:"Tuky",data:F,backgroundColor:c.s4,borderRadius:3,maxBarThickness:20}]},options:o});
 }
+/* v43: misto jednoho kolace za cele obdobi swipe pas — prvni karta je prumer,
+   dalsi jsou jednotlive dny od nejnovejsiho. Karel chtel dny porovnavat vedle sebe. */
+const MACRO_DNU=7;
+function macroPieData(p,s,f){const kp=p*4,ks=s*4,kf=f*9,tot=kp+ks+kf;
+  return{kp:kp,ks:ks,kf:kf,tot:tot,pct:function(v){return tot?Math.round(v/tot*100):0}}}
 function chartMacroSplit(){
-  const info=$("#macroSplitInfo");const m=foodDays(periodCut());const ds=Object.keys(m);
-  if(!ds.length){if(info)info.innerHTML="";return emptyCanvas("chMacroSplit","Žádná jídla v tomto období.")}
-  showCanvas("chMacroSplit");destroy("chMacroSplit");const c=C();
-  let p=0,s=0,f=0,k=0;ds.forEach(d=>{p+=m[d].p;s+=m[d].c;f+=m[d].f;k+=m[d].kcal});
-  const n=ds.length,kp=p*4,ks=s*4,kf=f*9,tot=kp+ks+kf;
-  const pct=v=>tot?Math.round(v/tot*100):0;
-  const o={responsive:true,maintainAspectRatio:false,cutout:"64%",
-    plugins:{legend:legendOpt(c),tooltip:{backgroundColor:c.ink,titleColor:c.card,bodyColor:c.card,padding:11,cornerRadius:10,displayColors:true,
-      callbacks:{label:x=>x.label+": "+pct(x.raw)+" % kcal"}}}};
-  charts.chMacroSplit=new Chart($("#chMacroSplit"),{type:"doughnut",
-    data:{labels:["Bílkoviny","Sacharidy","Tuky"],datasets:[{data:[kp,ks,kf],backgroundColor:[c.s2,c.s3,c.s4],borderWidth:0,hoverOffset:6}]},options:o});
-  if(info)info.innerHTML=
-    '<div class="c"><div class="n">'+Math.round(p/n)+' g</div><div class="l">ø bílkoviny · '+pct(kp)+' %</div></div>'
-   +'<div class="c"><div class="n">'+Math.round(s/n)+' g</div><div class="l">ø sacharidy · '+pct(ks)+' %</div></div>'
-   +'<div class="c"><div class="n">'+Math.round(f/n)+' g</div><div class="l">ø tuky · '+pct(kf)+' %</div></div>';
+  const sw=$("#macroSwipe"),dots=$("#macroDots");if(!sw)return;
+  Object.keys(charts).forEach(k=>{if(k.indexOf("chMacroPie")===0)destroy(k)});
+  const m=foodDays(periodCut());const ds=Object.keys(m).sort();
+  if(!ds.length){
+    sw.innerHTML='<div class="swipe-card"><div class="empty"><div class="big">'+EMPTY_SVG+'</div>Žádná jídla v tomto období.</div></div>';
+    if(dots)dots.innerHTML="";return}
+  const c=C();
+  /* karta 0 = prumer za obdobi, pak posledni dny od nejnovejsiho */
+  let tp=0,tsac=0,tf=0,tk=0;ds.forEach(d=>{tp+=m[d].p;tsac+=m[d].c;tf+=m[d].f;tk+=m[d].kcal});
+  const nd=ds.length;
+  const karty=[{nadpis:"Průměr · "+nd+" "+(nd===1?"den":nd<5?"dny":"dnů"),
+    kcal:Math.round(tk/nd),p:tp/nd,s:tsac/nd,f:tf/nd,prum:true}];
+  ds.slice(-MACRO_DNU).reverse().forEach(d=>{const x=m[d];
+    karty.push({nadpis:(d===todayISO()?"Dnes":d===isoNdaysAgo(1)?"Včera":fmtDate(d)),
+      kcal:Math.round(x.kcal),p:x.p,s:x.c,f:x.f,prum:false})});
+  sw.innerHTML=karty.map((k,i)=>{const g=macroPieData(k.p,k.s,k.f);
+    return '<div class="swipe-card"><h3>'+k.nadpis+' · '+nbsp(k.kcal)+' kcal</h3>'
+      +'<div class="chart-wrap xs"><canvas id="chMacroPie'+i+'"></canvas></div>'
+      +'<div class="cmp3">'
+      +'<div class="c"><div class="n">'+Math.round(k.p)+' g</div><div class="l">'+(k.prum?"ø ":"")+'bílkoviny · '+g.pct(g.kp)+' %</div></div>'
+      +'<div class="c"><div class="n">'+Math.round(k.s)+' g</div><div class="l">'+(k.prum?"ø ":"")+'sacharidy · '+g.pct(g.ks)+' %</div></div>'
+      +'<div class="c"><div class="n">'+Math.round(k.f)+' g</div><div class="l">'+(k.prum?"ø ":"")+'tuky · '+g.pct(g.kf)+' %</div></div>'
+      +'</div></div>'}).join("");
+  karty.forEach((k,i)=>{const cv=$("#chMacroPie"+i);if(!cv)return;const g=macroPieData(k.p,k.s,k.f);
+    charts["chMacroPie"+i]=new Chart(cv,{type:"doughnut",
+      data:{labels:["Bílkoviny","Sacharidy","Tuky"],
+        datasets:[{data:[g.kp,g.ks,g.kf],backgroundColor:[c.s2,c.s3,c.s4],borderWidth:0,hoverOffset:6}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:"62%",
+        plugins:{legend:{display:i===0,position:"bottom",labels:{color:c.muted,boxWidth:9,boxHeight:9,usePointStyle:true,pointStyle:"circle",padding:10,font:{size:11,weight:"600"}}},
+          tooltip:{backgroundColor:c.ink,titleColor:c.card,bodyColor:c.card,padding:11,cornerRadius:10,displayColors:true,
+            callbacks:{label:x=>x.label+": "+g.pct(x.raw)+" % kcal"}}}}})});
+  if(dots)dots.innerHTML=karty.map((_,i)=>'<i class="'+(i===0?"on":"")+'"></i>').join("");
+  if(!sw._wired){sw._wired=true;
+    sw.addEventListener("scroll",()=>{const cd=sw.querySelector(".swipe-card");if(!cd)return;
+      const cw=cd.offsetWidth+12;const i=Math.max(0,Math.min(sw.children.length-1,Math.round(sw.scrollLeft/cw)));
+      $$("#macroDots i").forEach((d,k)=>d.classList.toggle("on",k===i))})}
 }
 function chartProtein(){
   const info=$("#proteinInfo");const m=foodDays(periodCut());
