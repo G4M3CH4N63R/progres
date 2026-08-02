@@ -981,11 +981,9 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
 
       <div class="card" id="card-today">
         <h2>Dnešní makro <span class="hint" id="foodDate"></span></h2>
-        <div id="macroPieBox"></div>
-        <div style="margin-top:14px">
-          <div class="group-label" style="margin:6px 4px 8px">Dnešní jídla</div>
-          <div id="foodList"></div>
-        </div>
+        <!-- v48: swipe okna Dnes / Včera / -2 / -3, každé s koláčem, jídly dne a úpravou -->
+        <div class="swipe" id="todaySwipe"></div>
+        <div class="swipe-dots" id="todayDots" style="margin:8px 0 0"></div>
       </div>
 
       <div class="card" id="card-ai">
@@ -1409,6 +1407,8 @@ function mergeState(d){const s=clone(DEFAULT);
   ["sessions","body","foods","templates","customExercises","foodDb","recipes","favorites","trash"].forEach(k=>{if(Array.isArray(d[k]))s[k]=d[k]});
   if(d.steps&&typeof d.steps==="object"&&!Array.isArray(d.steps))s.steps=d.steps;
   if(d.profile)s.profile=Object.assign(s.profile,d.profile);
+  /* v47: bump AI generace — starší uložený model vrátit na výchozí (sonnet 5) */
+  if(/^claude-(sonnet|haiku|opus)-4/.test(s.profile.aiModel||""))s.profile.aiModel="";
   return s}
 function migrateV1(d){const s=clone(DEFAULT);
   if(Array.isArray(d.body))s.body=d.body.map(b=>({...b}));
@@ -2679,8 +2679,9 @@ const FOODDB=[
 
 /* ---- AI (Claude API) ---- */
 function aiHeaders(k){return{"x-api-key":k,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true","content-type":"application/json"}}
-async function aiCall(content,maxTokens){
-  const body={model:state.profile.aiModel||"claude-sonnet-4-5",max_tokens:maxTokens||500,messages:[{role:"user",content}]};
+async function aiCall(content,maxTokens,model){
+  /* v47: třetí parametr umožňuje jednomu volání vynutit jiný model (foto jídla → opus) */
+  const body={model:model||state.profile.aiModel||"claude-sonnet-5",max_tokens:maxTokens||500,messages:[{role:"user",content}]};
   let r;
   try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body)})}
   catch(e){throw new Error("Síťová chyba — z lokálního souboru prohlížeč API blokuje; na webu (https) to funguje.")}
@@ -2732,8 +2733,9 @@ function aiJson(txt){
 }
 async function aiAnalyzeFood(imgs,desc){
   const content=imgs.map(b64=>({type:"image",source:{type:"base64",media_type:"image/jpeg",data:b64}}));
-  content.push({type:"text",text:"Jsi nutriční asistent. Fotek může být víc (jídlo z různých úhlů, etiketa, složení) — ber je jako JEDNO jídlo a nesčítej porce vícekrát. Odhadni jídlo a jeho nutriční hodnoty pro CELÉ zobrazené množství."+(desc?" Popis od uživatele: "+desc+".":"")+" Pokud je na obalu tabulka na 100 g, přepočítej ji na odhadovanou gramáž. Pokud jde o počitatelné kusy (vejce, plátky, housky…), vyplň \"pocet\" počtem kusů na fotce a název dej pro JEDEN kus bez čísla (např. \"Vejce\"); hodnoty kcal/makra ať jsou za VŠECHNY kusy dohromady. Jinak pocet=1. V \"popis\" napiš 2–3 věty česky: co přesně na fotce vidíš, jak jsi odhadl gramáž a způsob úpravy (smažené/pečené/vařené, olej, dressing). V \"polozky\" rozepiš KAŽDOU jednotlivou složku jídla zvlášť (i nápoj, olej, dressing, pečivo, příloha…) s odhadem množství, kalorií a maker — součet položek musí odpovídat celkovým hodnotám. Buď konkrétní: raději víc krátkých položek než jedna obecná. Odpověz POUZE platným JSON: {\"nazev\":\"krátký český název\",\"pocet\":číslo,\"kcal\":číslo,\"bilkoviny_g\":číslo,\"sacharidy_g\":číslo,\"tuky_g\":číslo,\"popis\":\"2–3 věty\",\"polozky\":[{\"nazev\":\"kuřecí prsa\",\"mnozstvi\":\"150 g\",\"kcal\":248,\"bilkoviny_g\":46,\"sacharidy_g\":0,\"tuky_g\":5}],\"presnost\":\"vysoká|střední|nízká\",\"poznamka\":\"nejistoty, max 1 věta\"}"});
-  return aiJson(await aiCall(content,1600));
+  content.push({type:"text",text:"Jsi nutriční asistent. Fotek může být víc (jídlo z různých úhlů, etiketa, složení) — ber je jako JEDNO jídlo a nesčítej porce vícekrát. Odhadni jídlo a jeho nutriční hodnoty pro CELÉ zobrazené množství."+(desc?" Popis od uživatele: "+desc+".":"")+" Postupuj vždy stejnou metodou: 1) urči každou složku jídla, 2) odhadni její hmotnost v gramech podle referencí ve scéně (mělký talíř průměr 26 cm, polévkový 22 cm, vidlička 20 cm, hrnek 250 ml, plechovka 330 ml, dlaň ~10 cm), 3) makra spočítej z běžných tabulkových hodnot na 100 g pro danou úpravu. Při nejistotě zvol vždy STŘEDNÍ, nejpravděpodobnější odhad, ne krajní — stejná fotka musí při opakované analýze dát stejný výsledek. U smažených jídel a salátů s dresinkem započítej vstřebaný olej či dresink. Pokud je na obalu tabulka na 100 g, přepočítej ji na odhadovanou gramáž. Pokud jde o počitatelné kusy (vejce, plátky, housky…), vyplň \"pocet\" počtem kusů na fotce a název dej pro JEDEN kus bez čísla (např. \"Vejce\"); hodnoty kcal/makra ať jsou za VŠECHNY kusy dohromady. Jinak pocet=1. V \"popis\" napiš 2–3 věty česky: co přesně na fotce vidíš, jak jsi odhadl gramáž a způsob úpravy (smažené/pečené/vařené, olej, dressing). V \"polozky\" rozepiš KAŽDOU jednotlivou složku jídla zvlášť (i nápoj, olej, dressing, pečivo, příloha…) s odhadem množství, kalorií a maker — součet položek musí odpovídat celkovým hodnotám. Buď konkrétní: raději víc krátkých položek než jedna obecná. Odpověz POUZE platným JSON: {\"nazev\":\"krátký český název\",\"pocet\":číslo,\"kcal\":číslo,\"bilkoviny_g\":číslo,\"sacharidy_g\":číslo,\"tuky_g\":číslo,\"popis\":\"2–3 věty\",\"polozky\":[{\"nazev\":\"kuřecí prsa\",\"mnozstvi\":\"150 g\",\"kcal\":248,\"bilkoviny_g\":46,\"sacharidy_g\":0,\"tuky_g\":5}],\"presnost\":\"vysoká|střední|nízká\",\"poznamka\":\"nejistoty, max 1 věta\"}"});
+  /* v47: foto jídla jede na nejsilnějším modelu — přesnější a stabilnější odhady */
+  return aiJson(await aiCall(content,1600,"claude-opus-5"));
 }
 async function barcodeLookup(code){
   let r;try{r=await fetch("https://world.openfoodfacts.org/api/v2/product/"+encodeURIComponent(code)+"?fields=product_name,product_name_cs,brands,nutriments,quantity,product_quantity")}
@@ -2821,7 +2823,7 @@ function renderApiKeyBox(){
     $("#apiKeySave").onclick=async()=>{
       const k=$("#apiKeyInput").value.trim();if(!k){toast("Vlož klíč");return}
       $("#apiKeySave").disabled=true;$("#apiKeySave").innerHTML='<span class="spin"></span>';
-      let model="claude-sonnet-4-5";
+      let model="claude-sonnet-5";
       try{const r=await fetch("https://api.anthropic.com/v1/models",{headers:aiHeaders(k)});
         if(r.status===401){toast("Klíč vypadá neplatně (401)");$("#apiKeySave").disabled=false;$("#apiKeySave").textContent="Uložit";return}
         if(r.ok){const j=await r.json();const m=(j.data||[]).find(x=>/sonnet/i.test(x.id));if(m)model=m.id}}
@@ -3063,19 +3065,63 @@ function renderFavFoods(){const box=$("#favFoodsBox");if(!box)return;
     batch=clone(r.items);batchServings=Math.max(1,+r.servings||1);batchName=r.name;renderBatch();
     showSolo(document.getElementById("tab-kalorie"),"#card-foodlog");toast("🍽️ Recept je na talíři — uprav a sněz ⤵")});
 }
-function renderMacroPie(){const box=$("#macroPieBox");if(!box)return;
-  const today=state.foods.filter(x=>x.date===todayISO());
-  const prot=today.reduce((s,x)=>s+(+x.protein||0),0),carb=today.reduce((s,x)=>s+(+x.carbs||0),0),fat=today.reduce((s,x)=>s+(+x.fat||0),0);
-  const kP=prot*4,kC=carb*4,kF=fat*9,tot=Math.round(kP+kC+kF);
-  if(!today.length||tot<=0){destroy("chMacro");box.innerHTML=`<div class="empty" style="padding:22px 12px"><div class="big">🥗</div>Dnes zatím žádná makra.<br><span class="muted">Přidej jídlo s bílkovinami, sacharidy nebo tuky a uvidíš rozložení.</span></div>`;return}
-  const leg=(nm,g,kc,col)=>`<div class="pl"><i style="background:${col}"></i><span class="nm">${nm}</span><span class="vl">${Math.round(g)} g</span><span class="pct">${Math.round(kc/tot*100)} %</span></div>`;
-  box.innerHTML=`<div class="chart-wrap" style="position:relative;height:210px"><canvas id="chMacro"></canvas><div class="pie-center"><div class="pc-n">${nbsp(tot)}</div><div class="pc-l">kcal dnes</div></div></div>
-    <div class="pie-legend">${leg("Bílkoviny",prot,kP,"var(--good)")}${leg("Sacharidy",carb,kC,"var(--warn)")}${leg("Tuky",fat,kF,"var(--s4)")}</div>`;
-  if(box.offsetParent===null)return;
-  destroy("chMacro");const c=C();
-  charts.chMacro=new Chart($("#chMacro"),{type:"doughnut",
-    data:{labels:["Bílkoviny","Sacharidy","Tuky"],datasets:[{data:[kP,kC,kF],backgroundColor:[c.good,c.warn,c.s4],borderWidth:0,hoverOffset:4}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:"66%",plugins:{legend:{display:false},tooltip:{callbacks:{label:x=>x.label+": "+Math.round(x.raw)+" kcal ("+Math.round(x.raw/tot*100)+" %)"}}}}});
+/* v48: karta „Dnešní makro" = swipe okna Dnes / Včera / -2 / -3.
+   Každé okno má koláč maker, jídla dne a plnou úpravu (oblíbené, upravit,
+   na talíř, smazat) jako Historie jídel + přidání jídla na daný den. */
+const TODAY_SWIPE_DNU=4;
+function renderMacroPie(){const sw=$("#todaySwipe");if(!sw)return;
+  const dots=$("#todayDots");const keep=sw.scrollLeft;
+  for(let i=0;i<TODAY_SWIPE_DNU;i++)destroy("chMacroDay"+i);
+  const dny=[];
+  for(let i=0;i<TODAY_SWIPE_DNU;i++){const d=isoNdaysAgo(i);
+    const it=state.foods.filter(x=>x.date===d);
+    const prot=it.reduce((s,x)=>s+(+x.protein||0),0),carb=it.reduce((s,x)=>s+(+x.carbs||0),0),fat=it.reduce((s,x)=>s+(+x.fat||0),0);
+    const kc=it.reduce((s,x)=>s+(+x.kcal||0),0);
+    const kP=prot*4,kC=carb*4,kF=fat*9,tot=Math.round(kP+kC+kF);
+    dny.push({d,it,prot,carb,fat,kc,kP,kC,kF,tot,
+      nazev:i===0?"Dnes":i===1?"Včera":fmtDate(d)})}
+  sw.innerHTML=dny.map((k,i)=>{
+    const leg=(nm,g,kc2,col)=>`<div class="pl"><i style="background:${col}"></i><span class="nm">${nm}</span><span class="vl">${Math.round(g)} g</span><span class="pct">${k.tot?Math.round(kc2/k.tot*100):0} %</span></div>`;
+    const kolac=(!k.it.length||k.tot<=0)
+      ?`<div class="empty" style="padding:18px 10px"><div class="big">🥗</div>${i===0?"Dnes zatím žádná makra.":"Žádná zapsaná makra."}<br><span class="muted">${i===0?"Přidej jídlo s bílkovinami, sacharidy nebo tuky.":"Jídlo sem doplníš tlačítkem níže."}</span></div>`
+      :`<div class="chart-wrap" style="position:relative;height:190px"><canvas id="chMacroDay${i}"></canvas><div class="pie-center"><div class="pc-n">${nbsp(k.tot)}</div><div class="pc-l">${i===0?"kcal dnes":i===1?"kcal včera":"kcal"}</div></div></div>
+        <div class="pie-legend">${leg("Bílkoviny",k.prot,k.kP,"var(--good)")}${leg("Sacharidy",k.carb,k.kC,"var(--warn)")}${leg("Tuky",k.fat,k.kF,"var(--s4)")}</div>`;
+    const jidla=k.it.map(x=>{
+      const mac=[x.protein?`B ${Math.round(x.protein)}`:"",x.carbs?`S ${Math.round(x.carbs)}`:"",x.fat?`T ${Math.round(x.fat)}`:""].filter(Boolean).join(" · ");
+      const cn=x.name.replace(/\s*×\s*[\d,.]+$/,"");
+      return `<div class="item"><div class="tag" style="min-width:56px">${x.kcal}<br><span style="font-size:10px;font-weight:600">kcal</span></div><div class="body"><div class="t1">${esc(x.name)}</div><div class="t2">${mac||"bez maker"}</div></div><button class="del favb${isFavFood(cn)?" on":""}" data-tdfav="${x.id}" title="Do oblíbených">${isFavFood(cn)?"★":"☆"}</button><button class="del" data-tdedit="${x.id}" title="Upravit" aria-label="Upravit">${ICON_PEN}</button><button class="del" data-tdcopy="${x.id}" title="Na talíř">⧉</button><button class="del trash" data-tddel="${x.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div>`}).join("");
+    return `<div class="swipe-card"><h3>${k.nazev} · ${nbsp(Math.round(k.kc))} kcal</h3>${kolac}
+      <div class="group-label" style="margin:12px 4px 6px">${i===0?"Dnešní jídla":"Jídla"}</div>
+      ${jidla||`<div class="small muted" style="margin:2px 4px 8px">${i===0?"Dnes zatím nic.":"Bez záznamů."}</div>`}
+      <button class="btn secondary small" type="button" data-tdadd="${k.d}" style="margin-top:8px">＋ Přidat jídlo${i===0?"":" — "+k.nazev.toLowerCase()}</button></div>`}).join("");
+  sw.scrollLeft=keep;
+  /* akce položek — stejné chování jako v Historii jídel */
+  $$("#todaySwipe [data-tdfav]").forEach(b=>b.onclick=()=>{const x=state.foods.find(f=>f.id===b.dataset.tdfav);if(!x)return;
+    const cn=x.name.replace(/\s*×\s*[\d,.]+$/,"");
+    toggleFavFood({name:cn,kcal:x.kcal,protein:x.protein,carbs:x.carbs,fat:x.fat});renderCalories();renderFavFoods()});
+  $$("#todaySwipe [data-tdedit]").forEach(b=>b.onclick=()=>openFoodEdit(b.dataset.tdedit));
+  $$("#todaySwipe [data-tdcopy]").forEach(b=>b.onclick=()=>{const x=state.foods.find(f=>f.id===b.dataset.tdcopy);if(!x)return;
+    prefillFood(x.name.replace(/\s*×\s*\d+$/,""),x.kcal,x.protein,x.carbs,x.fat);
+    showSolo(document.getElementById("tab-kalorie"),"#card-foodlog");toast("🍽️ Na talíři — uprav a sněz ⤵")});
+  $$("#todaySwipe [data-tddel]").forEach(b=>b.onclick=()=>{const id=b.dataset.tddel,x=state.foods.find(f=>f.id===id);
+    confirmDel("Smazat jídlo?",(x?"„"+x.name+"“":"Záznam")+" se smaže z deníku — v archivu ho najdeš 14 dní.",()=>{
+      trashPush("food",x);state.foods=state.foods.filter(f=>f.id!==id);save();renderCalories();toast("Smazáno — v archivu 14 dní")})});
+  $$("#todaySwipe [data-tdadd]").forEach(b=>b.onclick=()=>{const d=b.dataset.tdadd;
+    const fd=$("#formFood [name=fdate]");if(fd){fd.value=d;fdateTouch=(d===todayISO()?0:Date.now());renderPlateDateWarn()}
+    showSolo(document.getElementById("tab-kalorie"),"#card-foodlog");
+    toast(d===todayISO()?"Talíř — zapíše se na dnes":"Talíř — zapíše se na "+fmtDateFull(d))});
+  /* tečky + přepínání */
+  if(dots)dots.innerHTML=dny.map((_,i)=>'<i class="'+(i===0?"on":"")+'"></i>').join("");
+  if(!sw._wired){sw._wired=true;
+    sw.addEventListener("scroll",()=>{const cd=sw.querySelector(".swipe-card");if(!cd)return;
+      const cw=cd.offsetWidth+12;const i=Math.max(0,Math.min(sw.children.length-1,Math.round(sw.scrollLeft/cw)));
+      $$("#todayDots i").forEach((el,k)=>el.classList.toggle("on",k===i))})}
+  if(sw.offsetParent===null)return;
+  const c=C();
+  dny.forEach((k,i)=>{if(!k.it.length||k.tot<=0)return;const cv=$("#chMacroDay"+i);if(!cv)return;
+    charts["chMacroDay"+i]=new Chart(cv,{type:"doughnut",
+      data:{labels:["Bílkoviny","Sacharidy","Tuky"],datasets:[{data:[k.kP,k.kC,k.kF],backgroundColor:[c.good,c.warn,c.s4],borderWidth:0,hoverOffset:4}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:"66%",plugins:{legend:{display:false},tooltip:{callbacks:{label:x=>x.label+": "+Math.round(x.raw)+" kcal ("+Math.round(x.raw/k.tot*100)+" %)"}}}}})});
 }
 
 /* ---- Výběr jídla + porce ---- */
@@ -3107,7 +3153,7 @@ async function aiFoodSearch(q){
     +' U hotových jídel bez etikety odhadni z typické receptury a do "src" napiš "odhad AI".';
   /* v33: max_uses 4 → 2 (rozhodnutí Karla kvůli ceně web_search: ~1 cent/dotaz).
      Export z Claude Design má 4 — pokud ho příště vrátí, snížit zpátky na 2. */
-  const body={model:state.profile.aiModel||"claude-sonnet-4-5",max_tokens:2200,
+  const body={model:state.profile.aiModel||"claude-sonnet-5",max_tokens:2200,
     tools:[{type:"web_search_20250305",name:"web_search",max_uses:2}],
     messages:[{role:"user",content:prompt}]};
   let r;
@@ -3326,22 +3372,7 @@ function renderCalories(){
   // Kompaktní souhrn u formuláře (jen zbývající kalorie; makra a prstenec jsou v hero nahoře)
   const sumEl=$("#calorieSummary");
   if(sumEl)sumEl.innerHTML=tgt?`<div class="small muted">${kcal>tgt?"Přes cíl o "+nbsp(kcal-tgt)+" kcal":"Zbývá "+nbsp(tgt-kcal)+" kcal do cíle"}</div>`:"";
-  const list=$("#foodList");
-  if(!today.length){list.innerHTML=`<div class="empty" style="padding:18px"><div class="big">${EMPTY_SVG}</div>Dnes zatím nic. Přidej první jídlo.</div>`;return}
-  list.innerHTML=today.map(x=>{
-    const mac=[x.protein?`B ${Math.round(x.protein)}`:"",x.carbs?`S ${Math.round(x.carbs)}`:"",x.fat?`T ${Math.round(x.fat)}`:""].filter(Boolean).join(" · ");
-    const cn=x.name.replace(/\s*×\s*[\d,.]+$/,"");
-    return `<div class="item"><div class="tag" style="min-width:56px">${x.kcal}<br><span style="font-size:10px;font-weight:600">kcal</span></div><div class="body"><div class="t1">${esc(x.name)}</div><div class="t2">${mac||"bez maker"}</div></div><button class="del favb${isFavFood(cn)?" on":""}" data-fav-food="${x.id}" title="Do oblíbených">${isFavFood(cn)?"★":"☆"}</button><button class="del" data-copy-food="${x.id}" title="Na talíř">⧉</button><button class="del trash" data-del-food="${x.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div>`}).join("");
-  $$("[data-fav-food]",list).forEach(b=>b.onclick=()=>{const x=state.foods.find(f=>f.id===b.dataset.favFood);if(!x)return;
-    const cn=x.name.replace(/\s*×\s*[\d,.]+$/,"");
-    toggleFavFood({name:cn,kcal:x.kcal,protein:x.protein,carbs:x.carbs,fat:x.fat});renderCalories()});
-  $$("[data-del-food]",list).forEach(b=>b.onclick=()=>{const id=b.dataset.delFood,x=state.foods.find(f=>f.id===id);
-    confirmDel("Smazat jídlo?",(x?"„"+x.name+"“":"Záznam")+" se smaže z deníku — v archivu ho najdeš 14 dní.",()=>{
-      trashPush("food",x);state.foods=state.foods.filter(f=>f.id!==id);save();renderCalories();toast("Smazáno — v archivu 14 dní")})});
-  $$("[data-copy-food]",list).forEach(b=>b.onclick=()=>{
-    const x=state.foods.find(f=>f.id===b.dataset.copyFood);if(!x)return;
-    prefillFood(x.name.replace(/\s*×\s*\d+$/,""),x.kcal,x.protein,x.carbs,x.fat);
-    toast("🍽️ Na talíři — uprav a sněz ⤵")});
+  /* v48: seznam jídel se přesunul do swipe oken karty „Dnešní makro" (renderMacroPie) */
 }
 $("#formFood").addEventListener("submit",e=>{
   e.preventDefault();const f=e.target;const q=Math.max(0.01,+f.qty.value||1);
@@ -4441,7 +4472,7 @@ function chatMsgsFromView(){const out=[];
 async function asstApi(msgs){
   /* v38: ŽÁDNÉ temperature — aktuální modely ho odmítají (API 400 „deprecated for this model").
      Přesnost počtů řeší hotové součty (asstDayTotals + pole den), ne sampling. NEVRACET. */
-  const body={model:state.profile.aiModel||"claude-sonnet-4-5",max_tokens:2500,system:asstSystem(),
+  const body={model:state.profile.aiModel||"claude-sonnet-5",max_tokens:2500,system:asstSystem(),
     tools:ASST_TOOLS.concat([{type:"web_search_20250305",name:"web_search",max_uses:5}]),messages:msgs};
   let r=null,sit=false;
   for(let pokus=0;pokus<2;pokus++){
@@ -4540,7 +4571,10 @@ function renderChatImgs(){const box=$("#chatImgs");if(!box)return;
   const ph=$("#chatPhoto"),file=$("#chatFile");
   if(ph&&file){ph.addEventListener("click",()=>file.click());
     file.addEventListener("change",async e=>{const fs=Array.from(e.target.files||[]);e.target.value="";
-      for(const f of fs.slice(0,Math.max(0,3-chatPend.length))){
+      /* v46: limit fotek v jedné zprávě 3 -> 10 */
+      const CHAT_IMG_MAX=10;const free=Math.max(0,CHAT_IMG_MAX-chatPend.length);
+      if(fs.length>free)toast(free?("Vejde se "+CHAT_IMG_MAX+" fotek — beru "+free):"Máš už "+CHAT_IMG_MAX+" fotek");
+      for(const f of fs.slice(0,free)){
         try{const url=await resizeImage(f,1024,0.8);chatPend.push(url.split(",")[1])}catch(err){}}
       renderChatImgs();if(chatPend.length)toast("Fotka připravená — napiš co to je, nebo pošli prázdné")})}
   const mic=$("#chatMic");
@@ -4617,11 +4651,11 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
 
   /* ---- 1) aiCall: vlastní klíč → přímo Anthropic, jinak → proxy ---- */
   var _aiCall = window.aiCall;
-  window.aiCall = async function (content, maxTokens) {
+  window.aiCall = async function (content, maxTokens, model) {
     if (own(state.profile.apiKey)) return _aiCall.apply(this, arguments);
 
     var body = {
-      model: "claude-sonnet-4-5",
+      model: model || "claude-sonnet-5",   /* v47: volání smí vynutit model (foto jídla → opus) */
       max_tokens: maxTokens || 500,
       messages: [{ role: "user", content: content }]
     };
