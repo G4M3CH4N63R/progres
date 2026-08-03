@@ -420,6 +420,9 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .recent-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
   .foodchip{border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink)}
   .foodchip:active{background:var(--accent-weak)}
+  /* v54: chipy slozek (Oblibena jidla, Recepty) — aktivni stav */
+  .foodchip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .fld-chips{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 10px}
   .plan-day{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:var(--surface)}
   .plan-day h4{margin:0;font-size:15px}
   #foodPickList,#pickerList{max-height:46vh;overflow:auto}
@@ -1285,6 +1288,16 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   <div class="dw-list" id="dwList"></div>
 </aside>
 
+<!-- v54: obecny vyberovy dialog (zarazovani do slozek) -->
+<div class="modal-bg" id="pickBg">
+  <div class="modal">
+    <h3 id="pickTitle">Vyber</h3>
+    <div id="pickList" style="display:flex;flex-direction:column;gap:8px;margin:2px 0 14px;max-height:50vh;overflow:auto"></div>
+    <div class="btn-row">
+      <button class="btn secondary" id="pickCancel" type="button" style="flex:1">Zrušit</button>
+    </div>
+  </div>
+</div>
 <div class="modal-bg" id="promptBg">
   <div class="modal">
     <h3 id="promptTitle">Název</h3>
@@ -1412,12 +1425,12 @@ const ICON_PEN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
 function confirmDel(title,text,cb){openModal(title,text,cb)}
 const LIQUID_RE=/(ml[eé]k[oa]|ml[eé]ku|n[aá]poj|dž[uů]s|šť[aá]v|voda|vody|vodka|cola|kola|limon[aá]d|tonik|pivo|v[ií]no|prosecco|whisk|k[aá]va|cappuccino|latte|espresso|kakao|smoothie|kef[ií]r|podm[aá]sl[ií]|shake|sirup|olej|smetana|čaj)/i;
 function foodUnit(n){return LIQUID_RE.test(String(n||""))?"ml":"g"}
-const DEFAULT={version:3,sessions:[],body:[],foods:[],steps:{},templates:[],customExercises:[],foodDb:[],recipes:[],favorites:[],trash:[],lastBackup:null,
+const DEFAULT={version:3,sessions:[],body:[],foods:[],steps:{},templates:[],customExercises:[],foodDb:[],recipes:[],favorites:[],favFolders:[],recFolders:[],trash:[],lastBackup:null,
   profile:{name:"",sex:"m",age:30,height:180,weight:80,activity:1.55,goal:"maintain",targetKcal:null,targetProtein:null,targetWeight:null,stepGoal:10000,exPerDay:5,addStepsToGoal:false,addWorkoutToGoal:false,apiKey:"",aiModel:"",daysPerWeek:3,experience:"pokrocily",equipment:"posilovna",favSort:"abc"}};
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function mergeState(d){const s=clone(DEFAULT);
   if(typeof d.lastBackup==="string"&&/^\d{4}-\d\d-\d\d$/.test(d.lastBackup))s.lastBackup=d.lastBackup;
-  ["sessions","body","foods","templates","customExercises","foodDb","recipes","favorites","trash"].forEach(k=>{if(Array.isArray(d[k]))s[k]=d[k]});
+  ["sessions","body","foods","templates","customExercises","foodDb","recipes","favorites","favFolders","recFolders","trash"].forEach(k=>{if(Array.isArray(d[k]))s[k]=d[k]});
   if(d.steps&&typeof d.steps==="object"&&!Array.isArray(d.steps))s.steps=d.steps;
   if(d.profile)s.profile=Object.assign(s.profile,d.profile);
   /* v47: bump AI generace — starší uložený model vrátit na výchozí (sonnet 5) */
@@ -1480,6 +1493,9 @@ function isoNdaysAgo(n){const d=new Date();d.setDate(d.getDate()-n);
 const CZM=["led","úno","bře","dub","kvě","črv","čvc","srp","zář","říj","lis","pro"];
 function fmtDate(iso){const[y,m,d]=iso.split("-");return +d+". "+CZM[+m-1]}
 function fmtDateFull(iso){const[y,m,d]=iso.split("-");return +d+". "+CZM[+m-1]+" "+y}
+/* v53: datum se dnem v tydnu pro historie (jidla, treninky, telo) */
+const DOWCZ=["ne","po","út","st","čt","pá","so"];
+function fmtDateDow(iso){const dt=new Date(iso+"T12:00:00");return DOWCZ[dt.getDay()]+" "+fmtDateFull(iso)}
 function mondayOf(iso){const d=new Date(iso+"T00:00:00");const wd=(d.getDay()+6)%7;d.setDate(d.getDate()-wd);
   return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),2200)}
@@ -2321,7 +2337,7 @@ function renderSessions(){
   list.innerHTML=ss.map(s=>{
     const vol=Math.round(sessionVolKg(s));
     return `<div class="sess">
-      <div class="hd"><div class="dt">${s.title?esc(s.title):fmtDateFull(s.date)}${s.title?`<span class="muted" style="font-weight:600;font-size:12px"> · ${fmtDate(s.date)}</span>`:""}</div>
+      <div class="hd"><div class="dt">${s.title?esc(s.title):fmtDateDow(s.date)}${s.title?`<span class="muted" style="font-weight:600;font-size:12px"> · ${fmtDateDow(s.date)}</span>`:""}</div>
         <div class="acts">
           <button data-edit-sess="${s.id}" title="Upravit trénink" aria-label="Upravit trénink">${ICON_SLID}</button>
           <button data-ren-sess="${s.id}" title="Přejmenovat" aria-label="Přejmenovat">${ICON_PEN}</button>
@@ -2477,7 +2493,7 @@ function renderBody(){
   if(!rows.length){list.innerHTML=`<div class="empty"><div class="big">${EMPTY_SVG}</div>Zatím žádné měření.<br>Přidej první výše.</div>`;return}
   list.innerHTML=rows.map(r=>{
     const m=[r.weight!=null?r.weight+" kg":"",r.waist?"pas "+r.waist:"",r.biceps?"biceps "+r.biceps:"",r.chest?"hrudník "+r.chest:""].filter(Boolean).join(" · ");
-    return `<div class="item"><div class="tag">${FEEL[r.feeling]||"🙂"}</div><div class="body"><div class="t1">${fmtDateFull(r.date)}</div><div class="t2">${m||"bez měr"}${r.notes?" — "+esc(r.notes):""}</div></div><button class="del trash" data-del-body="${r.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div>`;
+    return `<div class="item"><div class="tag">${FEEL[r.feeling]||"🙂"}</div><div class="body"><div class="t1">${fmtDateDow(r.date)}</div><div class="t2">${m||"bez měr"}${r.notes?" — "+esc(r.notes):""}</div></div><button class="del trash" data-del-body="${r.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div>`;
   }).join("");
   $$("[data-del-body]",list).forEach(b=>b.onclick=()=>{const id=b.dataset.delBody,r=state.body.find(x=>x.id===id);
     confirmDel("Smazat záznam těla?",(r?fmtDateFull(r.date)+" — ":"")+"záznam se přesune do archivu, kde ho 14 dní můžeš obnovit.",()=>{
@@ -3028,9 +3044,42 @@ function plurPorce(n){return n===1?"porce":(n>=2&&n<=4)?"porce":"porcí"}
 function sortedRecipes(){return [...(state.recipes||[])].sort((a,b)=>(b.fav?1:0)-(a.fav?1:0)||a.name.localeCompare(b.name,"cs"))}
 function renderRecipes(){const box=$("#recipeBox");if(!box)return;renderCardArchives();const rs=sortedRecipes();
   if(!rs.length){box.innerHTML=`<div class="empty" style="padding:22px 12px"><div class="big">🍳</div>Zatím žádné recepty.<br><span class="muted">Slož jídlo přes „Přidat jako ingredienci ↓" na Talíři, rozděl na porce a ulož jako recept — objeví se tady.</span></div>`;return}
-  box.innerHTML=rs.map(r=>{const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
+  /* v54: slozky receptu — chipy, filtr, seskupeni pri "Vse" */
+  const flds=state.recFolders||[];
+  if(recFolderSel&&!flds.includes(recFolderSel))recFolderSel="";
+  const row=r=>{const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
     const ing=(r.items||[]).map(it=>`<div class="ingr-row"><span>${esc(it.name)}</span><span>${macroLine(it.protein,it.carbs,it.fat,it.kcal)}</span></div>`).join("");
-    return `<div class="fav-card"><div class="fav-hd"><button class="favb${r.fav?" on":""}" data-fav="${r.id}" title="Oblíbený">${r.fav?"★":"☆"}</button><div class="fav-b"><div class="t1">${esc(r.name)}</div><div class="t2">${Math.round(t.kcal/sv)} kcal/porce · ${r.items.length} ${plurPolozka(r.items.length)} · ${sv} ${plurPorce(sv)}</div></div><button class="btn small secondary" type="button" data-open="${r.id}">Otevřít</button><button class="del" data-renrec="${r.id}" title="Přejmenovat" aria-label="Přejmenovat">${ICON_PEN}</button><button class="del trash" data-rmrec="${r.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div><div class="fav-actions"><button class="btn small" type="button" data-addrec="${r.id}">＋ Přidat 1 porci do deníku</button></div><details class="ingr"><summary>Ingredience & makra</summary>${ing||'<div class="small muted">Bez ingrediencí.</div>'}<div class="ingr-tot">Celkem: ${macroLine(t.p,t.c,t.f,t.kcal)}</div></details></div>`}).join("");
+    return `<div class="fav-card"><div class="fav-hd"><button class="favb${r.fav?" on":""}" data-fav="${r.id}" title="Oblíbený">${r.fav?"★":"☆"}</button><div class="fav-b"><div class="t1">${esc(r.name)}</div><div class="t2">${Math.round(t.kcal/sv)} kcal/porce · ${r.items.length} ${plurPolozka(r.items.length)} · ${sv} ${plurPorce(sv)}</div></div><button class="btn small secondary" type="button" data-open="${r.id}">Otevřít</button><button class="del" data-fldrec="${r.id}" title="Zařadit do složky" aria-label="Zařadit do složky">📁</button><button class="del" data-renrec="${r.id}" title="Přejmenovat" aria-label="Přejmenovat">${ICON_PEN}</button><button class="del trash" data-rmrec="${r.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div><div class="fav-actions"><button class="btn small" type="button" data-addrec="${r.id}">＋ Přidat 1 porci do deníku</button></div><details class="ingr"><summary>Ingredience & makra</summary>${ing||'<div class="small muted">Bez ingrediencí.</div>'}<div class="ingr-tot">Celkem: ${macroLine(t.p,t.c,t.f,t.kcal)}</div></details></div>`};
+  let listHtml="";
+  if(recFolderSel===""){
+    const noF=rs.filter(r=>!(r.folder||""));
+    const grp=flds.map(fl=>[fl,rs.filter(r=>(r.folder||"")===fl)]).filter(g=>g[1].length);
+    listHtml=noF.map(row).join("")
+      +grp.map(g=>`<div class="group-label" style="margin:14px 0 7px">📁 ${esc(g[0])}</div>`+g[1].map(row).join("")).join("");
+  }else{
+    listHtml=rs.filter(r=>(r.folder||"")===recFolderSel).map(row).join("")
+      ||`<div class="small muted" style="margin:6px 2px 10px">Složka je prázdná — zařaď do ní recepty tlačítkem 📁.</div>`;
+  }
+  box.innerHTML=folderChips(flds,recFolderSel,"rfld")+listHtml;
+  /* v54: obsluha slozek receptu */
+  box.querySelectorAll("[data-rfld]").forEach(b=>b.onclick=()=>{const i=+b.dataset.rfld;recFolderSel=i<0?"":flds[i]||"";renderRecipes()});
+  box.querySelectorAll("[data-rfldnew]").forEach(b=>b.onclick=()=>openPrompt("Nová složka","Název složky","",v=>{v=v.trim();if(!v)return;
+    if(!(state.recFolders||[]).includes(v)){state.recFolders=state.recFolders||[];state.recFolders.push(v);state.recFolders.sort((a,b2)=>a.localeCompare(b2,"cs"))}
+    recFolderSel=v;save();renderRecipes();toast("Složka „"+v+"“ vytvořena")}));
+  box.querySelectorAll("[data-rfldren]").forEach(b=>b.onclick=()=>{const old=recFolderSel;if(!old)return;
+    openPrompt("Přejmenovat složku","Název složky",old,v=>{v=v.trim();if(!v||v===old)return;
+      state.recFolders=state.recFolders.map(x=>x===old?v:x).filter((x,i,a)=>a.indexOf(x)===i).sort((a,b2)=>a.localeCompare(b2,"cs"));
+      (state.recipes||[]).forEach(r=>{if(r.folder===old)r.folder=v});
+      recFolderSel=v;save();renderRecipes();toast("Přejmenováno na „"+v+"“")})});
+  box.querySelectorAll("[data-rflddel]").forEach(b=>b.onclick=()=>{const old=recFolderSel;if(!old)return;
+    confirmDel("Smazat složku?","„"+old+"“ se smaže, recepty v ní zůstanou jako nezařazené.",()=>{
+      state.recFolders=state.recFolders.filter(x=>x!==old);
+      (state.recipes||[]).forEach(r=>{if(r.folder===old)r.folder=""});
+      recFolderSel="";save();renderRecipes();toast("Složka smazána")})});
+  box.querySelectorAll("[data-fldrec]").forEach(b=>b.onclick=()=>{const r=(state.recipes||[]).find(x=>x.id===b.dataset.fldrec);if(!r)return;
+    folderAssignPick(r.name,state.recFolders||[],r.folder||"",(v,isNew)=>{
+      if(isNew&&!(state.recFolders||[]).includes(v)){state.recFolders=state.recFolders||[];state.recFolders.push(v);state.recFolders.sort((a,b2)=>a.localeCompare(b2,"cs"))}
+      r.folder=v;save();renderRecipes();toast(v?"Zařazeno do „"+v+"“":"Vyřazeno ze složky")})});
   $$("#recipeBox [data-fav]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.fav);if(r){r.fav=!r.fav;save();renderRecipes();renderFavFoods()}});
   $$("#recipeBox [data-open]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.open);if(!r)return;
     batch=clone(r.items);batchServings=Math.max(1,+r.servings||1);batchName=r.name;renderBatch();showSolo(document.getElementById("tab-kalorie"),"#card-foodlog");toast("🍽️ Recept je na talíři — uprav a sněz ⤵")});
@@ -3041,6 +3090,35 @@ function renderRecipes(){const box=$("#recipeBox");if(!box)return;renderCardArch
   $$("#recipeBox [data-rmrec]").forEach(b=>b.onclick=()=>{const r=state.recipes.find(x=>x.id===b.dataset.rmrec);if(!r)return;
     openModal("Smazat recept?",`„${r.name}" se přesune do archivu — 14 dní ho můžeš obnovit. Záznamy v deníku zůstanou.`,()=>{trashPush("recipe",r);state.recipes=state.recipes.filter(x=>x.id!==r.id);save();renderRecipes();renderFavFoods();toast("Recept v archivu (14 dní)")})});
 }
+
+/* ---- v54: obecný výběrový dialog + složky (Oblíbená jídla, Recepty) ---- */
+let pickCb=null;
+function openPick(title,opts,cb){const bg=$("#pickBg");if(!bg)return;
+  $("#pickTitle").textContent=title;pickCb=cb;
+  $("#pickList").innerHTML=opts.map((o,i)=>`<button class="btn secondary small" type="button" data-pick="${i}" style="width:100%">${esc(o.label)}</button>`).join("");
+  $$("#pickList [data-pick]").forEach(b=>b.onclick=()=>{const o=opts[+b.dataset.pick];const cb2=pickCb;closePick();if(cb2)cb2(o.value)});
+  bg.classList.add("show")}
+function closePick(){const bg=$("#pickBg");if(bg)bg.classList.remove("show");pickCb=null}
+{const c=$("#pickCancel");if(c)c.addEventListener("click",closePick);}
+{const bg=$("#pickBg");if(bg)bg.addEventListener("click",e=>{if(e.target===bg)closePick()});}
+/* výběr složky pro položku: existující / bez složky / nová (isNew=true → přidat do seznamu) */
+function folderAssignPick(coLabel,folders,cur,cb){
+  const opts=[...folders.map(f=>({label:(f===(cur||"")?"✓ ":"📁 ")+f,value:f})),
+    {label:(cur||"")===""?"✓ Bez složky":"— Bez složky",value:""},
+    {label:"＋ Nová složka…",value:" new"}];
+  openPick("Zařadit: "+coLabel,opts,v=>{
+    if(v===" new"){openPrompt("Nová složka","Název složky","",n=>{n=n.trim();if(n)cb(n,true)});return}
+    cb(v,false)})}
+/* filtr zobrazené složky (jen pro tuhle návštěvu appky) */
+let favFolderSel="",recFolderSel="";
+/* chipy: Vše · složky · ＋ · (u vybrané složky ✎ a 🗑) */
+function folderChips(folders,sel,pfx){
+  return `<div class="fld-chips">`
+    +`<button type="button" class="foodchip${sel===""?" on":""}" data-${pfx}="-1">Vše</button>`
+    +folders.map((f,i)=>`<button type="button" class="foodchip${sel===f?" on":""}" data-${pfx}="${i}">📁 ${esc(f)}</button>`).join("")
+    +`<button type="button" class="foodchip" data-${pfx}new="1" title="Nová složka">＋</button>`
+    +(sel?`<button type="button" class="foodchip" data-${pfx}ren="1" title="Přejmenovat složku">✎</button><button type="button" class="foodchip" data-${pfx}del="1" title="Smazat složku">🗑</button>`:"")
+    +`</div>`}
 
 /* ---- Oblíbená jídla + rozložení maker ---- */
 function favKey(n){return (n||"").toLowerCase().trim()}
@@ -3054,7 +3132,7 @@ function macroLine(p,c,f,kcal){return (kcal!=null?Math.round(kcal)+" kcal · ":"
 function favRecipeRow(r){const t=recipeTotals(r);const sv=Math.max(1,+r.servings||1);
   const ing=(r.items||[]).map(it=>`<div class="ingr-row"><span>${esc(it.name)}</span><span>${macroLine(it.protein,it.carbs,it.fat,it.kcal)}</span></div>`).join("");
   return `<div class="fav-card"><div class="fav-hd"><button class="favb on" data-unfavrec="${r.id}" title="Odebrat z oblíbených">★</button><div class="fav-b"><div class="t1">${esc(r.name)}</div><div class="t2">${Math.round(t.kcal/sv)} kcal/porce · ${r.items.length} ${plurPolozka(r.items.length)}</div></div><button class="del" data-renrec="${r.id}" title="Přejmenovat" aria-label="Přejmenovat">${ICON_PEN}</button></div><div class="fav-actions" style="display:flex;gap:8px"><button class="btn small" data-addrec="${r.id}" type="button">Sníst 1 porci</button><button class="btn small secondary" data-platerec="${r.id}" type="button">🍽️ Na talíř</button></div><details class="ingr"><summary>Ingredience & makra</summary>${ing||'<div class="small muted">Bez ingrediencí.</div>'}<div class="ingr-tot">Celkem: ${macroLine(t.p,t.c,t.f,t.kcal)} · ${sv} ${plurPorce(sv)}</div></details></div>`}
-function favFoodRow(f){return `<div class="fav-card"><div class="fav-hd"><button class="favb on" data-unfavfood="${f.id}" title="Odebrat z oblíbených">★</button><div class="fav-b"><div class="t1">${esc(f.name)}</div><div class="t2">${macroLine(f.protein,f.carbs,f.fat,f.kcal)}</div></div><button class="del" data-renfood="${f.id}" title="Přejmenovat" aria-label="Přejmenovat">${ICON_PEN}</button><button class="del trash" data-rmfav="${f.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div><div class="fav-actions" style="display:flex;gap:8px"><button class="btn small" data-addfood="${f.id}" type="button">Sníst</button><button class="btn small secondary" data-platefood="${f.id}" type="button">🍽️ Na talíř</button></div></div>`}
+function favFoodRow(f){return `<div class="fav-card"><div class="fav-hd"><button class="favb on" data-unfavfood="${f.id}" title="Odebrat z oblíbených">★</button><div class="fav-b"><div class="t1">${esc(f.name)}</div><div class="t2">${macroLine(f.protein,f.carbs,f.fat,f.kcal)}</div></div><button class="del" data-fldfood="${f.id}" title="Zařadit do složky" aria-label="Zařadit do složky">📁</button><button class="del" data-renfood="${f.id}" title="Přejmenovat" aria-label="Přejmenovat">${ICON_PEN}</button><button class="del trash" data-rmfav="${f.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div><div class="fav-actions" style="display:flex;gap:8px"><button class="btn small" data-addfood="${f.id}" type="button">Sníst</button><button class="btn small secondary" data-platefood="${f.id}" type="button">🍽️ Na talíř</button></div></div>`}
 function renderFavFoods(){const box=$("#favFoodsBox");if(!box)return;
   renderCardArchives();
   const recs=sortedRecipes().filter(r=>r.fav);
@@ -3068,11 +3146,44 @@ function renderFavFoods(){const box=$("#favFoodsBox");if(!box)return;
   if(!recs.length&&!foods.length){box.innerHTML=`<div class="empty" style="padding:22px 12px"><div class="big">☆</div>Zatím žádná oblíbená jídla.<br><span class="muted">U jídla ve „Vybrat z databáze / historie" nebo u receptu klepni na hvězdičku ☆ a objeví se tady.</span></div>`;return}
   let html="";
   if(recs.length)html+=`<div class="group-label" style="margin:2px 0 7px">Oblíbené recepty</div>`+recs.map(favRecipeRow).join("");
-  if(foods.length)html+=`<div class="group-label" style="margin:${recs.length?"16px":"2px"} 0 7px">Oblíbená jídla</div>`
+  /* v54: slozky — chipy, filtr, seskupeni pri "Vse" */
+  const flds=state.favFolders||[];
+  if(favFolderSel&&!flds.includes(favFolderSel))favFolderSel="";
+  let foodHtml="";
+  if(favFolderSel===""){
+    const noF=foods.filter(f=>!(f.folder||""));
+    const grp=flds.map(fl=>[fl,foods.filter(f=>(f.folder||"")===fl)]).filter(g=>g[1].length);
+    foodHtml=noF.map(favFoodRow).join("")
+      +grp.map(g=>`<div class="group-label" style="margin:14px 0 7px">📁 ${esc(g[0])}</div>`+g[1].map(favFoodRow).join("")).join("");
+  }else{
+    foodHtml=foods.filter(f=>(f.folder||"")===favFolderSel).map(favFoodRow).join("")
+      ||`<div class="small muted" style="margin:6px 2px 10px">Složka je prázdná — zařaď do ní jídla tlačítkem 📁.</div>`;
+  }
+  if(foods.length||flds.length)html+=`<div class="group-label" style="margin:${recs.length?"16px":"2px"} 0 7px">Oblíbená jídla</div>`
     +`<div class="seg mini" id="favSortSeg" style="margin:0 0 10px"><button type="button" data-fs="abc" class="${mode==="abc"?"on":""}">A–Z</button><button type="button" data-fs="new" class="${mode==="new"?"on":""}">Nové</button><button type="button" data-fs="top" class="${mode==="top"?"on":""}">Nejčastější</button></div>`
-    +foods.map(favFoodRow).join("");
+    +folderChips(flds,favFolderSel,"ffld")
+    +foodHtml;
   box.innerHTML=html;
   box.querySelectorAll("#favSortSeg [data-fs]").forEach(b=>b.onclick=()=>{state.profile.favSort=b.dataset.fs;save();renderFavFoods()});
+  /* v54: obsluha slozek Oblibenych */
+  box.querySelectorAll("[data-ffld]").forEach(b=>b.onclick=()=>{const i=+b.dataset.ffld;favFolderSel=i<0?"":flds[i]||"";renderFavFoods()});
+  box.querySelectorAll("[data-ffldnew]").forEach(b=>b.onclick=()=>openPrompt("Nová složka","Název složky","",v=>{v=v.trim();if(!v)return;
+    if(!(state.favFolders||[]).includes(v)){state.favFolders=state.favFolders||[];state.favFolders.push(v);state.favFolders.sort((a,b2)=>a.localeCompare(b2,"cs"))}
+    favFolderSel=v;save();renderFavFoods();toast("Složka „"+v+"“ vytvořena")}));
+  box.querySelectorAll("[data-ffldren]").forEach(b=>b.onclick=()=>{const old=favFolderSel;if(!old)return;
+    openPrompt("Přejmenovat složku","Název složky",old,v=>{v=v.trim();if(!v||v===old)return;
+      state.favFolders=state.favFolders.map(x=>x===old?v:x).filter((x,i,a)=>a.indexOf(x)===i).sort((a,b2)=>a.localeCompare(b2,"cs"));
+      (state.favorites||[]).forEach(f=>{if(f.folder===old)f.folder=v});
+      favFolderSel=v;save();renderFavFoods();toast("Přejmenováno na „"+v+"“")})});
+  box.querySelectorAll("[data-fflddel]").forEach(b=>b.onclick=()=>{const old=favFolderSel;if(!old)return;
+    confirmDel("Smazat složku?","„"+old+"“ se smaže, jídla v ní zůstanou v Oblíbených jako nezařazená.",()=>{
+      state.favFolders=state.favFolders.filter(x=>x!==old);
+      (state.favorites||[]).forEach(f=>{if(f.folder===old)f.folder=""});
+      favFolderSel="";save();renderFavFoods();toast("Složka smazána")})});
+  box.querySelectorAll("[data-fldfood]").forEach(b=>b.onclick=()=>{const f=(state.favorites||[]).find(x=>x.id===b.dataset.fldfood);if(!f)return;
+    folderAssignPick(f.name,state.favFolders||[],f.folder||"",(v,isNew)=>{
+      if(isNew&&!(state.favFolders||[]).includes(v)){state.favFolders=state.favFolders||[];state.favFolders.push(v);state.favFolders.sort((a,b2)=>a.localeCompare(b2,"cs"))}
+      f.folder=v;save();renderFavFoods();toast(v?"Zařazeno do „"+v+"“":"Vyřazeno ze složky")})});
   box.querySelectorAll("[data-unfavrec]").forEach(b=>b.onclick=()=>{const r=(state.recipes||[]).find(x=>x.id===b.dataset.unfavrec);if(r){r.fav=false;save();renderFavFoods();renderRecipes();toast("Odebráno z oblíbených")}});
   box.querySelectorAll("[data-unfavfood]").forEach(b=>b.onclick=()=>{state.favorites=(state.favorites||[]).filter(x=>x.id!==b.dataset.unfavfood);save();renderFavFoods();toast("Odebráno z oblíbených")});
   box.querySelectorAll("[data-renfood]").forEach(b=>b.onclick=()=>{const f=(state.favorites||[]).find(x=>x.id===b.dataset.renfood);if(!f)return;
@@ -3107,9 +3218,13 @@ function renderMacroPie(){const sw=$("#todaySwipe");if(!sw)return;
       nazev:i===0?"Dnes":i===1?"Včera":fmtDate(d)})}
   sw.innerHTML=dny.map((k,i)=>{
     const leg=(nm,g,kc2,col)=>`<div class="pl"><i style="background:${col}"></i><span class="nm">${nm}</span><span class="vl">${Math.round(g)} g</span><span class="pct">${k.tot?Math.round(kc2/k.tot*100):0} %</span></div>`;
-    const kolac=(!k.it.length||k.tot<=0)
+    /* v53: stred kolace = SKUTECNY soucet kcal dne (stejne cislo jako nadpis okna a hero),
+       ne prepocet z maker — dve ruzna cisla vedle sebe matla */
+    const kolac=!k.it.length
       ?`<div class="empty" style="padding:18px 10px"><div class="big">🥗</div>${i===0?"Dnes zatím žádná makra.":"Žádná zapsaná makra."}<br><span class="muted">${i===0?"Přidej jídlo s bílkovinami, sacharidy nebo tuky.":"Jídlo sem doplníš tlačítkem níže."}</span></div>`
-      :`<div class="chart-wrap" style="position:relative;height:190px"><canvas id="chMacroDay${i}"></canvas><div class="pie-center"><div class="pc-n">${nbsp(k.tot)}</div><div class="pc-l">${i===0?"kcal dnes":i===1?"kcal včera":"kcal"}</div></div></div>
+      :k.tot<=0
+      ?`<div class="empty" style="padding:18px 10px"><div class="big">🥗</div>${nbsp(Math.round(k.kc))} kcal bez zapsaných maker.<br><span class="muted">Doplň k jídlům bílkoviny, sacharidy nebo tuky a uvidíš rozložení.</span></div>`
+      :`<div class="chart-wrap" style="position:relative;height:190px"><canvas id="chMacroDay${i}"></canvas><div class="pie-center"><div class="pc-n">${nbsp(Math.round(k.kc))}</div><div class="pc-l">${i===0?"kcal dnes":i===1?"kcal včera":"kcal"}</div></div></div>
         <div class="pie-legend">${leg("Bílkoviny",k.prot,k.kP,"var(--good)")}${leg("Sacharidy",k.carb,k.kC,"var(--warn)")}${leg("Tuky",k.fat,k.kF,"var(--s4)")}</div>`;
     const jidla=k.it.map(x=>{
       const mac=[x.protein?`B ${Math.round(x.protein)}`:"",x.carbs?`S ${Math.round(x.carbs)}`:"",x.fat?`T ${Math.round(x.fat)}`:""].filter(Boolean).join(" · ");
@@ -3281,7 +3396,7 @@ function renderFoodHist(){const box=$("#foodHistList");if(!box)return;
   const byDay={};state.foods.forEach(f=>(byDay[f.date]=byDay[f.date]||[]).push(f));
   const days=Object.keys(byDay).sort((a,b)=>b.localeCompare(a)).slice(0,60);
   box.innerHTML=days.map(d=>{const it=byDay[d];const kc=it.reduce((s,x)=>s+(+x.kcal||0),0);
-    return `<div class="group-label" style="margin:16px 4px 4px;display:flex;justify-content:space-between;gap:8px"><span>${fmtDateFull(d)}${d===todayISO()?" · dnes":""}</span><span class="muted">${nbsp(kc)} kcal</span></div>`
+    return `<div class="group-label" style="margin:16px 4px 4px;display:flex;justify-content:space-between;gap:8px"><span>${fmtDateDow(d)}${d===todayISO()?" · dnes":""}</span><span class="muted">${nbsp(kc)} kcal</span></div>`
       +it.map(x=>{const mac=[x.protein?`B ${Math.round(x.protein)}`:"",x.carbs?`S ${Math.round(x.carbs)}`:"",x.fat?`T ${Math.round(x.fat)}`:""].filter(Boolean).join(" · ");
         const cnh=x.name.replace(/\s*×\s*[\d,.]+$/,"");
         return `<div class="item"><div class="tag" style="min-width:56px">${x.kcal}<br><span style="font-size:10px;font-weight:600">kcal</span></div><div class="body"><div class="t1">${esc(x.name)}</div><div class="t2">${mac||"bez maker"}</div></div><button class="del favb${isFavFood(cnh)?" on":""}" data-favh="${x.id}" title="Do oblíbených">${isFavFood(cnh)?"★":"☆"}</button><button class="del" data-edith="${x.id}" title="Upravit" aria-label="Upravit">${ICON_PEN}</button><button class="del" data-copyh="${x.id}" title="Na talíř">⧉</button><button class="del trash" data-delh="${x.id}" title="Smazat" aria-label="Smazat">${ICON_TRASH}</button></div>`}).join("")}).join("");
@@ -3632,12 +3747,15 @@ function renderMeasurePos(){const el=$("#measurePos");if(!el)return;
 function chartMeasures(){const sw=$("#measSwipe");if(!sw)return;
   const dots=$("#measDots");const cut=periodCut();const keep=sw.scrollLeft;
   MEASURES.forEach((_,i)=>destroy("chMeas"+i));
+  /* v53: ukazuji se VSECHNY miry — s daty prvni, bez dat s vyzvou na konci
+     (Karel zapsal ramena a hledal je v pasu marne, dokud nemely zaznam v obdobi) */
   const rows=MEASURES.map(([k,label,dir])=>{
     const vals=state.body.filter(b=>b[k]!=null&&b.date>=cut).sort((a,b)=>a.date.localeCompare(b.date));
     return {k,label,dir,vals};
-  }).filter(r=>r.vals.length);
-  if(!rows.length){sw.innerHTML=`<div class="swipe-card"><div class="empty" style="padding:16px"><div class="big">📏</div>Žádné míry v tomto období.<br><span class="muted">Zapisuj míry v deníku Těla.</span></div></div>`;if(dots)dots.innerHTML="";return}
+  }).sort((a,b)=>(b.vals.length?1:0)-(a.vals.length?1:0));
+  if(!rows.some(r=>r.vals.length)){sw.innerHTML=`<div class="swipe-card"><div class="empty" style="padding:16px"><div class="big">📏</div>Žádné míry v tomto období.<br><span class="muted">Zapisuj míry v deníku Těla.</span></div></div>`;if(dots)dots.innerHTML="";return}
   sw.innerHTML=rows.map((r,j)=>{
+    if(!r.vals.length)return `<div class="swipe-card"><h3>${r.label}</h3><div class="empty" style="padding:14px 10px"><div class="big">📏</div>Zatím žádné měření.<br><span class="muted">Zapiš míru ${r.label} v deníku Těla a graf se objeví.</span></div></div>`;
     const cur=r.vals[r.vals.length-1][r.k];const first=r.vals[0][r.k];
     const d=+(cur-first).toFixed(1);const good=r.dir==="down"?d<0:d>0;
     const col=d===0?"var(--muted)":good?"var(--good-ink)":"var(--warn-ink)";
