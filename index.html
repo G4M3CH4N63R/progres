@@ -4685,7 +4685,10 @@ function chatMsgsFromView(){const out=[];
 async function asstApi(msgs){
   /* v38: ŽÁDNÉ temperature — aktuální modely ho odmítají (API 400 „deprecated for this model").
      Přesnost počtů řeší hotové součty (asstDayTotals + pole den), ne sampling. NEVRACET. */
-  const body={model:state.profile.aiModel||"claude-sonnet-5",max_tokens:2500,system:asstSystem(),
+  /* v57: 2500 -> 6000. Sonnet-5 vraci thinking bloky, ktere se pocitaji do max_tokens —
+     u slozite zpravy (10 fotek jidla) thinking spolkl cely limit a odpoved prisla PRAZDNA.
+     Plati se jen skutecne vygenerovane tokeny, vyssi strop bezne odpovedi nezdrazi. */
+  const body={model:state.profile.aiModel||"claude-sonnet-5",max_tokens:6000,system:asstSystem(),
     tools:ASST_TOOLS.concat([{type:"web_search_20250305",name:"web_search",max_uses:5}]),messages:msgs};
   let r=null,sit=false;
   for(let pokus=0;pokus<2;pokus++){
@@ -4721,14 +4724,19 @@ async function asstSend(text){
   imgs.forEach(b=>content.push({type:"image",source:{type:"base64",media_type:"image/jpeg",data:b}}));
   content.push({type:"text",text:txt||"Na fotce je jídlo. Odhadni porci a makra a zapiš ho do deníku."});
   msgs.push({role:"user",content:content});
+  let ukazano=false; /* v57: hlidame, jestli uzivatel VUBEC neco uvidel */
   try{
     for(let round=0;round<8;round++){
       const j=await asstApi(msgs);
       const blocks=j.content||[];
       const txtOut=blocks.filter(b=>b.type==="text").map(b=>b.text||"").join("\n").trim();
       const uses=blocks.filter(b=>b.type==="tool_use");
+      /* v57: kdyz limit tokenu spolkne thinking a nezbyde text ani nastroj, rici to nahlas */
+      if(j.stop_reason==="max_tokens"&&!txtOut&&!uses.length){
+        chatView.push({r:"warn",t:"Odpověď se nevešla do limitu — zkus to znovu, případně rozděl zprávu nebo pošli méně fotek najednou."});
+        ukazano=true;chatSave();renderChat();chatEnd();break}
       msgs.push({role:"assistant",content:blocks});
-      if(txtOut){chatView.push({r:"a",t:txtOut});chatSave();renderChat();chatEnd()}
+      if(txtOut){ukazano=true;chatView.push({r:"a",t:txtOut});chatSave();renderChat();chatEnd()}
       /* v37: web_search umí vrátit pause_turn — pokračujeme dalším kolem, jinak by odpověď zůstala useknutá */
       if(j.stop_reason==="pause_turn"&&!uses.length)continue;
       if(j.stop_reason!=="tool_use"||!uses.length)break;
@@ -4736,7 +4744,7 @@ async function asstSend(text){
       for(const u of uses){
         chatStatus(String(u.name||"").replace(/_/g," ")+"…");
         let out;try{out=await runAsstTool(u.name,u.input||{})}catch(e){out={ok:false,error:String(e&&e.message||e)}}
-        if(out&&out._act){chatView.push({r:"act",t:out._act});chatSave();renderChat();chatEnd();delete out._act}
+        if(out&&out._act){ukazano=true;chatView.push({r:"act",t:out._act});chatSave();renderChat();chatEnd();delete out._act}
         outs.push({id:u.id,out:out});
       }
       /* v37: denní součty dopočítat AŽ po všech zápisech v tomto kole — jinak by asistent
@@ -4745,7 +4753,9 @@ async function asstSend(text){
       const results=outs.map(o=>({type:"tool_result",tool_use_id:o.id,content:JSON.stringify(o.out).slice(0,12000)}));
       msgs.push({role:"user",content:results});
     }
-  }catch(e){chatView.push({r:"warn",t:String(e&&e.message||e)});chatSave()}
+  }catch(e){ukazano=true;chatView.push({r:"warn",t:String(e&&e.message||e)});chatSave()}
+  /* v57: pojistka — kdyz cely beh skoncil a uzivatel nevidel ANI JEDNU bublinu, rici to */
+  if(!ukazano){chatView.push({r:"warn",t:"Asistent nevrátil žádnou odpověď — zkus to prosím znovu."});chatSave()}
   chatBusy=false;chatStatus("");renderChat();chatEnd();
   save();try{renderTab(currentTab())}catch(e){}}
 
