@@ -156,9 +156,14 @@ Playwright se na Macu instaluje lokálně (`npm i -D playwright && npx playwrigh
 **Klikací náhled pro Karla — od 31. 7. 2026 jednoduše:** `python3 -m http.server 8000` a poslat Karlovi `localhost:8000/progres.html`, případně IP Macu pro iPhone na stejné wifi. Prostředí je plnohodnotné (localStorage i IndexedDB fungují), takže odpadá `make_preview36.py` s paměťovou náhradou localStorage i podvrhováním `window.fetch`.
 📜 *Historicky:* náhled se posílal jako soubor do konverzace, proto se stavěl přes `build.py --no-shim --out /tmp/preview_base.html` (aby se `APP_TOKEN` nedostal ven) a proháněl kontrolou na `['workers.dev','APP_TOKEN','x-app-token','__proxy__','sk-ant']`. ⚠️ Kdyby se ta kontrola někdy dělala znovu: **`sk-ant` v seznamu hlásí planý poplach** — je to jen `placeholder="sk-ant-…"` u `#apiKeyInput`.
 
-## Aktuální verze: v54 (3. 8. 2026), SW cache `progres-v54.0`, commity vznikají v Cowork session, push z Karlova terminálu
+## Aktuální verze: v55 (4. 8. 2026), SW cache `progres-v55.0`, commity vznikají v Cowork session, push z Karlova terminálu
 
-Self-contained `index.html` (992 569 B / 986 159 znaků, MD5 `9fef65a50167ccf8056b354267909e99`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v54 vznikly mimo Design.
+Self-contained `index.html` (993 106 B / 986 694 znaků, MD5 `cf3ada998324883874c1bcce7199eb61`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v55 vznikly mimo Design.
+
+### ⚡ v55 — makro donut na Přehledu ukazuje skutečné kcal + zkratka Dnešní makro vždy na dnešku
+- **Swipe karta „Makro dnes" na Přehledu:** střed donutu (`macroDonut`) dřív počítal kcal z maker (4/4/9) — poslední místo se starým přepočtem, Karel ho našel hned po v53. Nově má `macroDonut(p,c,f,kcal)` čtvrtý parametr = skutečný denní součet (`kcalT`); bez něj fallback na přepočet. Poměry výsečí dál z kalorií maker.
+- **Zkratka „Dnešní makro"** (`data-card="#card-today"`): otevření karty resetne `#todaySwipe` na okno Dnes (`todayReset()` v delegovaném handleru dlaždic, obě větve — z vlastní sekce i přes `goto`). Scroll pozice se dřív držela z minula (záměr v48 pro překreslení PŘI otevřené kartě — ten zůstává, reset je jen při příchodu zkratkou).
+- Testy: bloky F a G v `test_v54.mjs` (26 kontrol) — střed donutu 500 při makrech za 370; odscrollovaný pás → klik na zkratku → `scrollLeft === 0`. Regrese 14 sad, 0 chyb. Bez API změn.
 
 ### ⚡ v54 — složky v Oblíbených jídlech a Receptech
 **Várka v53–v54 (skill `uprava-progres`, Cowork), 4 zadání od Karla. SW bump jednou (v54.0).**
