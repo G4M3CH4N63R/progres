@@ -156,9 +156,18 @@ Playwright se na Macu instaluje lokálně (`npm i -D playwright && npx playwrigh
 **Klikací náhled pro Karla — od 31. 7. 2026 jednoduše:** `python3 -m http.server 8000` a poslat Karlovi `localhost:8000/progres.html`, případně IP Macu pro iPhone na stejné wifi. Prostředí je plnohodnotné (localStorage i IndexedDB fungují), takže odpadá `make_preview36.py` s paměťovou náhradou localStorage i podvrhováním `window.fetch`.
 📜 *Historicky:* náhled se posílal jako soubor do konverzace, proto se stavěl přes `build.py --no-shim --out /tmp/preview_base.html` (aby se `APP_TOKEN` nedostal ven) a proháněl kontrolou na `['workers.dev','APP_TOKEN','x-app-token','__proxy__','sk-ant']`. ⚠️ Kdyby se ta kontrola někdy dělala znovu: **`sk-ant` v seznamu hlásí planý poplach** — je to jen `placeholder="sk-ant-…"` u `#apiKeyInput`.
 
-## Aktuální verze: v55 (4. 8. 2026), SW cache `progres-v55.0`, commity vznikají v Cowork session, push z Karlova terminálu
+## Aktuální verze: v56 (4. 8. 2026), SW cache `progres-v56.0`, commity vznikají v Cowork session, push z Karlova terminálu
 
-Self-contained `index.html` (993 106 B / 986 694 znaků, MD5 `cf3ada998324883874c1bcce7199eb61`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v55 vznikly mimo Design.
+Self-contained `index.html` (994 692 B / 988 232 znaků, MD5 `22c66416008498771d73a46464647384`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v56 vznikly mimo Design.
+
+### ⚡ v56 — asistent už neumí zamrznout beze slova (timeout + hláška u zámku)
+**Bugfix z Karlova hlášení: „poslal jsem asistentovi text + 10 fotek a nic — ani chybová hláška."**
+
+- **Diagnóza:** payload v pořádku — ověřeno SKUTEČNÝM voláním proxy ze sandboxu (10 šumových JPEG à 380 kB = 4,96 MB, `claude-sonnet-5`, odpověď 200 za 7,4 s; padla tím hypotéza CPU limitu Workeru). Příčina na klientu: `fetch` bez timeoutu — na iOS po zamčení displeje/odchodu z appky umí viset navždy → spinner do prázdna, a `if(chatBusy)return` pak další zprávy **tiše zahazoval**.
+- **Oprava:** `AbortController` s limitem **120 s** v `asstApi` (v obou pokusech retry), `aiCall` i `aiFoodSearch` + česká hláška „Odpověď AI nepřišla do 2 minut — zkus to znovu, případně s méně fotkami." `chatBusy` už není němý: toast „Ještě zpracovávám předchozí zprávu — vydrž chvilku ⏳".
+- 🔴 **Shim při přesměrování na proxy zahazoval `signal`** (přeposílal jen `body`) — timeout by na sdílené cestě nefungoval. Sekce 3c i 3d nově předávají `signal: o && o.signal`; proxy `aiCall` v shimu má vlastní 120s timeout.
+- ⚠️ Vedlejší nález: sentinel „nová složka" z v54 se do zdroje zapsal jako **skutečný NUL bajt** (` ` v Edit řetězci) — fungoval, ale dělal ze zdroje „binary file" pro grep. Nahrazen `"__newfld__"`.
+- Testy: blok H v `test_v54.mjs` (33 kontrol) — 4× AbortController ve zdroji, signal v shimu, chatBusy toast funkčně, abort → česká hláška, signal reálně dorazí do fetch přes shim swap. Regrese 14 sad, 0 chyb. Živé ověření scénáře = Karel pošle znovu 10 fotek.
 
 ### ⚡ v55 — makro donut na Přehledu ukazuje skutečné kcal + zkratka Dnešní makro vždy na dnešku
 - **Swipe karta „Makro dnes" na Přehledu:** střed donutu (`macroDonut`) dřív počítal kcal z maker (4/4/9) — poslední místo se starým přepočtem, Karel ho našel hned po v53. Nově má `macroDonut(p,c,f,kcal)` čtvrtý parametr = skutečný denní součet (`kcalT`); bez něj fallback na přepočet. Poměry výsečí dál z kalorií maker.
