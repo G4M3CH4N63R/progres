@@ -156,9 +156,17 @@ Playwright se na Macu instaluje lokálně (`npm i -D playwright && npx playwrigh
 **Klikací náhled pro Karla — od 31. 7. 2026 jednoduše:** `python3 -m http.server 8000` a poslat Karlovi `localhost:8000/progres.html`, případně IP Macu pro iPhone na stejné wifi. Prostředí je plnohodnotné (localStorage i IndexedDB fungují), takže odpadá `make_preview36.py` s paměťovou náhradou localStorage i podvrhováním `window.fetch`.
 📜 *Historicky:* náhled se posílal jako soubor do konverzace, proto se stavěl přes `build.py --no-shim --out /tmp/preview_base.html` (aby se `APP_TOKEN` nedostal ven) a proháněl kontrolou na `['workers.dev','APP_TOKEN','x-app-token','__proxy__','sk-ant']`. ⚠️ Kdyby se ta kontrola někdy dělala znovu: **`sk-ant` v seznamu hlásí planý poplach** — je to jen `placeholder="sk-ant-…"` u `#apiKeyInput`.
 
-## Aktuální verze: v56 (4. 8. 2026), SW cache `progres-v56.0`, commity vznikají v Cowork session, push z Karlova terminálu
+## Aktuální verze: v57 (4. 8. 2026), SW cache `progres-v57.0`, commity vznikají v Cowork session, push z Karlova terminálu
 
-Self-contained `index.html` (994 692 B / 988 232 znaků, MD5 `22c66416008498771d73a46464647384`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v56 vznikly mimo Design.
+Self-contained `index.html` (995 666 B / 989 181 znaků, MD5 `0d044721f7c2482f6d3ff43ffd6ee0c7`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v57 vznikly mimo Design.
+
+### ⚡ v57 — prázdná odpověď asistenta už není němá (thinking vs. max_tokens)
+**Pokračování Karlova hlášení z v56 — „pořád stejné: chvíli se točí a pak NIC".** Ta formulace byla klíč: request nevisí (to řešila v56), ale VRACÍ SE a ztrácí se cestou.
+
+- **Diagnóza REPRODUKCÍ NA ŽIVÉM WEBU** (headless Chromium ze sandboxu, skutečná volání přes proxy, pár desítek centů): `asstApi` s 10 fotkami vrátil 200 s obsahem `[{type:"thinking",thinking:"",signature:…},{type:"tool_use"…}]` — **sonnet-5 vrací thinking bloky i bez zapnutí `thinking` parametru** a ty se počítají do `max_tokens`. Se šumovými fotkami flow doběhl (act bublina „Uložen recept" + text), ale u Karlových skutečných fotek jídla dlouhé přemýšlení **vyčerpalo limit 2500 ještě před textem** → `stop_reason:"max_tokens"` s prázdným obsahem → smyčka v `asstSend` neměla co zobrazit a mlčky skončila.
+- **Oprava:** `max_tokens` asistenta **2500 → 6000** (Worker cap 8192; platí se jen vygenerované tokeny). V `asstSend` 🆕 příznak `ukazano`: `stop_reason==="max_tokens"` bez textu a nástrojů → warn „Odpověď se nevešla do limitu — zkus to znovu, případně rozděl zprávu nebo pošli méně fotek najednou."; pojistka po smyčce → warn „Asistent nevrátil žádnou odpověď — zkus to prosím znovu." **Žádný běh asistenta už nesmí skončit bez jediné bubliny.**
+- Poznatek pro příště: **thinking bloky se v multi-turn (tool_use) smyčce přeposílají zpět beze změny** — appka to dělá (pushuje `blocks` celé) a API to přijímá; NEsahat.
+- Testy: blok I v `test_v54.mjs` (37 kontrol) — max_tokens bez textu → hláška limitu; jen thinking + end_turn → pojistka; normální text → žádný warn (pozitivní protějšek). Regrese 14 sad, 0 chyb. 🚨 Změna těla requestu (max_tokens) → živé ověření po nasazení: _plánované — headless průchod s 10 fotkami + Karlovy tortilly; výsledek doplnit sem._
 
 ### ⚡ v56 — asistent už neumí zamrznout beze slova (timeout + hláška u zámku)
 **Bugfix z Karlova hlášení: „poslal jsem asistentovi text + 10 fotek a nic — ani chybová hláška."**
