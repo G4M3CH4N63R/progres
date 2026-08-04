@@ -1765,11 +1765,15 @@ document.addEventListener("click",e=>{
     const sec=tile.closest("section"),own=sec.id.replace("tab-","");
     const goto=tile.dataset.goto,card=tile.dataset.card,run=tile.dataset.run;
     if(run){hubAction(run,own);return;}
+    /* v55: otevreni karty Dnesni makro zkratkou vzdy zacina na dnesku, ne kde swipe skoncil */
+    const todayReset=()=>{if(card!=="#card-today")return;const tsw=$("#todaySwipe");if(!tsw)return;
+      tsw.scrollLeft=0;$$("#todayDots i").forEach((el,k)=>el.classList.toggle("on",k===0))};
     if(goto&&goto!==own){
       $$("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===goto));
       $$("section").forEach(s=>{if(s.id!=="tab-"+goto)clearModes(s);s.classList.toggle("active",s.id==="tab-"+goto);});
       showSolo(document.getElementById("tab-"+goto),card,tile.dataset.focus);
-    } else if(card){showSolo(sec,card,tile.dataset.focus);if(card==="#card-templates")renderTplList();}
+      todayReset();
+    } else if(card){showSolo(sec,card,tile.dataset.focus);if(card==="#card-templates")renderTplList();todayReset();}
     return;
   }
   const back=e.target.closest(".hubback");
@@ -1955,16 +1959,17 @@ function renderDashboard(){
   const remain=tgt!=null?Math.round(tgt-kcalT+(state.profile.addWorkoutToGoal?wkoT:0)):null;
   const tP=state.profile.targetProtein||0, tC=tgt?Math.round(tgt*0.45/4):0, tF=tgt?Math.round(tgt*0.30/9):0;
   const exCountX=wkSess.reduce((a,s)=>a+s.exercises.length,0), wkKcalX=Math.round(wkSess.reduce((a,s)=>a+workoutKcal(s),0)), trX=weightTrendInfo();
-  const macroDonut=(p,c,f)=>{const kp=Math.max(0,p*4),kc=Math.max(0,c*4),kf=Math.max(0,f*9),tot=kp+kc+kf,R=54,CIRC=2*Math.PI*R,cx=70,cy=70;let off=0,arcs="";
+  /* v55: ctvrty parametr = SKUTECNE kcal dne pro stred donutu — prepocet z maker (4/4/9) se od zapsanych kcal lisi a matl (stejna oprava jako v53 u karty Dnesni makro) */
+  const macroDonut=(p,c,f,kcal)=>{const kp=Math.max(0,p*4),kc=Math.max(0,c*4),kf=Math.max(0,f*9),tot=kp+kc+kf,stred=(kcal!=null?kcal:tot),R=54,CIRC=2*Math.PI*R,cx=70,cy=70;let off=0,arcs="";
     if(tot>0){[[kp,"var(--good)"],[kc,"var(--warn)"],[kf,"var(--purple)"]].forEach(sg=>{const len=CIRC*(sg[0]/tot);arcs+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${sg[1]}" stroke-width="18" stroke-dasharray="${len.toFixed(2)} ${(CIRC-len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})"></circle>`;off+=len;});}
-    return `<svg viewBox="0 0 140 140" width="118" height="118" style="flex:none"><circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="var(--grid)" stroke-width="18"></circle>${arcs}<text x="${cx}" y="${cy-1}" text-anchor="middle" class="ring-num" font-size="21">${Math.round(tot)}</text><text x="${cx}" y="${cy+15}" text-anchor="middle" class="ring-sub" font-size="10">kcal</text></svg>`;};
+    return `<svg viewBox="0 0 140 140" width="118" height="118" style="flex:none"><circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="var(--grid)" stroke-width="18"></circle>${arcs}<text x="${cx}" y="${cy-1}" text-anchor="middle" class="ring-num" font-size="21">${Math.round(stred)}</text><text x="${cx}" y="${cy+15}" text-anchor="middle" class="ring-sub" font-size="10">kcal</text></svg>`;};
   const calBig=remain!=null?(Math.abs(remain)>=1000?nbsp(remain):String(remain)):(kcalT>=1000?nbsp(kcalT):String(kcalT));
   const c1=`<div class="hero-cal">${ringSVG(104,tgt?Math.min(1,kcalT/tgt):0,"var(--accent)",calBig,calBig.length>=5?17:23,remain!=null?"zbývá":"kcal dnes",11)}<div class="cal-break"><div class="cbrk"><span>Cíl</span><b>${tgt?nbsp(tgt):"–"}</b></div><div class="cbrk"><span>Jídlo</span><b>${nbsp(kcalT)}</b></div><div class="cbrk"><span>Pohyb</span><b>${nbsp(wkoT)}</b></div></div></div>`;
   const c2=curW!=null?`<div class="big-stat">${curW}<small> kg</small></div>${wDelta}${trX?`<div class="delta flat" style="margin-top:8px">Trend ${trX.perWeek>0?"+":""}${trX.perWeek.toFixed(2)} kg/týden${trX.eta?` · cíl ${state.profile.targetWeight} kg ≈ ${trX.eta}`:""}</div>`:""}`:`<div class="delta flat">Zatím žádná váha — přidej v sekci Tělo.</div>`;
   const protR=Math.round(protT);
   const c3=`<div class="hero-cal">${ringSVG(104,tP?Math.min(1,protT/tP):0,"var(--good)",String(protR),protR>=1000?18:23,tP?"z "+tP+" g":"g dnes",11)}<div class="cal-break"><div class="cbrk"><span>Cíl</span><b>${tP?tP+" g":"–"}</b></div><div class="cbrk"><span>Snědeno</span><b>${protR} g</b></div><div class="cbrk"><span>${tP&&protT>tP?"Nad cíl":"Zbývá"}</span><b>${tP?Math.abs(Math.round(tP-protT))+" g":"–"}</b></div></div></div>`
     +(todayF.length?"":`<div class="delta flat" style="margin-top:10px">Zatím žádné jídlo dnes — přidej v sekci Jídlo.</div>`);
-  const c4=(protT||carbT||fatT)?`<div class="hero-cal">${macroDonut(protT,carbT,fatT)}<div class="macro-legend2"><div><i style="background:var(--good)"></i>Bílkoviny<b>${Math.round(protT)} g</b></div><div><i style="background:var(--warn)"></i>Sacharidy<b>${Math.round(carbT)} g</b></div><div><i style="background:var(--purple)"></i>Tuky<b>${Math.round(fatT)} g</b></div></div></div>`:`<div class="delta flat">Zatím žádná makra dnes — přidej jídlo.</div>`;
+  const c4=(protT||carbT||fatT)?`<div class="hero-cal">${macroDonut(protT,carbT,fatT,kcalT)}<div class="macro-legend2"><div><i style="background:var(--good)"></i>Bílkoviny<b>${Math.round(protT)} g</b></div><div><i style="background:var(--warn)"></i>Sacharidy<b>${Math.round(carbT)} g</b></div><div><i style="background:var(--purple)"></i>Tuky<b>${Math.round(fatT)} g</b></div></div></div>`:`<div class="delta flat">Zatím žádná makra dnes — přidej jídlo.</div>`;
   const cards=[["Kalorie dnes",c1],["Bílkoviny dnes",c3],["Váha",c2],["Makro dnes",c4]];
   const sw=$("#statSwipe");if(sw)sw.innerHTML=cards.map(c=>`<div class="swipe-card"><h3>${c[0]}</h3>${c[1]}</div>`).join("");
   const dots=$("#statDots");if(dots)dots.innerHTML=cards.map((_,i)=>`<i class="${i===0?"on":""}"></i>`).join("");
