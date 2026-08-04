@@ -2720,8 +2720,11 @@ async function aiCall(content,maxTokens,model){
   /* v47: třetí parametr umožňuje jednomu volání vynutit jiný model (foto jídla → opus) */
   const body={model:model||state.profile.aiModel||"claude-sonnet-5",max_tokens:maxTokens||500,messages:[{role:"user",content}]};
   let r;
-  try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body)})}
-  catch(e){throw new Error("Síťová chyba — z lokálního souboru prohlížeč API blokuje; na webu (https) to funguje.")}
+  /* v56: timeout 120 s — visici fetch na iOS jinak nikdy neskonci */
+  const ctl=new AbortController();const tmr=setTimeout(()=>ctl.abort(),120000);
+  try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body),signal:ctl.signal})}
+  catch(e){throw new Error(e&&e.name==="AbortError"?"Odpověď AI nepřišla do 2 minut — zkus to znovu, případně s méně fotkami.":"Síťová chyba — z lokálního souboru prohlížeč API blokuje; na webu (https) to funguje.")}
+  finally{clearTimeout(tmr)}
   if(r.status===401)throw new Error("Neplatný API klíč (401).");
   if(!r.ok){let d="";try{d=(await r.json()).error?.message||""}catch(e){}throw new Error("API chyba "+r.status+(d?": "+d:""))}
   const j=await r.json();return (j.content||[]).map(c=>c.text||"").join("").trim();
@@ -3110,9 +3113,9 @@ function closePick(){const bg=$("#pickBg");if(bg)bg.classList.remove("show");pic
 function folderAssignPick(coLabel,folders,cur,cb){
   const opts=[...folders.map(f=>({label:(f===(cur||"")?"✓ ":"📁 ")+f,value:f})),
     {label:(cur||"")===""?"✓ Bez složky":"— Bez složky",value:""},
-    {label:"＋ Nová složka…",value:" new"}];
+    {label:"＋ Nová složka…",value:"__newfld__"}];
   openPick("Zařadit: "+coLabel,opts,v=>{
-    if(v===" new"){openPrompt("Nová složka","Název složky","",n=>{n=n.trim();if(n)cb(n,true)});return}
+    if(v==="__newfld__"){openPrompt("Nová složka","Název složky","",n=>{n=n.trim();if(n)cb(n,true)});return}
     cb(v,false)})}
 /* filtr zobrazené složky (jen pro tuhle návštěvu appky) */
 let favFolderSel="",recFolderSel="";
@@ -3302,8 +3305,11 @@ async function aiFoodSearch(q){
     tools:[{type:"web_search_20250305",name:"web_search",max_uses:2}],
     messages:[{role:"user",content:prompt}]};
   let r;
-  try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body)})}
-  catch(e){throw new Error("Síťová chyba — AI hledání teď nejde.")}
+  /* v56: timeout 120 s */
+  const ctl=new AbortController();const tmr=setTimeout(()=>ctl.abort(),120000);
+  try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body),signal:ctl.signal})}
+  catch(e){throw new Error(e&&e.name==="AbortError"?"AI hledání nestihlo odpovědět do 2 minut — zkus to znovu.":"Síťová chyba — AI hledání teď nejde.")}
+  finally{clearTimeout(tmr)}
   if(r.status===401)throw new Error("Neplatný API klíč (401).");
   if(!r.ok){let d="";try{d=(await r.json()).error?.message||""}catch(e){}throw new Error("AI chyba "+r.status+(d?": "+d:""))}
   const j=await r.json();
@@ -4684,8 +4690,12 @@ async function asstApi(msgs){
   let r=null,sit=false;
   for(let pokus=0;pokus<2;pokus++){
     sit=false;r=null;
-    try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body)})}
+    /* v56: tvrdy timeout 120 s — na iOS umi fetch po zamceni displeje viset NAVZDY,
+       spinner se pak tocil donekonecna a dalsi zpravy tise blokoval chatBusy */
+    const ctl=new AbortController();const tmr=setTimeout(()=>ctl.abort(),120000);
+    try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body),signal:ctl.signal})}
     catch(e){sit=true}
+    finally{clearTimeout(tmr)}
     if(r&&r.ok)return r.json();
     /* v37: přechodné chyby (výpadek sítě, 429, nával 5xx/529) jednou tiše zopakovat */
     const s=r?r.status:0;
@@ -4698,7 +4708,8 @@ async function asstApi(msgs){
   if(r.status===529||r.status===503)throw new Error("AI služba má zrovna nával ("+r.status+") — zkus to za minutku.");
   throw new Error("API chyba "+r.status+(d?": "+d:""))}
 async function asstSend(text){
-  if(chatBusy)return;
+  /* v56: driv tichy return — pri visicim requestu to vypadalo, ze appka umrela */
+  if(chatBusy){toast("Ještě zpracovávám předchozí zprávu — vydrž chvilku ⏳");return}
   if(!state.profile.apiKey){toast("Nejdřív vlož API klíč v Nastavení");return}
   const txt=String(text||"").trim();const imgs=chatPend.slice();
   if(!txt&&!imgs.length)return;
@@ -4867,15 +4878,21 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
       messages: [{ role: "user", content: content }]
     };
     var r;
+    /* v56: timeout 120 s — visici fetch na iOS jinak nikdy neskonci */
+    var ctl = new AbortController();
+    var tmr = setTimeout(function () { ctl.abort() }, 120000);
     try {
       r = await fetch(PROXY, {
         method: "POST",
         headers: { "content-type": "application/json", "x-app-token": TOKEN },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        signal: ctl.signal
       });
     } catch (e) {
+      if (e && e.name === "AbortError")
+        throw new Error("Odpověď AI nepřišla do 2 minut — zkus to znovu, případně s méně fotkami.");
       throw new Error("AI je teď nedostupná — zkontroluj připojení k internetu.");
-    }
+    } finally { clearTimeout(tmr) }
     if (r.status === 429) throw new Error("Moc dotazů za sebou — zkus to prosím za minutu.");
     if (r.status === 401 || r.status === 403)
       throw new Error("AI je dočasně nedostupná. Zkus to za chvíli, nebo si v Nastavení vlož vlastní API klíč.");
@@ -4932,7 +4949,8 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
         return real.call(this, PROXY, {
           method: "POST",
           headers: { "content-type": "application/json", "x-app-token": TOKEN },
-          body: o && o.body
+          body: o && o.body,
+          signal: o && o.signal   /* v56: bez tohohle timeout appky na proxy ceste nefungoval */
         });
       return real.apply(this, arguments);
     };
@@ -4959,7 +4977,8 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
         return real.call(this, PROXY, {
           method: "POST",
           headers: { "content-type": "application/json", "x-app-token": TOKEN },
-          body: o && o.body
+          body: o && o.body,
+          signal: o && o.signal   /* v56: propagace timeoutu i pres proxy */
         });
       return real.apply(this, arguments);
     };
