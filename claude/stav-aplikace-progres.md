@@ -156,9 +156,18 @@ Playwright se na Macu instaluje lokálně (`npm i -D playwright && npx playwrigh
 **Klikací náhled pro Karla — od 31. 7. 2026 jednoduše:** `python3 -m http.server 8000` a poslat Karlovi `localhost:8000/progres.html`, případně IP Macu pro iPhone na stejné wifi. Prostředí je plnohodnotné (localStorage i IndexedDB fungují), takže odpadá `make_preview36.py` s paměťovou náhradou localStorage i podvrhováním `window.fetch`.
 📜 *Historicky:* náhled se posílal jako soubor do konverzace, proto se stavěl přes `build.py --no-shim --out /tmp/preview_base.html` (aby se `APP_TOKEN` nedostal ven) a proháněl kontrolou na `['workers.dev','APP_TOKEN','x-app-token','__proxy__','sk-ant']`. ⚠️ Kdyby se ta kontrola někdy dělala znovu: **`sk-ant` v seznamu hlásí planý poplach** — je to jen `placeholder="sk-ant-…"` u `#apiKeyInput`.
 
-## Aktuální verze: v58 (17. 9. 2026), SW cache `progres-v58.0`, commity vznikají v Cowork session, push z Karlova terminálu
+## Aktuální verze: v59 (17. 9. 2026), SW cache `progres-v59.0`, commity vznikají v Cowork session, push z Karlova terminálu
 
-Self-contained `index.html` (998 286 B / 991 734 znaků, MD5 `e6e52f328592cd9c604fae53a6920e46`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v58 vznikly mimo Design.
+Self-contained `index.html` (1 005 254 B / 998 651 znaků, MD5 `4cf9c0bbb90c12ac5404801b5df8486c`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v59 vznikly mimo Design. **Build přesáhl 1 MB.**
+
+### ⚡ v59 — fotky Těla s výběrem A/B, vlastní cviky ✎/🗑, volitelný skleněný vzhled
+**Zbytek várky ze 17. 9. (body 4, 5, 6).**
+
+- **Fotky (`#card-photos`):** 🆕 porovnání libovolných dvou dnů — chipy póz (jen pózy se ≥2 fotkami, `data-cmpp`), pod fotkami `<select data-cmp="A|B">` s daty (`fmtDateDow`), výchozí nejstarší vs. nejnovější; info řádek: dny mezi fotkami + **váha v ty dny** (`bodyWeightNear(d)` = poslední vážení ≤ datum). 🆕 filtr mřížky podle pózy (`#photoFilter`, `data-phf`, s počty). 🆕 `#photoDate` — fotka jde datovat zpětně (validace ISO ≤ dnes, jinak dnes). Stav (`cmpPose`/`cmpA`/`cmpB`/`phFilter`) jen v paměti. Mazání fotky (modal) beze změny.
+- **Vlastní cviky (`renderPickerList`):** položky z `state.customExercises` se kreslí v `.pick-row` s **✎ `data-cexren`** (openPrompt → přejmenuje v `customExercises` + **propíše do `sessions` a `templates`**, toast s počtem) a **🗑 `data-cexdel`** (confirmDel → jen z nabídky, historie zůstane; cvik se pak v pickeru ukáže pod „Moje cviky" z historie). Kontrola duplicity přes `exDef`.
+- ⚠️ **z-index:** `#modalBg`, `#promptBg`, `#pickBg` dostaly `z-index:60` — v DOM leží PŘED `#pickerBg` (oba `.modal-bg` 50), takže prompt/confirm otevřený z pickeru byl dřív schovaný pod ním.
+- **Skleněný vzhled (Liquid Glass, bod 6):** 🆕 přepínač v Nastavení → Vzhled (`#glassToggle`, `profile.glass`, výchozí **false**), `applyGlass()` při startu, po importu a při přepnutí; třída `html.glass`. CSS: plovoucí zaoblená navigace (`left/right:12px`, `border-radius:30px`, blur 26px, highlight `inset 0 1px 0`), aktivní záložka s kapslí, karty průsvitné (`color-mix 74%`) s jemným okrajem **bez blur** (výkon), radiální přechod pozadí, FAB/toast posunuté o výšku plovoucí lišty. Karel rozhodne po vyzkoušení; vypnuté nikoho neovlivní.
+- Testy: 🆕 `test_v59.mjs` (19 kontrol; A/B výběr vč. propsání selectu a info řádku s váhou, filtr, zpětné datum přes `setInputFiles`, ✎ propsání do historie i šablon, 🗑 jen z nabídky, glass přepínač + persistence po `reload`). Regrese 16 sad, 0 chyb. Bez API změn.
 
 ### ⚡ v58 — Makro, Posledních 7 dní, partie přežijí FAB, šablona bez fajfek, retry/fallback 529, hláška limitu
 **Várka po šestitýdenní pauze (Cowork, 17. 9. 2026), 6 z 9 Karlových bodů se screenshoty; zbytek (fotky Těla, vlastní cviky, Liquid Glass) jde do v59.**
