@@ -156,9 +156,21 @@ Playwright se na Macu instaluje lokálně (`npm i -D playwright && npx playwrigh
 **Klikací náhled pro Karla — od 31. 7. 2026 jednoduše:** `python3 -m http.server 8000` a poslat Karlovi `localhost:8000/progres.html`, případně IP Macu pro iPhone na stejné wifi. Prostředí je plnohodnotné (localStorage i IndexedDB fungují), takže odpadá `make_preview36.py` s paměťovou náhradou localStorage i podvrhováním `window.fetch`.
 📜 *Historicky:* náhled se posílal jako soubor do konverzace, proto se stavěl přes `build.py --no-shim --out /tmp/preview_base.html` (aby se `APP_TOKEN` nedostal ven) a proháněl kontrolou na `['workers.dev','APP_TOKEN','x-app-token','__proxy__','sk-ant']`. ⚠️ Kdyby se ta kontrola někdy dělala znovu: **`sk-ant` v seznamu hlásí planý poplach** — je to jen `placeholder="sk-ant-…"` u `#apiKeyInput`.
 
-## Aktuální verze: v57 (4. 8. 2026), SW cache `progres-v57.0`, commity vznikají v Cowork session, push z Karlova terminálu
+## Aktuální verze: v58 (17. 9. 2026), SW cache `progres-v58.0`, commity vznikají v Cowork session, push z Karlova terminálu
 
-Self-contained `index.html` (995 666 B / 989 181 znaků, MD5 `0d044721f7c2482f6d3ff43ffd6ee0c7`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v57 vznikly mimo Design.
+Self-contained `index.html` (998 286 B / 991 734 znaků, MD5 `e6e52f328592cd9c604fae53a6920e46`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v58 vznikly mimo Design.
+
+### ⚡ v58 — Makro, Posledních 7 dní, partie přežijí FAB, šablona bez fajfek, retry/fallback 529, hláška limitu
+**Várka po šestitýdenní pauze (Cowork, 17. 9. 2026), 6 z 9 Karlových bodů se screenshoty; zbytek (fotky Těla, vlastní cviky, Liquid Glass) jde do v59.**
+
+- ⚠️ **Prostředí:** složka `Progres App` leží na Ploše, kterou macOS synchronizuje do iCloudu — po 6 týdnech nečinnosti část souborů **odložil do cloudu** a sandbox je nedokázal číst (`Resource deadlock avoided`, nečitelné `package.json`, `repo/index.html`, `repo/.git` → git bral `repo/` jako část toolchainu!). Řešení: Finder → pravý klik na složku → **Stáhnout nyní**. Kdyby se to opakovalo, vypnout „Optimalizovat úložiště Macu" pro Plochu. **Než se soubory stáhnou, negitovat** — `git -C repo` by při nečitelném `repo/.git` sáhl do toolchainu.
+- **7:** karta `#card-today` a zkratka se jmenují **Makro** (bylo „Dnešní makro", což od v48 se 4 dny nesedělo).
+- **1:** karta Přehledu **„Posledních 7 dní"** (bylo „Tento týden" — počítá klouzavých 7 dní přes `isoNdaysAgo(7)`, nadpis lhal; týdenní kalendáře v Tréninku a Jídle jsou skutečně od pondělí a „Tento týden" tam zůstává). Prázdný text „Za posledních 7 dní žádný trénink".
+- 🔴 **2 — partie mizely:** `fabGo(...,type)` nastavil `type` a vyvolal `change` i když se typ neměnil → handler `renderChips(false)` smazal výběr při KAŽDÉM návratu přes ＋ → Fitko. Teď se `change` vyvolá jen při skutečné změně typu.
+- 🔴 **3 — šablona s fajfkami:** `fillSessionForm(sess,keepMeta)` bral `sets` i s `done:true` (šablona uložená z odcvičeného tréninku). Nový trénink ze šablony / „předvyplnit podle minulého" načítá `done:false`; `keepMeta` (editace záznamu z v42) fajfky drží.
+- **8 — 529 Overloaded u foto jídla:** `aiCall` (ve zdroji i v shimu) má nově **2 pokusy** (pauza 1,8 s; opakují se jen 429/500/502/503/529 a síť, 400/401 hned ven) a **u `claude-opus-*` třetí pokus na `claude-sonnet-5`** s toastem „Silnější model má nával — zkouším sonnet". Abort (v56 timeout) se neopakuje.
+- **9 — hláška limitu:** 🆕 `aiErrText(status,d)` — jednotný český překlad pro `aiCall`, `aiFoodSearch` i `asstApi`; `400` s „usage limit" → „Měsíční limit AI je vyčerpaný — obnoví se 1. dne příštího měsíce." Shim má vlastní `errText` (sdílený režim navíc radí vlastní klíč). Strop se nastavuje Console → Settings → Billing → Spend limits (Karel 20. 8. narazil na 10 $).
+- Shim: 11 928 B / 11 536 znaků (placeholder). Testy: 🆕 `test_v58.mjs` (16 kontrol; blok C reálně projde retry → fallback → úspěch přes mock frontu 529,529,200 a hlídá pořadí modelů). Regrese 15 sad, 0 chyb. 🚨 Změna plánu requestu (`aiCall`) → živé ověření po nasazení: _doplnit_.
 
 ### ⚡ v57 — prázdná odpověď asistenta už není němá (thinking vs. max_tokens)
 **Pokračování Karlova hlášení z v56 — „pořád stejné: chvíli se točí a pak NIC".** Ta formulace byla klíč: request nevisí (to řešila v56), ale VRACÍ SE a ztrácí se cestou.
