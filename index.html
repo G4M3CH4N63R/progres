@@ -332,6 +332,19 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .pick-i{display:block;width:100%;text-align:left;padding:11px 13px;border:1px solid var(--line);border-radius:11px;background:var(--surface);margin-bottom:6px;font:inherit;font-size:14.5px;font-weight:600;color:var(--ink);cursor:pointer}
   .pick-i:active{background:var(--accent-weak)}
   #pickerList{max-height:46vh;overflow:auto;margin-top:10px}
+  /* v59: volitelny "skleneny" vzhled (Liquid Glass) — html.glass, prepinac v Nastaveni.
+     Blur jen na navigaci a plovoucich tlacitkach (vykon na iPhonu), karty jen prusvitne s highlight okrajem. */
+  html.glass body{background:radial-gradient(120% 80% at 20% 0%,color-mix(in srgb,var(--accent) 16%,var(--bg)) 0%,var(--bg) 55%),var(--bg);padding-bottom:14px}
+  html.glass .card{background:color-mix(in srgb,var(--card) 74%,transparent);border:1px solid color-mix(in srgb,var(--ink) 9%,transparent);box-shadow:0 10px 30px rgba(0,0,0,.10),inset 0 1px 0 rgba(255,255,255,.28)}
+  html.glass[data-theme="dark"] .card{box-shadow:0 10px 30px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.07)}
+  html.glass nav{left:12px;right:12px;bottom:calc(10px + var(--safe-bottom));max-width:536px;border-radius:30px;border:1px solid color-mix(in srgb,var(--ink) 12%,transparent);
+    background:color-mix(in srgb,var(--plane) 62%,transparent);backdrop-filter:saturate(200%) blur(26px);-webkit-backdrop-filter:saturate(200%) blur(26px);
+    box-shadow:0 12px 34px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.30);padding:7px 8px 7px}
+  html.glass[data-theme="dark"] nav{box-shadow:0 12px 34px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.09)}
+  html.glass nav button.on{background:color-mix(in srgb,var(--accent) 14%,transparent);border-radius:20px}
+  html.glass .gear-btn,html.glass .chat-btn,html.glass .fab{backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 8px 24px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.30)}
+  html.glass .fab{bottom:calc(84px + var(--safe-bottom))}
+  html.glass .toast{bottom:calc(98px + var(--safe-bottom))}
   nav{
     position:fixed;bottom:0;left:0;right:0;z-index:30;
     background:color-mix(in srgb,var(--plane) 80%,transparent);
@@ -375,6 +388,8 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
   .bo-m i{font-size:10.5px;font-weight:700;font-style:normal}
   .bo-m i.dn{color:var(--good-ink)} .bo-m i.up{color:var(--muted)}
   .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:none;align-items:flex-end;justify-content:center}
+  /* v59: potvrzeni, prompt a vyber slozky musi lezet NAD pickerem cviku (ten je v DOM az za nimi) */
+  #modalBg,#promptBg,#pickBg{z-index:60}
   .modal-bg.show{display:flex}
   .modal{background:var(--card);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px 18px calc(20px + var(--safe-bottom) + var(--kb,0px));box-shadow:0 -8px 30px rgba(0,0,0,.2);max-height:88vh;overflow:auto}
   .modal h3{margin:0 0 6px;font-size:18px}
@@ -910,7 +925,11 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
             <input type="file" id="photoFile" accept="image/*" hidden>
           </div>
         </div>
+        <!-- v59: datum fotky (i zpětně) -->
+        <label class="field" style="margin-top:8px"><span>Datum fotky</span><input type="date" id="photoDate"></label>
         <div id="compareWrap"></div>
+        <!-- v59: filtr mřížky podle pózy -->
+        <div class="fld-chips" id="photoFilter" style="margin-top:12px"></div>
         <div class="photo-grid" id="photoGrid"></div>
         <div id="photoEmpty"></div>
       </div>
@@ -1151,6 +1170,10 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div class="setrow">
           <div class="lb">Tmavý režim<span class="sub2">Přepni světlé a tmavé téma appky.</span></div>
           <button class="tgl" id="themeToggle" type="button" aria-label="Tmavý režim"><i></i></button>
+        </div>
+        <div class="setrow">
+          <div class="lb">Skleněný vzhled<span class="sub2">Průsvitná plovoucí navigace a karty ve stylu iOS 26. Na starším iPhonu může být pomalejší.</span></div>
+          <button class="tgl" id="glassToggle" type="button" aria-label="Skleněný vzhled"><i></i></button>
         </div>
         <button class="icon-btn" id="themeBtn" style="display:none" aria-hidden="true"></button>
       </div>
@@ -1426,7 +1449,7 @@ function confirmDel(title,text,cb){openModal(title,text,cb)}
 const LIQUID_RE=/(ml[eé]k[oa]|ml[eé]ku|n[aá]poj|dž[uů]s|šť[aá]v|voda|vody|vodka|cola|kola|limon[aá]d|tonik|pivo|v[ií]no|prosecco|whisk|k[aá]va|cappuccino|latte|espresso|kakao|smoothie|kef[ií]r|podm[aá]sl[ií]|shake|sirup|olej|smetana|čaj)/i;
 function foodUnit(n){return LIQUID_RE.test(String(n||""))?"ml":"g"}
 const DEFAULT={version:3,sessions:[],body:[],foods:[],steps:{},templates:[],customExercises:[],foodDb:[],recipes:[],favorites:[],favFolders:[],recFolders:[],trash:[],lastBackup:null,
-  profile:{name:"",sex:"m",age:30,height:180,weight:80,activity:1.55,goal:"maintain",targetKcal:null,targetProtein:null,targetWeight:null,stepGoal:10000,exPerDay:5,addStepsToGoal:false,addWorkoutToGoal:false,apiKey:"",aiModel:"",daysPerWeek:3,experience:"pokrocily",equipment:"posilovna",favSort:"abc"}};
+  profile:{name:"",sex:"m",age:30,height:180,weight:80,activity:1.55,goal:"maintain",targetKcal:null,targetProtein:null,targetWeight:null,stepGoal:10000,exPerDay:5,addStepsToGoal:false,addWorkoutToGoal:false,apiKey:"",aiModel:"",daysPerWeek:3,experience:"pokrocily",equipment:"posilovna",favSort:"abc",glass:false}};
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function mergeState(d){const s=clone(DEFAULT);
   if(typeof d.lastBackup==="string"&&/^\d{4}-\d\d-\d\d$/.test(d.lastBackup))s.lastBackup=d.lastBackup;
@@ -1857,6 +1880,10 @@ function applyTheme(t){document.documentElement.setAttribute("data-theme",t);
   const mt=document.querySelector('meta[name=theme-color]');if(mt)mt.setAttribute("content",t==="dark"?"#000000":"#f2f2f7");
   lsSet(TKEY,t)}
 (function(){const saved=lsGet(TKEY);const pref=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";applyTheme(saved||pref)})();
+/* v59: skleneny vzhled — stav v profilu, trida na <html> */
+function applyGlass(on){document.documentElement.classList.toggle("glass",!!on);const g=$("#glassToggle");if(g)g.classList.toggle("on",!!on)}
+{const g=$("#glassToggle");if(g)g.addEventListener("click",()=>{state.profile.glass=!state.profile.glass;save();applyGlass(state.profile.glass);toast(state.profile.glass?"Skleněný vzhled zapnutý":"Skleněný vzhled vypnutý")});}
+applyGlass(state.profile.glass); /* v59: pri startu */
 function toggleTheme(){applyTheme(darkOn()?"light":"dark");
   if(settingsOpen())renderSettings();else if(_statsTab)renderStatsFor(_statsTab);else renderTab(currentTab())}
 /* ---- Nastavení (gear) ---- */
@@ -2275,10 +2302,23 @@ function renderPickerList(){
     .filter(x=>{if(useSel&&x.m!=="Moje cviky"&&!mus.includes(x.m))return false;
       if(q&&!x.n.toLowerCase().includes(q))return false;return true});
   const groups={};src.forEach(x=>{(groups[x.m]=groups[x.m]||[]).push(x)});
+  const cust=new Set((state.customExercises||[]).map(c=>c.n)); /* v59: vlastni cviky maji tuzku a kos */
   const order=[...MUSCLE_ORDER.filter(m=>groups[m]),...Object.keys(groups).filter(m=>!MUSCLE_ORDER.includes(m))];
   $("#pickerList").innerHTML=order.length?order.map(m=>
-    `<div class="pick-h">${esc(m)}</div>`+groups[m].map(x=>`<button type="button" class="pick-i" data-ex="${esc(x.n)}" data-m="${esc(x.m)}" data-u="${x.u}">${esc(x.n)}<span class="muted" style="font-weight:500;float:right">${x.u==="reps"?"opak.":x.u==="time"?"čas":""}</span></button>`).join("")
+    `<div class="pick-h">${esc(m)}</div>`+groups[m].map(x=>{const bt=`<button type="button" class="pick-i" data-ex="${esc(x.n)}" data-m="${esc(x.m)}" data-u="${x.u}">${esc(x.n)}<span class="muted" style="font-weight:500;float:right">${x.u==="reps"?"opak.":x.u==="time"?"čas":""}</span></button>`;
+      return cust.has(x.n)?`<div class="pick-row">${bt}<button type="button" class="pick-fav" data-cexren="${esc(x.n)}" title="Upravit vlastní cvik">${ICON_PEN}</button><button type="button" class="pick-fav" data-cexdel="${esc(x.n)}" title="Smazat z nabídky">${ICON_TRASH}</button></div>`:bt}).join("")
   ).join(""):`<div class="empty">Nic nenalezeno. Můžeš si přidat vlastní cvik ↑</div>`;
+  /* v59: uprava / smazani vlastniho cviku primo v nabidce */
+  $$("#pickerList [data-cexren]").forEach(b=>b.onclick=()=>{const old=b.dataset.cexren;const c=(state.customExercises||[]).find(x=>x.n===old);if(!c)return;
+    openPrompt("Přejmenovat cvik","Název cviku",old,v=>{v=v.trim();if(!v||v===old)return;
+      if(exDef(v)){toast("Takový cvik už existuje");return}
+      let n=0;c.n=v;
+      state.sessions.forEach(s=>s.exercises.forEach(e=>{if(e.n===old){e.n=v;n++}}));
+      (state.templates||[]).forEach(t=>(t.exercises||[]).forEach(e=>{if(e.n===old){e.n=v;n++}}));
+      save();fillExDb();renderPickerList();toast("Přejmenováno"+(n?" i v "+n+" záznamech":""))})});
+  $$("#pickerList [data-cexdel]").forEach(b=>b.onclick=()=>{const nm=b.dataset.cexdel;
+    confirmDel("Smazat vlastní cvik?","„"+nm+"“ zmizí z nabídky. Zapsané tréninky s tímhle cvikem zůstanou beze změny.",()=>{
+      state.customExercises=(state.customExercises||[]).filter(x=>x.n!==nm);save();fillExDb();renderPickerList();toast("Cvik smazán z nabídky")})});
   $$("#pickerList .pick-i").forEach(b=>b.onclick=()=>{
     if(pickerRow){setExName(pickerRow,b.dataset.ex);
       if(b.dataset.m&&b.dataset.m!=="Moje cviky")selectMuscle(b.dataset.m);
@@ -2532,33 +2572,56 @@ $("#addPhotoBtn").addEventListener("click",()=>$("#photoFile").click());
 $("#photoFile").addEventListener("change",async e=>{
   const file=e.target.files[0];e.target.value="";if(!file)return;
   try{const img=await resizeImage(file,1100,0.72);
-    await phPut({id:uid(),date:todayISO(),pose:$("#photoPose").value,img});
+    /* v59: datum z pole (i zpetne), vychozi dnes */
+    const pdv=($("#photoDate")||{}).value;const pd=(pdv&&/^\d{4}-\d{2}-\d{2}$/.test(pdv)&&pdv<=todayISO())?pdv:todayISO();
+    await phPut({id:uid(),date:pd,pose:$("#photoPose").value,img});
     await refreshPhotos();renderPhotos();renderDashboard&&null;
     toast("📸 Fotka uložena");}
   catch(err){toast("Fotku se nepodařilo uložit")}});
 let photoModalId=null;
+/* v59: porovnani dvou LIBOVOLNYCH dnu (A/B) v ramci pozy + filtr mrizky podle pozy.
+   Stav jen v pameti — po otevreni appky se zacina od nejstarsi vs. nejnovejsi. */
+let cmpPose=null,cmpA=null,cmpB=null,phFilter="";
+function bodyWeightNear(d){const arr=state.body.filter(b=>b.weight!=null&&b.date<=d).sort((x,y)=>y.date.localeCompare(x.date));return arr[0]?arr[0].weight:null}
 function renderPhotos(){
-  const grid=$("#photoGrid");
-  if(!photos.length){grid.innerHTML="";$("#compareWrap").innerHTML="";
+  const grid=$("#photoGrid");const pf=$("#photoFilter");
+  {const pd=$("#photoDate");if(pd&&!pd.value)pd.value=todayISO();}
+  if(!photos.length){grid.innerHTML="";$("#compareWrap").innerHTML="";if(pf)pf.innerHTML="";
     $("#photoEmpty").innerHTML=`<div class="empty" style="padding:16px"><div class="big">${EMPTY_SVG}</div>Žádné fotky. Vyfoť se zepředu, zezadu a z boku —<br>za pár týdnů uvidíš rozdíl nejlíp právě tady.</div>`;return}
   $("#photoEmpty").innerHTML="";
   const sorted=[...photos].sort((a,b)=>b.date.localeCompare(a.date));
-  grid.innerHTML=sorted.map(p=>`<div class="ph" data-photo="${p.id}"><img src="${p.img}" alt=""><span class="b">${POSE[p.pose]||""} · ${fmtDate(p.date)}</span></div>`).join("");
+  /* filtr mrizky */
+  if(pf){pf.innerHTML=`<button type="button" class="foodchip${phFilter===""?" on":""}" data-phf="">Vše (${photos.length})</button>`
+    +Object.keys(POSE).map(k=>{const n=photos.filter(p=>p.pose===k).length;return n?`<button type="button" class="foodchip${phFilter===k?" on":""}" data-phf="${k}">${POSE[k]} (${n})</button>`:""}).join("");
+    $$("#photoFilter [data-phf]").forEach(b=>b.onclick=()=>{phFilter=b.dataset.phf;renderPhotos()})}
+  const shown=phFilter?sorted.filter(p=>p.pose===phFilter):sorted;
+  grid.innerHTML=shown.map(p=>`<div class="ph" data-photo="${p.id}"><img src="${p.img}" alt=""><span class="b">${POSE[p.pose]||""} · ${fmtDate(p.date)}</span></div>`).join("");
   $$("[data-photo]",grid).forEach(el=>el.onclick=()=>{
     const p=photos.find(x=>x.id===el.dataset.photo);if(!p)return;
     photoModalId=p.id;
     $("#photoModalTitle").textContent=(POSE[p.pose]||"Fotka")+" · "+fmtDateFull(p.date);
     $("#photoModalImg").src=p.img;$("#photoModalBg").classList.add("show")});
-  // porovnání první vs. poslední pro pózu s nejvíc fotkami
-  let best=null;
-  Object.keys(POSE).forEach(k=>{const arr=photos.filter(p=>p.pose===k);
-    if(arr.length>=2&&(!best||arr.length>best.arr.length))best={k,arr}});
-  $("#compareWrap").innerHTML=best?`
-    <div style="margin-top:12px"><span class="flabel">Porovnání (${POSE[best.k].toLowerCase()}) — start vs. teď</span>
+  /* porovnani: poza s vyberem, dva dny A/B (vychozi nejstarsi vs. nejnovejsi) */
+  const poses=Object.keys(POSE).filter(k=>photos.filter(p=>p.pose===k).length>=2);
+  const wrap=$("#compareWrap");
+  if(!poses.length){wrap.innerHTML="";return}
+  if(!cmpPose||!poses.includes(cmpPose))cmpPose=poses.slice().sort((x,y)=>photos.filter(p=>p.pose===y).length-photos.filter(p=>p.pose===x).length)[0];
+  const arr=photos.filter(p=>p.pose===cmpPose).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!cmpA||!arr.some(p=>p.id===cmpA))cmpA=arr[0].id;
+  if(!cmpB||!arr.some(p=>p.id===cmpB))cmpB=arr[arr.length-1].id;
+  const A=arr.find(p=>p.id===cmpA),B=arr.find(p=>p.id===cmpB);
+  const dny=Math.round((new Date(B.date+"T12:00:00")-new Date(A.date+"T12:00:00"))/864e5);
+  const wA=bodyWeightNear(A.date),wB=bodyWeightNear(B.date);
+  const opt=(sel)=>arr.map(p=>`<option value="${p.id}"${p.id===sel?" selected":""}>${fmtDateDow(p.date)}</option>`).join("");
+  wrap.innerHTML=`<div style="margin-top:12px"><span class="flabel">Porovnání</span>
+    <div class="fld-chips" style="margin:6px 0 8px">${poses.map(k=>`<button type="button" class="foodchip${k===cmpPose?" on":""}" data-cmpp="${k}">${POSE[k]}</button>`).join("")}</div>
     <div class="compare">
-      <figure><img src="${best.arr[0].img}" alt="start"><figcaption>${fmtDateFull(best.arr[0].date)}</figcaption></figure>
-      <figure><img src="${best.arr[best.arr.length-1].img}" alt="teď"><figcaption>${fmtDateFull(best.arr[best.arr.length-1].date)}</figcaption></figure>
-    </div></div>`:"";
+      <figure><img src="${A.img}" alt="A"><figcaption><select data-cmp="A" style="width:100%">${opt(cmpA)}</select></figcaption></figure>
+      <figure><img src="${B.img}" alt="B"><figcaption><select data-cmp="B" style="width:100%">${opt(cmpB)}</select></figcaption></figure>
+    </div>
+    <div class="small muted" style="margin-top:8px">${dny===0?"Stejný den.":(dny>0?dny:-dny)+" "+plurDen(Math.abs(dny))+" mezi fotkami"}${wA!=null&&wB!=null?` · váha ${fmtNum(wA)} → ${fmtNum(wB)} kg (${wB-wA>0?"+":""}${fmtNum(+(wB-wA).toFixed(1))} kg)`:""}</div></div>`;
+  $$("#compareWrap [data-cmpp]").forEach(b=>b.onclick=()=>{cmpPose=b.dataset.cmpp;cmpA=null;cmpB=null;renderPhotos()});
+  $$("#compareWrap [data-cmp]").forEach(sl=>sl.onchange=()=>{if(sl.dataset.cmp==="A")cmpA=sl.value;else cmpB=sl.value;renderPhotos()});
 }
 $("#photoModalClose").addEventListener("click",()=>$("#photoModalBg").classList.remove("show"));
 $("#photoModalBg").addEventListener("click",e=>{if(e.target===$("#photoModalBg"))$("#photoModalBg").classList.remove("show")});
@@ -4149,7 +4212,7 @@ $("#importFile").addEventListener("change",e=>{
     else if(d&&Array.isArray(d.workouts)){state=migrateV1(d)}
     else throw new Error("bad");
     if(!state.profile.apiKey&&keepKey){state.profile.apiKey=keepKey;state.profile.aiModel=keepModel}
-    save();renderTab(currentTab());toast("Data načtena ✅")}
+    save();applyGlass(state.profile.glass);renderTab(currentTab());toast("Data načtena ✅")}
   catch(err){toast("Soubor se nepodařilo načíst")}};
   r.readAsText(file);e.target.value=""});
 function icsEsc(s){return String(s).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\r?\n/g,"\\n")}
