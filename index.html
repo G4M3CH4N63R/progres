@@ -714,7 +714,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
         <div class="chart-wrap sm"><canvas id="chCalMini"></canvas></div>
       </div>
       <div class="card" id="weekCard">
-        <h2>Tento týden</h2>
+        <h2>Posledních 7 dní</h2>
         <div id="weekSummary" class="small"></div>
       </div>
 
@@ -932,7 +932,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
           <button type="button" data-card="#card-foodlog"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/></svg><span>Talíř</span></button>
           <button type="button" data-card="#card-recipes"><svg viewBox="0 0 24 24"><path d="M3 11h18M4 11a8 8 0 0 0 16 0"/><path d="M8.5 11c0-2 1.3-3.5 3.5-3.5s3.5 1.5 3.5 3.5"/></svg><span>Recepty</span></button>
           <button type="button" data-card="#card-favfoods"><svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.6 6.1.6-4.6 4.1 1.4 6L12 16.9 6.1 19.8l1.4-6-4.6-4.1 6.1-.6z"/></svg><span>Oblíbené</span></button>
-          <button type="button" data-card="#card-today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 12V3.5"/><path d="M12 12l7.4 4.3"/></svg><span>Dnešní makro</span></button>
+          <button type="button" data-card="#card-today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 12V3.5"/><path d="M12 12l7.4 4.3"/></svg><span>Makro</span></button>
           <button type="button" data-card="#card-goal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.2"/><path d="M12 3.5v3M12 17.5v3M3.5 12h3M17.5 12h3"/></svg><span>Cíl a výpočet</span></button>
           <button type="button" data-card="#card-foodhist"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5V8h3.5"/><path d="M12 8v4.2l3 1.8"/></svg><span>Historie</span></button>
           <button type="button" data-run="stats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Statistiky</span></button>
@@ -989,7 +989,7 @@ var __Html5QrcodeLibrary__;(()=>{var t={449:function(t,e,r){!function(t){"use st
       </div>
 
       <div class="card" id="card-today">
-        <h2>Dnešní makro <span class="hint" id="foodDate"></span></h2>
+        <h2>Makro <span class="hint" id="foodDate"></span></h2>
         <!-- v48: swipe okna Dnes / Včera / -2 / -3, každé s koláčem, jídly dne a úpravou -->
         <div class="swipe" id="todaySwipe"></div>
         <div class="swipe-dots" id="todayDots" style="margin:8px 0 0"></div>
@@ -1790,7 +1790,9 @@ function fabGo(tab,card,run,focus,type){closeFab();switchTab(tab);
   if(run==="scan"){if(typeof startScan==="function")startScan();return;}
   if(run==="foodpick"){if(typeof openFoodPick==="function")openFoodPick();return;}
   if(card){const sec=document.getElementById("tab-"+tab);if(sec)showSolo(sec,card,focus);}
-  if(type){const ts=$("#formSession [name=type]");if(ts){ts.value=type;ts.dispatchEvent(new Event("change",{bubbles:true}));}}}
+  /* v58: zmenu typu vyvolat JEN kdyz se typ opravdu meni — change handler prekresluje partie
+     (renderChips(false)) a mazal tak rozdelany vyber pri kazdem navratu pres FAB */
+  if(type){const ts=$("#formSession [name=type]");if(ts&&ts.value!==type){ts.value=type;ts.dispatchEvent(new Event("change",{bubbles:true}));}}}
 function buildFabMenu(){const items=(FABMENU[currentTab()]||FABMENU.prehled).slice();const sheet=$("#fabSheet");if(!sheet)return;
   sheet.innerHTML='<h3>Rychlé přidání</h3><div class="fab-grid">'+items.map((it,i)=>`<button class="fab-tile" type="button" data-fi="${i}"><span class="fi" style="background:${it.bg}">${it.e}</span>${it.t}</button>`).join("")+'</div>';
   $$("#fabSheet [data-fi]").forEach(b=>b.onclick=()=>items[+b.dataset.fi].go());}
@@ -1983,7 +1985,7 @@ function renderDashboard(){
   const wkKcal=wkSess.reduce((a,s)=>a+workoutKcal(s),0);
   $("#weekSummary").innerHTML = wkSess.length
     ? `Odtrénováno <b>${wkDays}</b> dní · <b>${exCount}</b> cviků · objem <b>${wkVol.toLocaleString("cs")} kg</b> · výdej ≈ <b>${wkKcal.toLocaleString("cs")} kcal</b>.<br><span class="muted">Partie: ${parts.map(p=>p[0]+" ("+p[1]+"×)").join(", ")}</span>`
-    : `<span class="muted">Tento týden zatím žádný trénink. Přidej první v sekci Trénink.</span>`;
+    : `<span class="muted">Za posledních 7 dní žádný trénink. Přidej první v sekci Trénink.</span>`;
   chartWeightSmall();chartCalMini();renderCalendar();renderBackupNudge();
 }
 
@@ -2318,7 +2320,9 @@ function fillSessionForm(sess,keepMeta){const f=$("#formSession");
     const e0=(sess.exercises||[])[0]||{};const sec=(e0.sets&&e0.sets[0]&&e0.sets[0].sec)||((sess.dur||0)*60);
     if($("#cardioMin")){$("#cardioMin").value=Math.round(sec/60)||sess.dur||0;drawDial();}
     setCardioDist(e0.dist||0);$("#exRows").innerHTML="";return;}
-  $("#exRows").innerHTML="";(sess.exercises||[]).forEach(e=>addExRow(e));
+  /* v58: sablona / predvyplneni podle minuleho treninku = NOVY trenink, serie zacinaji NEsplnene;
+     fajfky se drzi jen pri editaci existujiciho zaznamu (keepMeta) */
+  $("#exRows").innerHTML="";(sess.exercises||[]).forEach(e=>addExRow(keepMeta?e:Object.assign({},e,{sets:exSets(e).map(s=>Object.assign({},s,{done:false}))})));
   if(!(sess.exercises||[]).length)addExRow();
   setTimeout(refreshNeedFill,0)}
 
@@ -2716,18 +2720,39 @@ const FOODDB=[
 
 /* ---- AI (Claude API) ---- */
 function aiHeaders(k){return{"x-api-key":k,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true","content-type":"application/json"}}
+/* v58: jednotny preklad chyb API do cestiny (aiCall, aiFoodSearch, asstApi i shim maji stejnou logiku) */
+function aiErrText(status,d){
+  if(status===401)return "Neplatný API klíč (401).";
+  if(status===400&&/usage limit/i.test(d||""))return "Měsíční limit AI je vyčerpaný — obnoví se 1. dne příštího měsíce.";
+  if(status===429)return "Moc dotazů za sebou (429) — chvilku počkej a zkus to znovu.";
+  if(status===529||status===503)return "AI služba má zrovna nával ("+status+") — zkus to za minutku.";
+  return "API chyba "+status+(d?": "+d:"")}
 async function aiCall(content,maxTokens,model){
   /* v47: třetí parametr umožňuje jednomu volání vynutit jiný model (foto jídla → opus) */
-  const body={model:model||state.profile.aiModel||"claude-sonnet-5",max_tokens:maxTokens||500,messages:[{role:"user",content}]};
-  let r;
-  /* v56: timeout 120 s — visici fetch na iOS jinak nikdy neskonci */
-  const ctl=new AbortController();const tmr=setTimeout(()=>ctl.abort(),120000);
-  try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body),signal:ctl.signal})}
-  catch(e){throw new Error(e&&e.name==="AbortError"?"Odpověď AI nepřišla do 2 minut — zkus to znovu, případně s méně fotkami.":"Síťová chyba — z lokálního souboru prohlížeč API blokuje; na webu (https) to funguje.")}
-  finally{clearTimeout(tmr)}
-  if(r.status===401)throw new Error("Neplatný API klíč (401).");
-  if(!r.ok){let d="";try{d=(await r.json()).error?.message||""}catch(e){}throw new Error("API chyba "+r.status+(d?": "+d:""))}
-  const j=await r.json();return (j.content||[]).map(c=>c.text||"").join("").trim();
+  const m0=model||state.profile.aiModel||"claude-sonnet-5";
+  /* v58: 2 pokusy na stejnem modelu (pauza 1,8 s) a pri navalu 529/503 u opusu jeste
+     treti pokus na claude-sonnet-5 — foto jidla padalo na "529 Overloaded" bez dalsiho */
+  const plan=[m0,m0];if(/^claude-opus/.test(m0))plan.push("claude-sonnet-5");
+  let r=null,sit=false,abort=false,lastD="";
+  for(let i=0;i<plan.length;i++){
+    if(i>0){await new Promise(x=>setTimeout(x,1800));if(plan[i]!==plan[i-1])toast("Silnější model má nával — zkouším sonnet")}
+    const body={model:plan[i],max_tokens:maxTokens||500,messages:[{role:"user",content}]};
+    r=null;sit=false;abort=false;
+    /* v56: timeout 120 s — visici fetch na iOS jinak nikdy neskonci */
+    const ctl=new AbortController();const tmr=setTimeout(()=>ctl.abort(),120000);
+    try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body),signal:ctl.signal})}
+    catch(e){sit=true;abort=!!(e&&e.name==="AbortError")}
+    finally{clearTimeout(tmr)}
+    if(r&&r.ok){const j=await r.json();return (j.content||[]).map(c=>c.text||"").join("").trim()}
+    if(abort)break;
+    const st=r?r.status:0;
+    if(r){lastD="";try{lastD=(await r.json()).error?.message||""}catch(e){}}
+    /* opakovat jen prechodne stavy; 400/401 apod. hned ven */
+    if(!(sit||st===429||st===500||st===502||st===503||st===529))break;
+  }
+  if(abort)throw new Error("Odpověď AI nepřišla do 2 minut — zkus to znovu, případně s méně fotkami.");
+  if(sit||!r)throw new Error("Síťová chyba — z lokálního souboru prohlížeč API blokuje; na webu (https) to funguje.");
+  throw new Error(aiErrText(r.status,lastD));
 }
 function aiJson(txt){
   txt=String(txt).replace(/```[a-z]*/gi,"").replace(/```/g,"").trim();
@@ -3310,8 +3335,7 @@ async function aiFoodSearch(q){
   try{r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:aiHeaders(state.profile.apiKey),body:JSON.stringify(body),signal:ctl.signal})}
   catch(e){throw new Error(e&&e.name==="AbortError"?"AI hledání nestihlo odpovědět do 2 minut — zkus to znovu.":"Síťová chyba — AI hledání teď nejde.")}
   finally{clearTimeout(tmr)}
-  if(r.status===401)throw new Error("Neplatný API klíč (401).");
-  if(!r.ok){let d="";try{d=(await r.json()).error?.message||""}catch(e){}throw new Error("AI chyba "+r.status+(d?": "+d:""))}
+  if(!r.ok){let d="";try{d=(await r.json()).error?.message||""}catch(e){}throw new Error(aiErrText(r.status,d))} /* v58 */
   const j=await r.json();
   const txt=(j.content||[]).filter(c=>c.type==="text").map(c=>c.text||"").join("\n").trim();
   const parsed=aiJson(txt);
@@ -4705,11 +4729,8 @@ async function asstApi(msgs){
     if(pokus===0&&(sit||s===429||s===500||s===502||s===503||s===529)){await new Promise(x=>setTimeout(x,1800));continue}
     break}
   if(sit||!r)throw new Error("Síťová chyba — zkus to znovu.");
-  if(r.status===401)throw new Error("Neplatný API klíč (401).");
   let d="";try{d=(await r.json()).error?.message||""}catch(e){}
-  if(r.status===429)throw new Error("Moc dotazů za sebou (429) — chvilku počkej a zkus to znovu.");
-  if(r.status===529||r.status===503)throw new Error("AI služba má zrovna nával ("+r.status+") — zkus to za minutku.");
-  throw new Error("API chyba "+r.status+(d?": "+d:""))}
+  throw new Error(aiErrText(r.status,d))} /* v58: jednotny preklad vc. mesicniho limitu */
 async function asstSend(text){
   /* v56: driv tichy return — pri visicim requestu to vypadalo, ze appka umrela */
   if(chatBusy){toast("Ještě zpracovávám předchozí zprávu — vydrž chvilku ⏳");return}
@@ -4879,40 +4900,60 @@ refreshPhotos().then(()=>{if(currentTab()==="prehled")renderDashboard();else if(
 
   /* ---- 1) aiCall: vlastní klíč → přímo Anthropic, jinak → proxy ---- */
   var _aiCall = window.aiCall;
+  /* v58: stejná logika jako aiCall ve zdroji — 2 pokusy, u opusu při návalu 529/503
+     třetí pokus na sonnet-5, český překlad chyb včetně měsíčního limitu */
+  function errText(status, d) {
+    if (status === 401 || status === 403)
+      return "AI je dočasně nedostupná. Zkus to za chvíli, nebo si v Nastavení vlož vlastní API klíč.";
+    if (status === 400 && /usage limit/i.test(d || ""))
+      return "Měsíční limit sdílené AI je vyčerpaný — obnoví se 1. dne příštího měsíce. Zatím jde použít vlastní klíč v Nastavení.";
+    if (status === 429) return "Moc dotazů za sebou — zkus to prosím za minutu.";
+    if (status === 529 || status === 503) return "AI služba má zrovna nával (" + status + ") — zkus to za minutku.";
+    return "AI chyba " + status + (d ? ": " + d : "");
+  }
   window.aiCall = async function (content, maxTokens, model) {
     if (own(state.profile.apiKey)) return _aiCall.apply(this, arguments);
 
-    var body = {
-      model: model || "claude-sonnet-5",   /* v47: volání smí vynutit model (foto jídla → opus) */
-      max_tokens: maxTokens || 500,
-      messages: [{ role: "user", content: content }]
-    };
-    var r;
-    /* v56: timeout 120 s — visici fetch na iOS jinak nikdy neskonci */
-    var ctl = new AbortController();
-    var tmr = setTimeout(function () { ctl.abort() }, 120000);
-    try {
-      r = await fetch(PROXY, {
-        method: "POST",
-        headers: { "content-type": "application/json", "x-app-token": TOKEN },
-        body: JSON.stringify(body),
-        signal: ctl.signal
-      });
-    } catch (e) {
-      if (e && e.name === "AbortError")
-        throw new Error("Odpověď AI nepřišla do 2 minut — zkus to znovu, případně s méně fotkami.");
-      throw new Error("AI je teď nedostupná — zkontroluj připojení k internetu.");
-    } finally { clearTimeout(tmr) }
-    if (r.status === 429) throw new Error("Moc dotazů za sebou — zkus to prosím za minutu.");
-    if (r.status === 401 || r.status === 403)
-      throw new Error("AI je dočasně nedostupná. Zkus to za chvíli, nebo si v Nastavení vlož vlastní API klíč.");
-    if (!r.ok) {
-      var d = "";
-      try { d = (await r.json()).error?.message || "" } catch (e) {}
-      throw new Error("AI chyba " + r.status + (d ? ": " + d : ""));
+    var m0 = model || "claude-sonnet-5";
+    var plan = [m0, m0];
+    if (/^claude-opus/.test(m0)) plan.push("claude-sonnet-5");
+    var r = null, sit = false, abort = false, lastD = "";
+    for (var i = 0; i < plan.length; i++) {
+      if (i > 0) {
+        await new Promise(function (x) { setTimeout(x, 1800) });
+        if (plan[i] !== plan[i - 1] && typeof toast === "function") toast("Silnější model má nával — zkouším sonnet");
+      }
+      var body = {
+        model: plan[i],
+        max_tokens: maxTokens || 500,
+        messages: [{ role: "user", content: content }]
+      };
+      r = null; sit = false; abort = false;
+      /* v56: timeout 120 s — visici fetch na iOS jinak nikdy neskonci */
+      var ctl = new AbortController();
+      var tmr = setTimeout(function () { ctl.abort() }, 120000);
+      try {
+        r = await fetch(PROXY, {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-app-token": TOKEN },
+          body: JSON.stringify(body),
+          signal: ctl.signal
+        });
+      } catch (e) {
+        sit = true; abort = !!(e && e.name === "AbortError");
+      } finally { clearTimeout(tmr) }
+      if (r && r.ok) {
+        var j = await r.json();
+        return (j.content || []).map(function (c) { return c.text || "" }).join("").trim();
+      }
+      if (abort) break;
+      var st = r ? r.status : 0;
+      if (r) { lastD = ""; try { lastD = (await r.json()).error?.message || "" } catch (e) {} }
+      if (!(sit || st === 429 || st === 500 || st === 502 || st === 503 || st === 529)) break;
     }
-    var j = await r.json();
-    return (j.content || []).map(function (c) { return c.text || "" }).join("").trim();
+    if (abort) throw new Error("Odpověď AI nepřišla do 2 minut — zkus to znovu, případně s méně fotkami.");
+    if (sit || !r) throw new Error("AI je teď nedostupná — zkontroluj připojení k internetu.");
+    throw new Error(errText(r.status, lastD));
   };
 
   /* ---- 2) save(): sentinel se nikdy neuloží do localStorage ---- */
