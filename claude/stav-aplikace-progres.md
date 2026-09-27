@@ -156,9 +156,18 @@ Playwright se na Macu instaluje lokálně (`npm i -D playwright && npx playwrigh
 **Klikací náhled pro Karla — od 31. 7. 2026 jednoduše:** `python3 -m http.server 8000` a poslat Karlovi `localhost:8000/progres.html`, případně IP Macu pro iPhone na stejné wifi. Prostředí je plnohodnotné (localStorage i IndexedDB fungují), takže odpadá `make_preview36.py` s paměťovou náhradou localStorage i podvrhováním `window.fetch`.
 📜 *Historicky:* náhled se posílal jako soubor do konverzace, proto se stavěl přes `build.py --no-shim --out /tmp/preview_base.html` (aby se `APP_TOKEN` nedostal ven) a proháněl kontrolou na `['workers.dev','APP_TOKEN','x-app-token','__proxy__','sk-ant']`. ⚠️ Kdyby se ta kontrola někdy dělala znovu: **`sk-ant` v seznamu hlásí planý poplach** — je to jen `placeholder="sk-ant-…"` u `#apiKeyInput`.
 
-## Aktuální verze: v59 (17. 9. 2026), SW cache `progres-v59.0`, commity vznikají v Cowork session, push z Karlova terminálu
+## Aktuální verze: v60 (27. 9. 2026), SW cache `progres-v60.0`, commity vznikají v Cowork session, push z Karlova terminálu
 
-Self-contained `index.html` (1 005 254 B / 998 651 znaků, MD5 `4cf9c0bbb90c12ac5404801b5df8486c`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v59 vznikly mimo Design. **Build přesáhl 1 MB.**
+Self-contained `index.html` (1 008 501 B / 1 001 886 znaků, MD5 `f7635522611ef5ced222f727e4a89dea`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v60 vznikly mimo Design.
+
+### ⚡ v60 — plovoucí šipka ↓/↑ při zapisování tréninku
+**Zadání od Karla: „Když je cviků hodně a vracím se nahoru, mít šipku, která mě rychle posune dolů." Po náhledu přání: „raději uprostřed".**
+
+- 🆕 **`#jumpBtn` (`.jump-btn`)** — kulaté tlačítko 46 px, **vodorovně uprostřed** (`left:50%;translateX(-50%)`), nad spodní lištou (`bottom:80px`, ve skle 92px). Ukazuje se jen ve formuláři Nový trénink (`#card-newworkout` viditelná + `#tab-trenink.active.soloon`), když je stránka o ≥500 px delší než okno.
+- **Směr:** pod tebou ≥260 px → **↓** (`jumpGo` sjede tak, aby `#sessSubmit` byl 130 px nad spodkem okna — vidět poslední cvik, Přidat cvik i Uložit); dole a zároveň >400 px od vršku → **↑** (třída `.up` otočí SVG), skok na začátek. Plynulý scroll.
+- **Schovává se při psaní** (focus na input/textarea uvnitř karty — nad iOS klávesnicí by překážela) a mimo kartu. Aktualizace: scroll (rAF), resize, focusin/out, `syncFab()` a **`ResizeObserver` na kartě** (přidání cviku změní výšku bez scrollu).
+- ⚠️ Toast dole uprostřed (`bottom:88px`) šipku na ~2 s překryje — vědomě ponecháno, Karel s tím souhlasil.
+- Testy: 🆕 `test_v60.mjs` (13 kontrol: ↓ nahoře, skok dolů až na viditelné Uložit, otočení na ↑, skok nahoru, schování při psaní a návrat, nic na Přehledu/rozcestníku/krátkém formuláři, objeví se po přidání cviků). ⚠️ Plynulý scroll přes ~10 000 px trvá i sekundy — test čeká na ustálení `scrollY`, pevná pauza 700 ms dávala falešné chyby. Ověřeno negativně na v59; střed tlačítka změřen = polovina šířky. Regrese 17 sad, 0 chyb. Bez API změn.
 
 ### ⚡ v59 — fotky Těla s výběrem A/B, vlastní cviky ✎/🗑, volitelný skleněný vzhled
 **Zbytek várky ze 17. 9. (body 4, 5, 6).**
