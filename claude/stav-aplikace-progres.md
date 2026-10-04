@@ -156,7 +156,15 @@ Playwright se na Macu instaluje lokálně (`npm i -D playwright && npx playwrigh
 **Klikací náhled pro Karla — od 31. 7. 2026 jednoduše:** `python3 -m http.server 8000` a poslat Karlovi `localhost:8000/progres.html`, případně IP Macu pro iPhone na stejné wifi. Prostředí je plnohodnotné (localStorage i IndexedDB fungují), takže odpadá `make_preview36.py` s paměťovou náhradou localStorage i podvrhováním `window.fetch`.
 📜 *Historicky:* náhled se posílal jako soubor do konverzace, proto se stavěl přes `build.py --no-shim --out /tmp/preview_base.html` (aby se `APP_TOKEN` nedostal ven) a proháněl kontrolou na `['workers.dev','APP_TOKEN','x-app-token','__proxy__','sk-ant']`. ⚠️ Kdyby se ta kontrola někdy dělala znovu: **`sk-ant` v seznamu hlásí planý poplach** — je to jen `placeholder="sk-ant-…"` u `#apiKeyInput`.
 
-## Aktuální verze: v60 (27. 9. 2026), SW cache `progres-v60.0`, commity vznikají v Cowork session, push z Karlova terminálu
+## Aktuální verze: v61 (4. 10. 2026), SW cache `progres-v61.0`, commity vznikají v Cowork session, push z Karlova terminálu
+
+### ⚡ v61 — modely Sonnet 5.5 a Opus 5.5, vyšší limity tokenů kvůli myšlení
+**Sekci dopsala Claude Code session po deployi — Cowork session, která v61 vyrobila, dokument neaktualizovala (hlavička zůstala na v60). Detaily nad rámec commit message dohledat v `git show 4f20894`.**
+
+- Z commit message: výchozí model **`claude-sonnet-5-5`**, foto jídla **`claude-opus-5-5`**, migrace uloženého modelu generace 5, `max_tokens` u foto 4000 a hledání 4000, **Worker v2.2**, `test_v61`.
+- Deploy: repo `4f19b0b`, toolchain `4f20894`. Živě: SW `progres-v61.0`, MD5 `9e1526007e24b0611739f752c8f0f160` = build bajt na bajt.
+- 🚨 **Změna těla requestu (modely + max_tokens) → živě ověřeno 4. 10. 2026, třikrát:** `aiCall` výchozí → skutečný model **`claude-sonnet-5-5`** („OK“, 1,6 s); `aiCall(..., "claude-opus-5-5")` → **`claude-opus-5-5`** („OK“, 1,5 s); `asstApi` → **`claude-sonnet-5-5`**, `end_turn`, 8 362 in / 5 out, 1,2 s. Vrácený `model` v odpovědích zároveň dokazuje, že Worker nové modely propouští (whitelist v pořádku; jestli přes nasazený v2.2 nebo přes `MODEL_ALLOW`, nešlo ověřit — `token.txt` je v deny a `/health` bez něj nejde; při příští práci s Workerem ověřit).
+
 
 Self-contained `index.html` (1 008 501 B / 1 001 886 znaků, MD5 `f7635522611ef5ced222f727e4a89dea`). Báze pro příští diff z Designu: `cd_upload45.html` (962 393 B, MD5 `240276aed8e8be7141936910eb243fac`, bez shimu) — v46–v60 vznikly mimo Design.
 
